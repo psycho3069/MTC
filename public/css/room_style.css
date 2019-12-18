@@ -1,0 +1,513 @@
+            /*Room button styles*/
+
+            /* Side dropdown menu */
+
+            nav.custom.navbar.navbar-expand-sm.navbar-dark {
+                background: #fff0;
+            }
+            .custom.nav-link.dropdown-toggle:hover {
+                color: #fff;
+                background-color: #0c4d90 !important;
+            }
+            a.custom.dropdown-item:hover{
+                background: #0c4d90 !important;
+            }
+            a.custom.dropdown-item.active{
+                background: #0c4d90 !important;
+            }
+            .custom.navbar-collapse.collapse {
+                padding: 0 !important;
+            }
+
+            /* End Side dropdown menu */
+
+                    /* Ground floor */
+
+    .doropdown_menu a {
+        padding: 5px 40px;
+        background: #000066;
+        width: 110px;
+        margin-left: 10px;
+        color: #fff;
+        border-bottom: 1px solid #fff;
+        text-decoration: none;
+    }
+
+    .room_list_1 {
+        width: 1003px;
+    }
+    button.room_1 {
+        padding: 113px 59px;
+        border: 2px solid #000;
+        margin-left: -13px;
+        margin-top: 2px;
+    }
+    button.room_2 {
+        padding: 114px 178px;
+        border: 2px solid #000;
+        margin-left: 80px;
+    }
+    button.room_3 {
+        padding: 114px 16px;
+        border: 1px solid #000;
+        margin-left: -4px;
+    }
+
+    .room_list_2 {
+        height: 83px;
+    }
+    button.room_4 {
+        padding: 22px 27px;
+        margin-top: 67px;
+        margin-left: -13px;
+        border: 1px solid #000;
+    }
+    button.room_5 {
+        padding: 56px 15px;
+        border: 2px solid #000;
+        margin-left: -13px;
+    }
+    button.room_6 {
+        padding: 21px 26px;
+        margin-left: -13px;
+        border: 2px solid #000;
+    }
+
+    .room_list_3 {
+        margin-top: -82px;
+        /*width: 50px;*/
+        margin-left: 134px;
+    }
+    button.room_7 {
+        padding: 55px 42px;
+        margin-left: 257px;
+        border: 1px solid #000;
+    }
+    button.room_8 {
+        padding: 86px 9px 6px 10px;
+        margin-left: 71px;
+        margin-top: 2px;
+        border: 1px solid #000;
+    }
+    button.room_9 {
+        padding: 87px 90px 90px 100px;
+        margin-left: -3px;
+        border: 2px solid #000;
+    }
+
+    .room_list_4 {
+        margin-top: -333px;
+        width: 100px;
+        margin-left: 217px;
+    }
+    button.room_10 {
+        padding: 11px 101px;
+        border: 1px solid #000;
+        margin-left: 525px;
+    }
+    .room_list_5 {
+        width: 100px;
+        margin-left: 140px;
+    }
+    button.room_11 {
+        padding: 89px 102px;
+        margin-left: 602px;
+        border: 0;
+        border-bottom: 1px solid #000;
+        margin-top: 69px;
+    }
+
+    h1.entrance {
+        margin-top: -240px;
+        margin-left: 670px;
+        writing-mode: tb-rl;
+        color: #01254a;
+        letter-spacing: 5px;
+    }
+    h1.stairs {
+        margin-left: 742px;
+        margin-top: -209px;
+        text-align: center;
+        color: #ce0303;
+        text-shadow: 2px 2px 2px #000;
+        letter-spacing: 2px;
+    }
+    button{
+        background: #1c8c00;
+        color: #fff;
+    }
+    button:hover{
+        background: #176903;
+        color: #fff;
+    }
+    .modal_btn:hover{
+        background: #fff;
+    }
+                        /* End ground floor */
+
+
+                        /* 1st floor */
+
+            button.first_room_1 {
+                padding: 120px 218px;
+                border: 1px solid #000;
+                margin-top: 5px;
+                margin-left: -12px;
+            }
+            .first_room_list_2 {
+                margin-top: -242px;
+                margin-left: 427px;
+            }
+            button.first_room_2 {
+                padding: 30px 70px;
+                border: 1px solid #000;
+            }
+            button.first_room_3 {
+                padding: 33px 70px;
+                border: 1px solid #000;
+            }
+            button.first_room_4 {
+                padding: 25px 66px;
+                border: 1px solid #000;
+            }
+            .first_room_list_3 {
+                margin-left: 718px;
+                margin-top: -242px;
+                width: 320px;
+            }
+            button.first_room_5 {
+                padding: 31px 91px;
+                border: 1px solid #000;
+            }
+            button.first_room_6 {
+                padding: 32px 91px;
+                border: 1px solid #000;
+            }
+            button.first_room_7 {
+                padding: 47px 91px;
+                border: 1px solid #000;
+            }
+            button.first_room_8 {
+                padding: 127px 100px;
+                margin-left: -13px;
+                border: 2px solid #000;
+            }
+            .first_room_list_5 {
+                margin-left: 718px;
+                margin-top: -211px;
+                width: 380px;
+            }
+            button.first_room_9 {
+                padding: 112px 47px;
+                border: 1px solid #000;
+            }
+            h1.first.stairs {
+                margin-top: -308px;
+            }
+
+            /* End 1st floor */
+
+            /* Second Floor */
+
+            button.second_room_1 {
+                padding: 154px 200px;
+                margin-left: -8px;
+                border: 1px solid #000;
+                margin-top: 8px;
+            }
+            .second_room_list_2 {
+                margin: -315px 0px 0px 397px;
+            }
+            button.second_room_2 {
+                padding: 43px 60px;
+                margin-left: -1px;
+                border: 1px solid #000;
+                margin-top: 6px;
+            }
+
+            button.second_room_3 {
+                padding: 43px 60px;
+                margin-left: -1px;
+                border: 1px solid #000;
+            }
+
+            button.second_room_4 {
+                padding: 36px 60px;
+                margin-left: -1px;
+                border: 1px solid #000;
+            }
+            .second_room_list_3 {
+                margin-top: -310px;
+                margin-left: 707PX;
+                width: 380px;
+            }
+            button.second_room_5 {
+                padding: 44px 62px;
+                border: 1px solid #000;
+            }
+            button.second_room_6 {
+                padding: 42px 62px;
+                border: 1px solid #000;
+            }
+            button.second_room_7 {
+                padding: 63px 97px;
+                border: 1px solid #000;
+            }
+            button.second_room_8 {
+                padding: 70px 46px;
+                margin-left: -8px;
+                border: 1px solid #000;
+            }
+            button.second_room_9 {
+                padding: 70px 18px;
+                margin-left: -1px;
+                border: 1px solid #000;
+            }
+            button.second_room_10 {
+                padding: 70px 17px;
+                margin-left: -2px;
+                border: 1px solid #000;
+            }
+            button.second_room_11 {
+                padding: 70px 17px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.second_room_12 {
+                padding: 70px 18px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+
+            .second_room_list_5 {
+                margin-top: 1px;
+            }
+            button.second_room_13 {
+                padding: 62px 46px;
+                margin-left: -8px;
+                border: 1px solid #000;
+            }
+            button.second_room_14 {
+                padding: 62px 18px;
+                margin-left: -2px;
+                border: 1px solid #000;
+            }
+            button.second_room_15 {
+                padding: 62px 18px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.second_room_16 {
+                padding: 62px 17px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.second_room_17 {
+                padding: 62px 18px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            .second_room_list_6 {
+                margin-left: 707px;
+                margin-top: -217px;
+                width: 350px;
+            }
+            button.second_room_18 {
+                padding: 125px 82px;
+                border: 1px solid #000;
+            }
+            h1.second.stairs {
+                margin-top: -338px;
+            }
+
+                    /* End second floor */
+
+                    /* Third floor */
+            button.third_room_1 {
+                padding: 156px 188px;
+                border: 1px solid #000;
+                margin-top: 6px;
+                margin-left: -9px;
+            }
+            .third_room_list_2 {
+                margin-left: 371px;
+                margin-top: -314px;
+            }
+            button.third_room_2 {
+                padding: 61px 87px;
+                border: 1px solid #000;
+            }
+            button.third_room_3 {
+                padding: 73px 43px;
+                border: 1px solid #000;
+                margin-top: 1px;
+            }
+            .third_room_list_3 {
+                margin-top: -315px;
+                margin-left: 686px;
+                width: 400px;
+            }
+            button.third_room_4 {
+                padding: 44px 73px;
+                border: 1px solid #000;
+            }
+            button.third_room_5 {
+                padding: 43px 100px;
+                border: 1px solid #000;
+            }
+            button.third_room_6 {
+                padding: 65px 90px;
+                border: 1px solid #000;
+            }
+            button.third_room_7 {
+                padding: 62px 20px;
+                margin-left: -10px;
+                border: 1px solid #000;
+            }
+            button.third_room_8 {
+                padding: 62px 17px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.third_room_9 {
+                padding: 62px 16px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.third_room_10 {
+                padding: 62px 2px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.third_room_11 {
+                padding: 62px 18px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.third_room_12 {
+                padding: 62px 31px;
+                margin-left: -10px;
+                border: 1px solid #000;
+            }
+            button.third_room_13 {
+                padding: 61px 16px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.third_room_14 {
+                padding: 61px 17px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            button.third_room_15 {
+                padding: 62px 1px 40px 3px;
+                margin-left: -3px;
+                border: 1px solid #000;
+                font-size: 14px;
+            }
+            button.third_room_16 {
+                padding: 63px 1px 40px 3px;
+                margin-left: -3px;
+                border: 1px solid #000;
+                font-size: 14px;
+            }
+            .third_room_list_6 {
+                margin-left: 687px;
+                margin-top: -218px;
+                width: 365px;
+            }
+            button.third_room_17 {
+                padding: 121px 90px;
+                border: 1px solid #000;
+            }
+            h1.third.stairs {
+                margin-left: 695px;
+                margin-top: -320px;
+            }
+
+                /* End third floor */
+
+                /* Fourth floor */
+            button.four_room_1 {
+                padding: 126px 209px;
+                border: 1px solid #000;
+                margin-top: 9px;
+                margin-left: -8px;
+            }
+            .four_room_list_2 {
+                margin-left: 414px;
+                margin-top: -254px;
+            }
+            button.four_room_2 {
+                padding: 61px 96px;
+                border: 1px solid #000;
+            }
+            button.four_room_3 {
+                padding: 44px 56px;
+                border: 1px solid #000;
+                margin-top: 1px;
+            }
+            .four_room_list_3 {
+                margin-top: -255px;
+                margin-left: 721px;
+                width: 350px;
+            }
+            button.four_room_4 {
+                padding: 33px 73px;
+                border: 1px solid #000;
+            }
+            button.four_room_5 {
+                padding: 44px 81px;
+                border: 1px solid #000;
+            }
+            button.four_room_6 {
+                padding: 23px 61px;
+                border: 1px solid #000;
+            }
+            button.four_room_7 {
+                padding: 157px 0px 150px 0px;
+                margin-left: -8px;
+                border: 1px solid #000;
+                margin-top: 1px;
+                font-size: 11px;
+            }
+            button.four_room_8 {
+                padding: 153px 41px 153px 45px;
+                margin-left: 58px;
+                border: 1px solid #000;
+            }
+            .four_room_list_5 {
+                margin-left: 645px;
+                margin-top: -215px;
+                width: 445px;
+            }
+            button.four_room_9 {
+                padding: 96px 97px;
+                margin-left: -3px;
+                border: 1px solid #000;
+            }
+            h1.four.stairs {
+                 margin-top: -315px;
+                 margin-left: 756px;
+             }
+
+                 /* End fourth floor */
+
+            div#exampleModalCenter {
+                background: #000000ab;
+            }
+            div#venueModalCenter {
+                background: #000000ab;
+            }
+
+            .room_status {
+                color: #fff;
+                background: #cc00bc;
+                padding: 11px 9px;
+                border-top-left-radius: 30px;
+                border-bottom-right-radius: 30px;
+            }
+            a#navbardrop {
+                border-top-left-radius: 23px;
+                border-bottom-right-radius: 24px;
+            }

@@ -1,0 +1,47 @@
+.tree li.parent_li>span {
+    cursor:pointer
+}
+
+.add-new{
+    margin-left: 15%;
+}
+
+.btn-light {
+    background-color: black;
+    border-color: #f8f9fa;
+    color: white;
+}
+
+.inputbox {
+    height: 22px;
+    width: 100px;
+}
+
+
+.grand-total{
+    margin-top: 10px;
+    border: 2px solid rebeccapurple;
+}
+
+.amount{
+    margin-left: 12%;
+}
+
+.config-label{
+    margin-top: 22%;
+
+}
+
+.show-button{
+    margin-top: 16%;
+}
+
+
+.auto{
+    display: none;
+}
+.manual{
+    display: none;
+}
+
+
