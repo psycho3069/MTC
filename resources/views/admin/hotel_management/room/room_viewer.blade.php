@@ -81,7 +81,7 @@
 
 @section('content')
 <style>
-    
+
           main.py-4 {
               min-height: 450px !important;
               width: auto;
@@ -223,7 +223,8 @@
                     $('#vprice').val((data['view']['price']));
                     $('#feature').val((data['view']['feature']));
                     $('#venueReserved').attr("href", "/training/addvenueRes/"+id)
-                    $('#venueBooked').attr("href", "/training/add-booking/"+id)
+                    // $('#venueBooked').attr("href", "/training/add-booking/"+id)
+                    $('#venueBooked').attr("href", "/booking/create?id="+id)
                 }
             })
         }

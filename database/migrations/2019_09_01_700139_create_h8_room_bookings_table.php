@@ -16,6 +16,8 @@ class CreateH8RoomBookingsTable extends Migration
         Schema::create('h8_room_bookings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('guest_name');
+            $table->string('org_name')->nullable();
+            $table->string('designation')->nullable();
             $table->string('guest_contact');
             $table->double('amount')->unsigned()->default(0);
             $table->date('start_date');

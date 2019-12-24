@@ -24,7 +24,7 @@
               Session::put('message',null);
             }
         @endphp
-            
+
       </p>
 
     <table id="venueres" class="table table-bordered">
@@ -33,6 +33,7 @@
             <th class="">#</th>
             <th class="">Org Name</th>
             <th class="">Person Name</th>
+            <th class="">Designation</th>
             <th class="">Contact Number</th>
             <th class="">Start Date</th>
             <th class="">End Date</th>
@@ -45,11 +46,12 @@
         </tr>
     </thead>
     <tbody>
-      @foreach($allvenueresinfo as $row) 
+      @foreach($allvenueresinfo as $row)
         <tr>
             <td width="5%">{{$row->id}}</td>
-            <td width="10%">{{$row->org_name}}</td>
+            <td width="10%">{{ $row->org_name ? $row->org_name : '' }}</td>
             <td width="10%">{{$row->name}}</td>
+            <td width="10%">{{ $row->designation ? $row->designation : '--' }}</td>
             <td>{{$row->contact_no}}</td>
             <td width="10%">{{date("d-m-Y", strtotime($row->start_date))}}</td>
             <td width="10%">
@@ -62,7 +64,7 @@
             <td width="10%">{{$row->venueName}}</td>
             <td>{{$row->vprice}}</td>
             <td>{{$row->price}}</td>
-            <td>{{$row->no_of_attendee}}</td>            
+            <td>{{$row->no_of_attendee}}</td>
             <td>
                 @if($row->status == '1')
                   {{Config::get('constants.venueResStatus.1')}}
@@ -91,7 +93,7 @@
 @endsection
 
 @section('datatable')
-    
+
 <!-- datatable -->
 {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>

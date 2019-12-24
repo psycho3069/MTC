@@ -77,6 +77,9 @@ Route::get('insert', function (){
 
 Route::group(['middleware' => 'auth'], function (){
 
+
+    Route::resource('booking', 'BookingController');
+
     Route::post('accounts/balance/check', ['as' => 'balance.check', 'uses' => 'BalanceController@check']);
     Route::resource('accounts/balance', 'BalanceController');
     Route::resource('accounts', 'AccountController');

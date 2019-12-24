@@ -25,7 +25,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    
+
                     @if(Auth::user())
                         <a href="{{URL::to('/hotel_management/booking/booking_list')}}" class="btn btn-primary">BACK</a>
                     @endif
@@ -64,7 +64,7 @@
                     </p>
 
                     <div class="form-group row">
-                        <label for="start_date" class="col-md-4 col-form-label text-md-left">Start Date:</label>
+                        <label for="start_date" class="col-md-4 col-form-label text-md-left">Start Date*</label>
                         <div class="col-md-6">
                             <input class="form-control{{ $errors->has('start_date') ? ' is-invalid' : '' }}" id="check_in_date" name="start_date" value="{{ old('start_date') }}" autocomplete="off" required>
                         </div>
@@ -72,28 +72,48 @@
 
 
                     <div class="form-group row">
-                        <label for="end_date" class="col-md-4 col-form-label text-md-left">End Date:</label>
+                        <label for="end_date" class="col-md-4 col-form-label text-md-left">End Date*</label>
                         <div class="col-md-6">
                             <input class="form-control{{ $errors->has('end_date') ? ' is-invalid' : '' }}" id="check_out_date" autocomplete="off" value="{{ old('end_date') }}" name="end_date" >
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="guest_name" class="col-md-4 col-form-label text-md-left">Guest Name:</label>
+                        <label for="org_name" class="col-md-4 col-form-label text-md-left">Organization Name</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control{{ $errors->has('org_name') ? ' is-invalid' : '' }}" id="name" value="{{ old('org_name') }}" name="org_name">
+                            @if ($errors->has('org_name'))
+                                <span class="invalid-feedback" role="alert"><strong>{{ $errors->first('org_name') }}</strong></span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="guest_name" class="col-md-4 col-form-label text-md-left">Guest Name*</label>
                         <div class="col-md-6">
                             <input type="text" class="form-control{{ $errors->has('guest_name') ? ' is-invalid' : '' }}" id="guest_name" value="{{ old('guest_name') }}" name="guest_name" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="guest_contact" class="col-md-4 col-form-label text-md-left">Contact No:</label>
+                        <label for="name" class="col-md-4 col-form-label text-md-left">Designation</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control{{ $errors->has('designation') ? ' is-invalid' : '' }}" id="name" value="{{ old('designation') }}" name="designation">
+                            @if ($errors->has('designation'))
+                                <span class="invalid-feedback" role="alert"><strong>{{ $errors->first('designation') }}</strong></span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="guest_contact" class="col-md-4 col-form-label text-md-left">Contact No*</label>
                         <div class="col-md-6">
                             <input type="number" class="form-control{{ $errors->has('guest_contact') ? ' is-invalid' : '' }}" id="guest_contact" value="{{ old('guest_contact') }}" name="guest_contact" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="room_id" class="col-md-4 col-form-label text-md-left">Room No:</label>
+                        <label for="room_id" class="col-md-4 col-form-label text-md-left">Room No</label>
                         <div class="col-md-6">
                             <select id="room_id" name="room_id" class="form-control" readonly required>
                                 @foreach($room_category as $value)
@@ -106,14 +126,14 @@
                     </div>
 
                     <div class="form-group row">
-                        <label for="room_id" class="col-md-4 col-form-label text-md-left">Unit Price:</label>
+                        <label for="room_id" class="col-md-4 col-form-label text-md-left">Unit Price</label>
                         <div class="col-md-6">
                             <input type="text" class="form-control" value="{{ $room_info->price }}" readonly>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="status" class="col-md-4 col-form-label text-md-left">Status:</label>
+                        <label for="status" class="col-md-4 col-form-label text-md-left">Status</label>
                         <div class="col-md-6">
                             <select id="status" name="status" class="form-control" required readonly>
                                 <option value="2" selected>{{Config::get('constants.roomBookStatus.2')}}</option>
@@ -122,14 +142,14 @@
                     </div>
 
                     <div class="form-group row">
-                        <label for="amount" class="col-md-4 col-form-label text-md-left">Amount:</label>
+                        <label for="amount" class="col-md-4 col-form-label text-md-left">Amount</label>
                         <div class="col-md-6">
                             <input type="number" class="form-control{{ $errors->has('amount') ? ' is-invalid' : '' }}" value="{{ old('amount') }}" id="amount" name="amount" value="">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="amount" class="col-md-4 col-form-label text-md-left">Payment Method:</label>
+                        <label for="amount" class="col-md-4 col-form-label text-md-left">Payment Method</label>
                         <div class="col-md-6">
                             <label for=""><input type="radio" name="payment_method"  id="payment_method" required checked> Bkash</label>&nbsp;&nbsp;
                             <label for=""><input type="radio" name="payment_method"  id="payment_method"> Rocket</label>&nbsp;&nbsp;

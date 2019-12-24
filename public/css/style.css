@@ -40,8 +40,37 @@
 .auto{
     display: none;
 }
+
+
 .manual{
     display: none;
+}
+
+.room{
+    display: none;
+}
+
+.venue{
+    display: none;
+}
+
+.vertical-separator {
+    border-left: 1px solid black;
+    height: 200px;
+    position: relative;
+    left: -31%;
+}
+
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
 }
 
 

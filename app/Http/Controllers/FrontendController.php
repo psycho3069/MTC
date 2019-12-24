@@ -108,6 +108,7 @@ class FrontendController extends Controller
     //SAVE ROOM-BOOKING TO DATABASE
     public function save_booking(Request $request)
     {
+//        return $request->all();
         $this->validate($request, [
             'guest_name'  => ['required', 'string', 'max:100','regex:/^[a-zA-Z ]*$/','unique:h8_room_bookings'],
             'guest_contact'  => ['required'],
@@ -156,6 +157,7 @@ class FrontendController extends Controller
         ]);
         $data = array();
         $data['org_name'] = $request->org_name;
+        $data['designation'] = $request->designation;
         $data['guest_name'] = $request->guest_name;
         $data['guest_contact'] = $request->contact_no;
         $data['start_date'] = $request->start_date;
@@ -186,7 +188,6 @@ class FrontendController extends Controller
             'name'  => 'required|max:60|regex:/^[a-zA-Z ]*$/',
             'contact_no'  => 'required|max:30',
             'start_date'  => 'required|date',
-            'date'  => ['required','date'],
             'end_date'  => 'nullable|date',
             'venue_id'  => 'required|max:10',
             'no_of_attendee'  => 'required|max:10',

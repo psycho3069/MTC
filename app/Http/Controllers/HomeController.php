@@ -150,6 +150,7 @@ class HomeController extends Controller
                          ->select('v2_venue_reservations.*', 'v1_venues.name as venueName', 'v1_venues.price as vprice')
                          ->orderBy('v2_venue_reservations.id', 'desc')
                          ->get();
+//        return $allvenueresinfo;
         $manage_venueres=view('admin.training.venueRes')
                          ->with('allvenueresinfo',$allvenueresinfo);
         return view('admin.master')
@@ -168,7 +169,7 @@ class HomeController extends Controller
     //     return view('admin.master')
     //                      ->with('admin.training.venueRes',$manage_venueres);
     // }
-    
+
     //FETCH VENUE PRICE
     function fetch(Request $request)
         {
@@ -187,7 +188,7 @@ class HomeController extends Controller
          //$output = $data;
          echo $output;
         }
-    
+
     //DELETE VENUE RESERVATION IN DATABASE
     public function delete_venueres($id)
     {
@@ -271,6 +272,7 @@ class HomeController extends Controller
                     ->select('v3_venue_bookings.*', 'v1_venues.name as venueName')
                     ->orderBy('v3_venue_bookings.id', 'desc')
                     ->get();
+//        return $bookings;
         return view('admin.training.venueBookingList', compact('bookings'));
     }
 
@@ -361,5 +363,5 @@ class HomeController extends Controller
         Session::put('message', 'Venue billings is deleted Successfully');
         return Redirect::to('/training/venue-billing-list');
     }
-    
+
 }

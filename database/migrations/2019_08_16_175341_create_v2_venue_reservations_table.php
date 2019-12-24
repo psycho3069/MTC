@@ -15,8 +15,9 @@ class CreateV2VenuereservationsTable extends Migration
     {
         Schema::create('v2_venue_reservations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('org_name', 191);
             $table->string('name', 60);
+            $table->string('org_name')->nullable();
+            $table->string('designation')->nullable();
             $table->string('contact_no', 30);
             $table->date('start_date');
             $table->date('end_date')->nullable($value = true);

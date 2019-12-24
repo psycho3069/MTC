@@ -32,10 +32,11 @@
                             <th class="">#</th>
                             <th class="">Org Name</th>
                             <th class="">Guest Name</th>
+                            <th class="">Designation</th>
                             <th class="">Contact Number</th>
                             <th class="w-25">Date / Start Date</th>
                             <th class="w-25">End Date</th>
-                            <th class="">Room No</th>           
+                            <th class="">Room No</th>
                             <th class="">Status</th>
                             <th class="">Action</th>
                         </tr>
@@ -44,8 +45,9 @@
                       @foreach($room_reservation_info as $key => $row)
                         <tr>
                             <td width="5%">{{ ++$key }}</td>
-                            <td>{{$row->org_name}}</td>
+                            <td>{{ $row->org_name ? $row->org_name : '--' }}</td>
                             <td>{{$row->guest_name}}</td>
+                            <td>{{ $row->designation ? $row->designation : '--'  }}</td>
                             <td>{{$row->guest_contact}}</td>
                             <td>{{date("d-m-Y", strtotime($row->start_date))}}</td>
                             <td>
@@ -93,7 +95,7 @@
 @endsection
 
 @section('datatable')
-    
+
 <!-- datatable -->
 {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>

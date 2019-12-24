@@ -29,7 +29,9 @@
                     <thead>
                         <tr>
                             <th class="">#</th>
+                            <th class="">Organization Name</th>
                             <th class="">Guest Name</th>
+                            <th class="">Designation</th>
                             <th class="">Contact Number</th>
                             <th class="w-25">Date / Start Date</th>
                             <th class="w-25">End Date</th>
@@ -106,7 +108,7 @@
 @endsection
 
 @section('datatable')
-    
+
 <!-- datatable -->
 {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>

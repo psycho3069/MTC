@@ -723,7 +723,7 @@ class HotelController extends Controller
             ->with('admin.hotel_management.reservation.room_reservation_list',$manage_room_reservation);
     }
 
-    
+
     //VIEW ROOM-RESERVATION
     public function view_reservation($id){
         $reservation=DB::table('h7_room_reservations')
@@ -798,9 +798,13 @@ class HotelController extends Controller
     //------- METHODS FOR ROOM-BOOKING --------//
     //ROOM-BOOKING
     public function room_booking(){
+
+//        $room_
+
         $booking_info=DB::table('h8_room_bookings')
                             ->orderBy('id', 'desc')
                             ->get();
+//        return $booking_info;
         $billing_info=DB::table('h9_room_billings')
                             ->orderBy('id', 'desc')
                             ->get();
@@ -813,7 +817,7 @@ class HotelController extends Controller
         return view('admin.master')
                          ->with('admin.hotel_management.booking.booking_list',$manage_room_booking);
     }
-    
+
     //VIEW ROOM-BOOKING
     public function view_booking($id){
         $booking=DB::table('h8_room_bookings')
@@ -909,7 +913,7 @@ class HotelController extends Controller
         $voucher = $this->computeAIS($input, $date);
         $input['mis_voucher_id'] = $voucher->id;
         RoomBooking::create( $input);
-        
+
         Session::put('message','Room Booking is Added Successfully');
         return Redirect::to('/hotel_management/booking/booking_list');
     }

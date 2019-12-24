@@ -41,7 +41,7 @@
                         <a href="{{URL::to('/hotel_management/reservation/room_reservation_list')}}" class="btn btn-primary">BACK</a>
                     @endif
                 </div>
-   
+
                  @if (count($errors) > 0)
                   <div class="alert alert-danger" style="padding: 0 30px 0 30px;">
                    Upload Validation Error<br><br>
@@ -66,42 +66,49 @@
 
 
                     <div class="form-group row">
-                        <label for="start_date" class="col-md-4 col-form-label text-md-left">Start Date:</label>
+                        <label for="start_date" class="col-md-4 col-form-label text-md-left">Start Date*</label>
                         <div class="col-md-6">
                             <input class="form-control{{ $errors->has('start_date') ? ' is-invalid' : '' }}" value="{{ old('start_date') }}" id="check_in_date" name="start_date" autocomplete="off" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="end_date" class="col-md-4 col-form-label text-md-left">End Date:</label>
+                        <label for="end_date" class="col-md-4 col-form-label text-md-left">End Date*</label>
                         <div class="col-md-6">
                             <input class="form-control{{ $errors->has('end_date') ? ' is-invalid' : '' }}" value="{{ old('end_date') }}" id="check_out_date" name="end_date" >
                         </div>
                     </div>
 
                     <div class="form-group row">
-                      <label for="org_name" class="col-md-4 col-form-label text-md-left">Guest Org Name:</label>
+                      <label for="org_name" class="col-md-4 col-form-label text-md-left">Organization Name</label>
                       <div class="col-md-6">
                         <input type="text" class="form-control{{ $errors->has('org_name') ? ' is-invalid' : '' }}" value="{{ old('org_name') }}" id="org_name" name="org_name" required>
                       </div>
                     </div>
 
                     <div class="form-group row">
-                      <label for="guest_name" class="col-md-4 col-form-label text-md-left">Guest Name:</label>
+                      <label for="guest_name" class="col-md-4 col-form-label text-md-left">Guest Name*</label>
                       <div class="col-md-6">
                         <input type="text" class="form-control{{ $errors->has('guest_name') ? ' is-invalid' : '' }}" value="{{ old('guest_name') }}" id="guest_name" name="guest_name" required>
                       </div>
                     </div>
 
                     <div class="form-group row">
-                      <label for="contact_no" class="col-md-4 col-form-label text-md-left">Contact No:</label>
+                      <label for="designation" class="col-md-4 col-form-label text-md-left">Designation</label>
+                      <div class="col-md-6">
+                        <input type="text" class="form-control{{ $errors->has('designation') ? ' is-invalid' : '' }}" value="{{ old('designation') }}" id="designation" name="designation" required>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="contact_no" class="col-md-4 col-form-label text-md-left">Contact No*</label>
                       <div class="col-md-6">
                       <input type="number" class="form-control{{ $errors->has('contact_no') ? ' is-invalid' : '' }}" value="{{ old('contact_no') }}" id="contact_no" name="contact_no" required>
                     </div>
                     </div>
 
                     <div class="form-group row">
-                      <label for="room_id" class="col-md-4 col-form-label text-md-left">Room No:</label>
+                      <label for="room_id" class="col-md-4 col-form-label text-md-left">Room No</label>
                       <div class="col-md-6">
                         <select id="room_id" name="room_id" class="form-control" readonly required>
                                @foreach($room_category as $value)
@@ -114,7 +121,7 @@
                     </div>
 
                     <div class="form-group row">
-                      <label for="status" class="col-md-4 col-form-label text-md-left">Status:</label>
+                      <label for="status" class="col-md-4 col-form-label text-md-left">Status</label>
                       <div class="col-md-6">
                       <select id="status" name="status" class="form-control" required>
                         <option value>--Choose One--</option>
@@ -122,7 +129,7 @@
                       </select>
                     </div>
                     </div>
-                    
+
                       <!-- Button -->
                       <div class="form-group">
                           @foreach($reserve as $value)

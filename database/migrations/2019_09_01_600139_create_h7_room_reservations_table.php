@@ -15,8 +15,9 @@ class CreateH7RoomReservationsTable extends Migration
     {
         Schema::create('h7_room_reservations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('org_name');
             $table->string('guest_name');
+            $table->string('org_name')->nullable();
+            $table->string('designation')->nullable();
             $table->string('guest_contact');
             $table->date('start_date');
             $table->date('end_date')->nullable();

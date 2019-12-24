@@ -16,6 +16,8 @@ class CreateV3VenueBookingsTable extends Migration
         Schema::create('v3_venue_bookings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 60);
+            $table->string('org_name')->nullable();
+            $table->string('designation')->nullable();
             $table->string('contact_no', 30);
             $table->date('start_date');
             $table->date('end_date')->nullable($value = true);

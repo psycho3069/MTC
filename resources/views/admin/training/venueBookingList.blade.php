@@ -24,14 +24,16 @@
               Session::put('message',null);
             }
         @endphp
-            
+
       </p>
 
     <table id="venueres" class="table table-bordered">
     <thead>
         <tr>
             <th class="5%">#</th>
-            <th width="15%" class="">Name of Person / Organizaion</th>
+            <th width="15%" class="">Organization</th>
+            <th width="15%" class="">Person Name</th>
+            <th width="15%" class="">Designation</th>
             <th width="10%" class="">Contact Number</th>
             <th width="15%" class="">Start Date</th>
             <th width="15%" class="">End Date</th>
@@ -45,7 +47,9 @@
       @foreach($bookings as $key => $row)
         <tr>
             <td width="5%">{{ ++$key }}</td>
+            <td width="15%">{{ $row->org_name ? $row->org_name : '--' }}</td>
             <td width="15%">{{$row->name}}</td>
+            <td width="15%">{{ $row->designation ? $row->designation : '--' }}</td>
             <td>{{$row->contact_no}}</td>
             <td>{{date("d-m-Y", strtotime($row->start_date))}}</td>
             <td>
@@ -84,7 +88,7 @@
 @endsection
 
 @section('datatable')
-    
+
 <!-- datatable -->
 {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>

@@ -63,7 +63,7 @@
       </p>
 
       <div class="form-group row">
-          <label for="start_date" class="col-md-4 col-form-label text-md-left">Start Date:</label>
+          <label for="start_date" class="col-md-4 col-form-label text-md-left">Start Date</label>
           <div class="col-md-6">
               <input class="form-control{{ $errors->has('start_date') ? ' is-invalid' : '' }}" id="check_in_date" name="start_date" value="{{ old('start_date') }}" autocomplete="off" required>
               @if ($errors->has('start_date'))
@@ -75,19 +75,7 @@
       </div>
 
       <div class="form-group row">
-          <label for="end_date" class="col-md-4 col-form-label text-md-left">Date:</label>
-          <div class="col-md-6">
-              <input type="date" class="form-control{{ $errors->has('date') ? ' is-invalid' : '' }}" value="{{ old('date') }}" name="date" required>
-              @if ($errors->has('date'))
-                  <span class="invalid-feedback" role="alert">
-                    <strong>{{ $errors->first('date') }}</strong>
-                  </span>
-              @endif
-          </div>
-      </div>
-
-      <div class="form-group row">
-          <label for="end_date" class="col-md-4 col-form-label text-md-left">End Date:</label>
+          <label for="end_date" class="col-md-4 col-form-label text-md-left">End Date</label>
           <div class="col-md-6">
               <input class="form-control{{ $errors->has('end_date') ? ' is-invalid' : '' }}" id="check_out_date" value="{{ old('end_date') }}" name="end_date" autocomplete="off" required>
               @if ($errors->has('date'))
@@ -99,19 +87,43 @@
       </div>
 
       <div class="form-group row">
-        <label for="name" class="col-md-4 col-form-label text-md-left">Person/Organization Name:</label>
+          <label for="name" class="col-md-4 col-form-label text-md-left">Organization Name</label>
+          <div class="col-md-6">
+              <input type="text" class="form-control{{ $errors->has('org_name') ? ' is-invalid' : '' }}" id="name" value="{{ old('org_name') }}" name="org_name">
+              @if ($errors->has('org_name'))
+                  <span class="invalid-feedback" role="alert">
+                    <strong>{{ $errors->first('org_name') }}</strong>
+                </span>
+              @endif
+          </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="name" class="col-md-4 col-form-label text-md-left">Person Name*</label>
         <div class="col-md-6">
-        <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="name" value="{{ old('name') }}" name="name" required>
+            <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="name" value="{{ old('name') }}" name="name" required>
               @if ($errors->has('name'))
                   <span class="invalid-feedback" role="alert">
                     <strong>{{ $errors->first('name') }}</strong>
                 </span>
               @endif
-      </div>
+        </div>
       </div>
 
       <div class="form-group row">
-        <label for="contact_no" class="col-md-4 col-form-label text-md-left">Contact No:</label>
+        <label for="name" class="col-md-4 col-form-label text-md-left">Designation</label>
+        <div class="col-md-6">
+            <input type="text" class="form-control{{ $errors->has('designation') ? ' is-invalid' : '' }}" id="name" value="{{ old('designation') }}" name="designation">
+              @if ($errors->has('designation'))
+                  <span class="invalid-feedback" role="alert">
+                    <strong>{{ $errors->first('designation') }}</strong>
+                </span>
+              @endif
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="contact_no" class="col-md-4 col-form-label text-md-left">Contact No</label>
         <div class="col-md-6">
         <input type="number" class="form-control{{ $errors->has('contact_no') ? ' is-invalid' : '' }}" id="contact_no" value="{{ old('contact_no') }}" name="contact_no" required>
         @if ($errors->has('contact_no'))
@@ -123,7 +135,7 @@
       </div>
 
       <div class="form-group row">
-        <label for="venue_id" class="col-md-4 col-form-label text-md-left">Venue:</label>
+        <label for="venue_id" class="col-md-4 col-form-label text-md-left">Venue</label>
         <div class="col-md-6">
           <select id="venue_id" name="venue_id" class="form-control dynamic" data-dependent="actual_price" readonly required>
               <option value="{{ $allvenueinfo->id }}">{{ $allvenueinfo->name }}</option>
@@ -132,14 +144,14 @@
       </div>
 
       <div class="form-group row">
-        <label for="actual_price" class="col-md-4 col-form-label text-md-left">Actual Price:</label>
+        <label for="actual_price" class="col-md-4 col-form-label text-md-left">Actual Price</label>
         <div class="col-md-6">
         <input type="text" name="actual_price" value="{{ $allvenueinfo->price }}" id="actual_price" class="form-control" readonly>
       </div>
       </div>
 
       <div class="form-group row">
-          <label for="status" class="col-md-4 col-form-label text-md-left">Status:</label>
+          <label for="status" class="col-md-4 col-form-label text-md-left">Status</label>
           <div class="col-md-6">
               <select id="status" name="status" class="form-control{{ $errors->has('status') ? ' is-invalid' : '' }}" required readonly>
                   <option value="2">{{Config::get('constants.roomBookStatus.2')}}</option>
@@ -153,14 +165,14 @@
       </div>
 
       <div class="form-group row">
-        <label for="amount" class="col-md-4 col-form-label text-md-left">Amount:</label>
+        <label for="amount" class="col-md-4 col-form-label text-md-left">Amount</label>
         <div class="col-md-6">
         <input type="number" class="form-control" id="amount" name="amount" value="0" required>
       </div>
       </div>
 
       <div class="form-group row">
-        <label for="no_of_attendee" class="col-md-4 col-form-label text-md-left">No. of Attendee:</label>
+        <label for="no_of_attendee" class="col-md-4 col-form-label text-md-left">No. of Attendee</label>
         <div class="col-md-6">
         <input type="text" class="form-control{{ $errors->has('no_of_attendee') ? ' is-invalid' : '' }}" id="no_of_attendee" name="no_of_attendee" value="{{ old('no_of_attendee') }}" required>
             @if ($errors->has('no_of_attendee'))
