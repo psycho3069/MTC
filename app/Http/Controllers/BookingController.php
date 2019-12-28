@@ -76,7 +76,7 @@ class BookingController extends Controller
      */
     public function create(Request $request)
     {
-        $data['room'] = Room::all();
+        $data['room'] = Room::get();
         $data['venue'] = Venue::all();
 
         return view('admin.mis.booking.create', compact('data'));

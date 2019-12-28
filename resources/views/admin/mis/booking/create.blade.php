@@ -234,6 +234,8 @@
                     $('input[name="guest[org_name]"]').val(org_name)
                     $('input[name="guest[designation]"]').val(designation)
 
+                    $('#room_id').find('option[value="'+room_id+'"]').attr('disabled', true)
+
 
                 }
 
