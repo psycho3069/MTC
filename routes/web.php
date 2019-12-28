@@ -78,6 +78,9 @@ Route::get('insert', function (){
 Route::group(['middleware' => 'auth'], function (){
 
 
+    Route::get('visitor/{booking_id}', ['as' => 'visitor.list', 'uses' => 'BookingController@listVisitor']);
+    Route::get('visitor/create/{booking_id}', ['as' => 'visitor.create', 'uses' => 'BookingController@addVisitor']);
+    Route::post('visitor', ['as' => 'visitor.store', 'uses' => 'BookingController@storeVisitor']);
     Route::resource('booking', 'BookingController');
 
     Route::post('accounts/balance/check', ['as' => 'balance.check', 'uses' => 'BalanceController@check']);

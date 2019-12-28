@@ -11,7 +11,6 @@ class AccountHeadChild_IV extends Model
     protected $fillable = ['ac_head_child_iii_id', 'name', 'code', 'amount' ];
 
 
-
     public function parent()
     {
         return $this->belongsTo('App\AccountHeadChild_III', 'ac_head_child_iii_id');
@@ -22,6 +21,10 @@ class AccountHeadChild_IV extends Model
     {
         return $this->morphMany('App\TransactionHead', 'transactionable');
     }
+
+
+
+
 
 
 

@@ -24,6 +24,12 @@ class Booking extends Model
     }
 
 
+    public function visitors()
+    {
+        return $this->hasMany('App\Visitor');
+    }
+
+
 
 
 

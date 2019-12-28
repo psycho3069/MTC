@@ -7,6 +7,7 @@ use App\Booking;
 use App\Guest;
 use App\Room;
 use App\Venue;
+use App\Visitor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,48 @@ class BookingController extends Controller
 //        }
         return view('admin.mis.booking.index', compact('billing'));
     }
+
+
+
+    public function addVisitor($booking_id)
+    {
+        $booking = Booking::find($booking_id);
+
+        return view('admin.mis.booking.visitor.add', compact('booking'));
+    }
+
+
+    public function storeVisitor(Request $request)
+    {
+        $booking = Booking::find( $request->booking_id);
+        $input = $request->input;
+
+        foreach ($input as $item) {
+            $visitor = Visitor::where( 'contact_no', $item['contact_no'])->get()->last();
+            if ( isset($visitor->contact_no) && ($visitor->contact_no))
+                $item['appearance'] = $visitor->appearance + 1;
+
+            $item['guest_id'] = $booking->guest_id;
+            $booking->visitors()->create( $item);
+        }
+
+//        return $booking->visitors;
+
+        return redirect('booking/'.$booking->billing_id);
+
+
+    }
+
+
+    public function listVisitor($booking_id)
+    {
+        $booking = Booking::find($booking_id);
+        return view('admin.mis.booking.visitor.list', compact('booking'));
+    }
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -88,10 +131,10 @@ class BookingController extends Controller
     {
         $bill = Billing::find( $id);
         $data['total'] = 0;
-        foreach ($bill->booking as $key => $item ) {
+        foreach ($bill->booking as $item ) {
             $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
-            $data['room_cost'][$key] = ( $item->room_id < 50 ? $item->room->price : $item->venue->price) * $days - $item->discount;
-            $data['total'] += $data['room_cost'][$key];
+            $data['room_cost'][$item->id] = ( $item->room_id < 50 ? $item->room->price : $item->venue->price) * $days - $item->discount;
+            $data['total'] += $data['room_cost'][$item->id];
         }
 
 //        return $data;
