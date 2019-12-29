@@ -103,7 +103,8 @@ class BookingController extends Controller
 
         foreach ($input['booking'] as $item) {
             $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
-            $total_bill = ( $total_bill - $item['discount'] ) + ( $item['room_id'] <50 ? ( Room::find($item['room_id'])->price * $days ) : ( Venue::find( $item['room_id'])->price * $days ) );
+            $room_price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
+            $total_bill = $total_bill + $room_price * $days - $item['discount'];
 //            $input['billing']['total_bill'] = $input['billing']['total_bill'] + $total - $item['discount'];
         }
         $input['billing']['total_bill'] = $total_bill - $input['billing']['discount'];
@@ -111,6 +112,10 @@ class BookingController extends Controller
         $input['billing']['guest_id'] = $guest->id;
 
         $billing = Billing::create( $input['billing']);
+
+
+
+
 
         foreach ($input['booking'] as $item) {
             $item['type_id'] = $item['room_id'] < 50 ? 1 : 2;

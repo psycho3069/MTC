@@ -54,6 +54,17 @@
         <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_list')}}">Rooms</a>
       </div>
     </li>
+
+
+      <li class="nav-item dropdown dmenu">
+          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              Billing
+          </a>
+          <div class="dropdown-menu sm-menu">
+              <a class="dropdown-item" href="{{ route('billing.index') }}">Billing</a>
+          </div>
+      </li>
+
     <li class="nav-item dropdown dmenu">
       <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
         HR & Payroll
@@ -112,9 +123,6 @@
               <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 5]) }}">Opening Balance</a>
           </div>
       </li>
-
-
-
 
 
       <li class="nav-item dropdown dmenu">
