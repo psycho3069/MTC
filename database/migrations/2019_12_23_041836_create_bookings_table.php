@@ -21,9 +21,8 @@ class CreateBookingsTable extends Migration
             $table->boolean('booking_status')->default(1);
             $table->date('start_date');
             $table->date('end_date');
+            $table->tinyInteger('visitors')->unsigned()->default(0);
             $table->double('discount',12,2)->unsigned()->default(0);
-            $table->enum('type_id',[1,2]); /*'room' = 1, 'venue' = 2*/
-            $table->enum('dis_type',[1,2])->default(1); /*'percentage' = 1, 'cash' = 2*/
             $table->timestamps();
         });
     }

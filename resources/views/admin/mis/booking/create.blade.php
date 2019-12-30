@@ -59,8 +59,8 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Attendee</label>
-                            <input type="number" class="form-control" id="attendee" min="0" value="0">
+                            <label>Visitors</label>
+                            <input type="number" class="form-control" id="visitors" min="1" value="1">
                         </div>
                     </div>
                 </div>
@@ -118,6 +118,7 @@
                             <th scope="col">End Date</th>
                             <th scope="col">Room no</th>
                             <th scope="col">Discount</th>
+                            <th scope="col">Visitors</th>
                             <th scope="col">Action</th>
                         </tr>
                         </thead>
@@ -134,15 +135,23 @@
                     <input type="hidden" name="guest[designation]">
 
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label> Advance Amount <small>(tk.)</small></label>
                                 <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="0" required>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label>Gross Discount <small>(tk.)</small></label>
-                            <input type="number" name="billing[discount]" value="0" min="0" class="form-control">
+                            <div class="form-group">
+                                <label>Gross Discount <small>(tk.)</small></label>
+                                <input type="number" name="billing[discount]" value="0" min="0" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Note</label>
+                                <input type="text" name="billing[note]" class="form-control">
+                            </div>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-dark">Submit</button>
@@ -191,7 +200,7 @@
             $(':submit').click(function (e) {
                 if( i < 1 ){
                     e.preventDefault()
-                    alert('Please add at least one voucher')
+                    alert('Please add at least one booking')
                 }
             })
 
@@ -205,6 +214,7 @@
                 var discount = $('#discount').val()
                 var start_date = $('#start_date').val()
                 var end_date = $('#end_date').val()
+                var visitors = $('#visitors').val()
                 var room_id = $('#room_id').val()
 
                 // console.log(
@@ -223,6 +233,7 @@
                         '<td><input type="hidden" name="booking['+i+'][end_date]" value="'+end_date+'">'+end_date+'</td>' +
                         '<td><input type="hidden" name="booking['+i+'][room_id]" value="'+room_id+'">'+$('#room_id :selected').text()+'</td>' +
                         '<td><input type="hidden" name="booking['+i+'][discount]" value="'+discount+'">'+discount+'</td>' +
+                        '<td><input type="hidden" name="booking['+i+'][visitors]" value="'+visitors+'">'+visitors+'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
                     )

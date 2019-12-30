@@ -16,13 +16,13 @@ class CreateBillingsTable extends Migration
         Schema::create('billings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('guest_id')->unsigned()->index();
-            $table->boolean('checking_status')->default(0);
-            $table->double('total_bill', 12,2)->unsigned()->default(0);
-            $table->double('advance_paid', 12,2)->unsigned()->default(0);
-            $table->double('total_paid', 12,2)->unsigned()->default(0);
-            $table->double('vat', 12,2)->unsigned()->default(0);
-            $table->double('discount',12,2)->unsigned()->default(0);
-            $table->enum('dis_type',[1,2])->default(1); /*'percentage' = 1, 'cash' = 2*/
+            $table->integer('mis_voucher_id')->unsigned()->index();
+            $table->boolean('checkout_status')->default(0);
+            $table->double('total_bill', 14,2)->default(0);
+            $table->double('advance_paid', 14,2)->default(0);
+            $table->double('total_paid', 14,2)->default(0);
+            $table->double('discount',14,2)->unsigned()->default(0);
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

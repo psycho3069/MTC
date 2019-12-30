@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Billing;
 use App\Booking;
+use App\Configuration;
 use App\Guest;
+use App\Http\Traits\CustomTrait;
 use App\Room;
 use App\Venue;
 use App\Visitor;
@@ -13,6 +15,7 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
+    use CustomTrait;
     /**
      * Display a listing of the resource.
      *
@@ -99,31 +102,35 @@ class BookingController extends Controller
             $guest = Guest::create($input['guest']);
         $guest->update([ 'appearance' => $guest->appearance + 1 ]);
 
-//        return $input['billing'];
-
+        //total bill
         foreach ($input['booking'] as $item) {
             $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
             $room_price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
-            $total_bill = $total_bill + $room_price * $days - $item['discount'];
-//            $input['billing']['total_bill'] = $input['billing']['total_bill'] + $total - $item['discount'];
+            $total_bill += $room_price * $days - $item['discount'];
         }
         $input['billing']['total_bill'] = $total_bill - $input['billing']['discount'];
         $input['billing']['total_paid'] = $input['billing']['advance_paid'];
         $input['billing']['guest_id'] = $guest->id;
 
+
+        $data['amount'] = $input['billing']['total_paid'];
+        $data['mis_ac_head_id'] = 1;
+        $data['type'] = 'hotel_rv';
+        $date = Configuration::find(1)->software_start_date;
+
+        //Compute AIS
+        $voucher = $this->computeAIS( $data, $date);
+        $input['billing']['mis_voucher_id'] = $voucher->id;
         $billing = Billing::create( $input['billing']);
 
-
-
-
-
+        //Store Booking Data
         foreach ($input['booking'] as $item) {
             $item['type_id'] = $item['room_id'] < 50 ? 1 : 2;
             $item['guest_id'] = $guest->id;
             $billing->booking()->create($item);
         }
 
-        return redirect('booking/'.$billing->id );
+        return redirect('billing/'.$billing->id );
     }
 
     /**

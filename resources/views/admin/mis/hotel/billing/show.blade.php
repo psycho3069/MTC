@@ -56,28 +56,31 @@
                         <tr>
                             <td class="bill-down"></td><td class="bill-down"></td>
                             <td class="bill-down"></td>
-                            <td class="bill-down text-center">
+                            <td class="bill-down">
                                 <strong class="float-right"><code>Sub Total:</code></strong>
-                                <strong class="float-right"><code>Advance Paid:</code></strong>
                                 <strong class="float-right"><code>Discount:</code></strong>
-                                <strong class="float-right"><code>Tax:</code></strong>
+                                <strong class="float-right"><code>Advance Paid:</code></strong>
+                                <strong class="float-right"><code>Total Paid:</code></strong>
+                                <strong class="float-right"><code>Vat:</code></strong>
                             </td>
-                            <td class="bill-down text-center">
+                            <td class="bill-down">
                                 <strong class="float-right"><samp>{{ $data['total'] }}</samp></strong>
-                                <strong class="float-right"><samp>-{{ $bill->advance_paid }}</samp></strong>
                                 <strong class="float-right"><samp>-{{ $bill->discount }}</samp></strong>
-                                <strong class="float-right"><samp>+{{ $data['tax'] }}</samp></strong>
+                                <strong class="float-right"><samp>-{{ $bill->advance_paid }}</samp></strong>
+                                <strong class="float-right"><samp>-{{ $bill->total_paid }}</samp></strong>
+                                <strong class="float-right"><samp>+{{ $data['vat'] }}</samp></strong>
                             </td>
                         </tr>
                         <tr>
                             <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
-                            <td class="bill-down text-right"><b><code>Total:</code></b></td>
-                            <td class="bill-down text-right"><b><samp>{{ $data['total'] - $bill->advance_paid - $bill->discount + $data['tax'] }}</samp></b></td>
+                            <td class="bill-down text-right"><b><code>Due:</code></b></td>
+                            <td class="bill-down text-right"><b><samp>{{ $bill->total_bill - $bill->total_paid + $data['vat'] }}</samp></b></td>
                         </tr>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-success btn-lg btn-block">
-                        Pay Now   <span class="glyphicon glyphicon-chevron-right"></span>
+                    <button type="button" class="btn btn-success btn-lg btn-block" onclick='window.location="{{ route('payment.create', $bill->id) }}"'>
+                        Pay Now   
+{{--                        <span class="glyphicon glyphicon-chevron-right"></span>--}}
                     </button>
                 </div>
             </div>

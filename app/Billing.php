@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Billing extends Model
 {
-    protected $fillable = [ 'guest_id', 'checking_status', 'total_bill',
-        'advance_paid', 'total_paid', 'vat', 'discount', 'dis_type',
+    protected $fillable = [
+        'guest_id', 'mis_voucher_id', 'checkout_status',
+        'total_bill', 'advance_paid', 'total_paid', 'discount', 'note',
         ];
 
 
@@ -19,6 +20,12 @@ class Billing extends Model
     public function guest()
     {
         return $this->belongsTo('App\Guest');
+    }
+
+
+    public function payments()
+    {
+        return $this->hasMany('App\Payment');
     }
 
 }

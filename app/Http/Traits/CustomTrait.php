@@ -11,6 +11,7 @@ trait CustomTrait{
 
     public function computeAIS( $input, $input_date)
     {
+//        return $input;
         $date = Date::Where( 'date', $input_date )->get()->first();
         if ( empty($date) )
             $date = Date::create([ 'date' => $input_date ]);
@@ -20,6 +21,7 @@ trait CustomTrait{
         $mis_head = MisAccountHead::find( $input['mis_ac_head_id'] );
         $voucher = $mis_head->voucher->Where( 'date_id', $date->id )->where( 'credit_head_id', $mis_head->credit_head_id)->where( 'debit_head_id', $mis_head->debit_head_id)->first();
 
+        //Creating only one Receipt or Payment voucher each day by ais_vgroup_id
         $type_id = ( $mis_head->id == 3) || ( $mis_head->id == 5 ) ? [3,5] : [1,2,4];
         $ais_vgroup = MisVoucher::where('date_id', $date->id)->whereIn('mis_ac_head_id', $type_id)->get()->first();
 
@@ -39,6 +41,7 @@ trait CustomTrait{
 
         $content = $this->getContent($input['type']);
 
+        //creating Voucher in AIS section
         $this->aisVoucher($voucher, $content, $date);
 
         $all_bl = Process::all();
@@ -126,6 +129,24 @@ trait CustomTrait{
         }
 
         return $data;
+    }
+
+
+    public function updateAIS( $old_record, $new_amount, $data )
+    {
+        $credit_ac = Process::Where( 'thead_id', $old_record->mis_voucher->credit_head_id )->where('date_id', $old_record->mis_voucher->date_id)->first();
+        $debit_ac = Process::Where( 'thead_id', $old_record->mis_voucher->debit_head_id )->where('date_id', $old_record->mis_voucher->date_id)->first();
+
+        $credit_ac->update([ 'credit' => $credit_ac->credit - $old_record->amount + $new_amount ]);
+        $debit_ac->update([ 'debit' => $debit_ac->debit - $old_record->amount + $new_amount ]);
+
+        $ais_voucher = $old_record->mis_voucher->voucher;
+        $data['amount'] = $ais_voucher->amount;
+        $ais_voucher->voucherHistory()->create( $data);
+        $ais_voucher->update([ 'amount' => $data['amount'] - $old_record->amount + $new_amount ]);
+
+        $old_record->mis_voucher->update( ['amount' => $old_record->mis_voucher->amount  - $old_record->amount + $new_amount ]);
+
     }
 
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCheckoutsTable extends Migration
+class CreatePaymentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateCheckoutsTable extends Migration
      */
     public function up()
     {
-        Schema::create('checkouts', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('billing_id')->unsigned()->index();
+            $table->double('amount', 14,2)->default(0);
+            $table->text('note')->nullable();
             $table->integer('mis_voucher_id')->unsigned()->index();
-            $table->boolean('checkout_status')->default(0);
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateCheckoutsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('checkouts');
+        Schema::dropIfExists('payments');
     }
 }

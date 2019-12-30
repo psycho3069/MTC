@@ -12,7 +12,7 @@ class BillingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function indexOld()
     {
         $billing = Billing::orderBy('id','desc')->get();
         foreach ($billing as $bill) {
@@ -24,9 +24,19 @@ class BillingController extends Controller
             }
             $data[$bill->id]['tax'] = $data[$bill->id]['booking'] * 5 / 100;
         }
-//        return $booking;
         return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
     }
+
+    public function index()
+    {
+        $billing = Billing::orderBy('id','desc')->get();
+        foreach ($billing as $bill) {
+            $data[$bill->id]['vat'] = $bill->total_bill * 5 / 100;
+        }
+        return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
+    }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -66,7 +76,7 @@ class BillingController extends Controller
             $data['room_cost'][$item->id] = ( $item->room_id < 50 ? $item->room->price : $item->venue->price) * $data['days'][$item->id] - $item->discount;
             $data['total'] += $data['room_cost'][$item->id];
         }
-        $data['tax'] = $data['total'] * 5 / 100;
+        $data['vat'] = $bill->total_bill * 5 / 100;
         return view('admin.mis.hotel.billing.show', compact('bill', 'data'));
     }
 
