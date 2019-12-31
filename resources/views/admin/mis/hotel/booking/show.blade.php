@@ -31,7 +31,7 @@
 {{--                            <td> {{ $item->id }}</td>--}}
                             {{--                            <td>{{ $room[$key]->room_no }}</td>--}}
                             <td>{!! $item->room_id < 50 ? $item->room->room_no.'-'.$item->room->roomCat->name.' <small> Price('.$item->room->price.')</small>' : $item->venue->name.'-'.$item->venue->location.' <small> Price('.$item->venue->price.')</small>' !!}</td>
-                            <td>{{ $item->visitors->isNotEmpty() ? str_limit($item->visitors->pluck('name'), 15) : '' }}</td>
+                            <td>{{ count($item->visitors) }}</td>
                             <td>{{ date('d/m/Y', strtotime( $item->start_date)) }}</td>
                             <td>{{ date('d/m/Y', strtotime( $item->end_date)) }}</td>
                             <td>{{ $item->discount }}</td>

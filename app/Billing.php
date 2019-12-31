@@ -28,4 +28,10 @@ class Billing extends Model
         return $this->hasMany('App\Payment');
     }
 
+
+    public function restaurant()
+    {
+        return $this->hasMany('App\FoodSale', 'billing_id');
+    }
+
 }

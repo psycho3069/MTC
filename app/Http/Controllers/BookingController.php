@@ -27,7 +27,7 @@ class BookingController extends Controller
 //        foreach ($billing as $item) {
 //            return $item->booking->pluck('room_id');
 //        }
-        return view('admin.mis.booking.index', compact('billing'));
+        return view('admin.mis.hotel.booking.index', compact('billing'));
     }
 
 
@@ -36,7 +36,7 @@ class BookingController extends Controller
     {
         $booking = Booking::find($booking_id);
 
-        return view('admin.mis.booking.visitor.add', compact('booking'));
+        return view('admin.mis.hotel.booking.visitor.add', compact('booking'));
     }
 
 
@@ -65,7 +65,7 @@ class BookingController extends Controller
     public function listVisitor($booking_id)
     {
         $booking = Booking::find($booking_id);
-        return view('admin.mis.booking.visitor.list', compact('booking'));
+        return view('admin.mis.hotel.booking.visitor.list', compact('booking'));
     }
 
 
@@ -82,7 +82,7 @@ class BookingController extends Controller
         $data['room'] = Room::get();
         $data['venue'] = Venue::all();
 
-        return view('admin.mis.booking.create', compact('data'));
+        return view('admin.mis.hotel.booking.create', compact('data'));
     }
 
     /**
@@ -95,7 +95,7 @@ class BookingController extends Controller
     {
 //        return $request->all();
         $input = $request->except('_token');
-        $total_bill = 0;
+        $bill = 0;
 
         $guest = Guest::where( 'contact_no', $request->guest['contact_no'])->get()->first();
         if ( !$guest)
@@ -106,9 +106,15 @@ class BookingController extends Controller
         foreach ($input['booking'] as $item) {
             $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
             $room_price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
-            $total_bill += $room_price * $days - $item['discount'];
+            $bill += $room_price * $days - $item['discount'];
+
+            $booking['bill'][$item['room_id']] = $room_price * $days - $item['discount'];
         }
-        $input['billing']['total_bill'] = $total_bill - $input['billing']['discount'];
+
+        $total_bill = $bill - $input['billing']['discount'];
+        $vat = $total_bill * 5 / 100;
+
+        $input['billing']['total_bill'] = $total_bill + $vat;
         $input['billing']['total_paid'] = $input['billing']['advance_paid'];
         $input['billing']['guest_id'] = $guest->id;
 
@@ -127,6 +133,7 @@ class BookingController extends Controller
         foreach ($input['booking'] as $item) {
             $item['type_id'] = $item['room_id'] < 50 ? 1 : 2;
             $item['guest_id'] = $guest->id;
+            $item['bill'] = $booking['bill'][$item['room_id']];
             $billing->booking()->create($item);
         }
 
@@ -151,7 +158,7 @@ class BookingController extends Controller
 
 //        return $data;
 
-        return view('admin.mis.booking.show', compact('bill', 'data'));
+        return view('admin.mis.hotel.booking.show', compact('bill', 'data'));
     }
 
     /**

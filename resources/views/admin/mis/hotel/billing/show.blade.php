@@ -35,8 +35,8 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th class="th-down"><code>Product</code></th>
-                            <th class="th-down"><code>Quantity</code></th>
+                            <th class="th-down"><code>Booking</code></th>
+                            <th class="th-down"><code>Total Days</code></th>
                             <th class="th-down text-center"><code>Price</code></th>
                             <th class="th-down text-center"><code>Discount</code></th>
                             <th class="th-down text-center"><code>Total</code></th>
@@ -45,11 +45,11 @@
                         <tbody>
                         @foreach( $bill->booking as $item )
                             <tr>
-                                <td class="bill-top col-md-7"><code>{!! $item->room_id < 50 ? 'Room No-'.$item->room->room_no : $item->venue->name !!}</code></td>
-                                <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $data['days'][$item->id] }} days</samp> </td>
-                                <td class="bill-top col-md-1 text-right"><samp>{{ $data['unit_price'][$item->id] }}</samp></td>
+                                <td class="bill-top col-md-7"><code>{{ $booking[$item->id]['room_no'] }}</code></td>
+                                <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
+                                <td class="bill-top col-md-1 text-right"><samp>{{ $booking[$item->id]['unit_price'] }}</samp></td>
                                 <td class="bill-top col-md-1 text-center"><samp>{{ $item->discount }}</samp></td>
-                                <td class="bill-top col-md-1 text-right"><samp>{{ $data['room_cost'][$item->id] }}</samp></td>
+                                <td class="bill-top col-md-1 text-right"><samp>{{ $item->bill }}</samp></td>
                             </tr>
                         @endforeach
 
@@ -58,23 +58,92 @@
                             <td class="bill-down"></td>
                             <td class="bill-down">
                                 <strong class="float-right"><code>Sub Total:</code></strong>
-                                <strong class="float-right"><code>Discount:</code></strong>
-                                <strong class="float-right"><code>Advance Paid:</code></strong>
-                                <strong class="float-right"><code>Total Paid:</code></strong>
-                                <strong class="float-right"><code>Vat:</code></strong>
+                                <strong class="float-right"><code>Vat(5%):</code></strong>
                             </td>
                             <td class="bill-down">
-                                <strong class="float-right"><samp>{{ $data['total'] }}</samp></strong>
-                                <strong class="float-right"><samp>-{{ $bill->discount }}</samp></strong>
-                                <strong class="float-right"><samp>-{{ $bill->advance_paid }}</samp></strong>
-                                <strong class="float-right"><samp>-{{ $bill->total_paid }}</samp></strong>
-                                <strong class="float-right"><samp>+{{ $data['vat'] }}</samp></strong>
+                                <strong class="float-right"><samp>{{ $bill->booking->sum('bill') }}</samp></strong>
+                                <strong class="float-right"><samp>+{{ $booking['vat'] }}</samp></strong>
                             </td>
                         </tr>
                         <tr>
-                            <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
-                            <td class="bill-down text-right"><b><code>Due:</code></b></td>
-                            <td class="bill-down text-right"><b><samp>{{ $bill->total_bill - $bill->total_paid + $data['vat'] }}</samp></b></td>
+                            <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
+                            <td class="bill-sub text-right"><b><code>Hotel bill:</code></b></td>
+                            <td class="bill-sub text-right"><b><samp>{{ $booking['total'] }}</samp></b></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="th-down"><code>Restaurant</code></th>
+                            <th class="th-down"><code>Quantity</code></th>
+                            <th class="th-down text-center"><code>Price</code></th>
+                            <th class="th-down text-center"><code>Total</code></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach( $bill->restaurant as $food )
+                            <tr>
+                                <td class="bill-top col-md-7"><code>{{ $food->menu->name }}</code></td>
+                                <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $food->quantity }}</samp> </td>
+                                <td class="bill-top col-md-1 text-center"><samp>{{ $food->menu->price }}</samp></td>
+                                <td class="bill-top col-md-1 text-right"><samp>{{ $food->bill }}</samp></td>
+                            </tr>
+                        @endforeach
+
+                        @if( $bill->restaurant->isEmpty())
+                            <tr>
+                                <td class="bill-top col-md-7"><code>0</code></td>
+                                <td class="bill-top col-md-1" style="text-align: center"> <samp>0</samp> </td>
+                                <td class="bill-top col-md-1 text-center"><samp>0</samp></td>
+                                <td class="bill-top col-md-1 text-right"><samp>0</samp></td>
+                            </tr>
+                        @endif
+
+                        <tr>
+                            <td class="bill-down"></td><td class="bill-down"></td>
+                            <td class="bill-down">
+                                <strong class="float-right"><code>Sub Total:</code></strong>
+                                <strong class="float-right"><code>Vat(5%):</code></strong>
+                            </td>
+                            <td class="bill-down">
+                                <strong class="float-right"><samp>{{ $bill->restaurant ? $bill->restaurant->sum('bill') : 0 }}</samp></strong>
+                                <strong class="float-right"><samp>+{{ $restaurant['vat'] ? $restaurant['vat'] : 0  }}</samp></strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bill-sub"></td><td class="bill-sub"></td>
+                            <td class="bill-sub text-right"><b><code>Food bill:</code></b></td>
+                            <td class="bill-sub text-right"><b><samp>{{ $restaurant['total'] ? $restaurant['total'] : 0 }}</samp></b></td>
+                        </tr>
+                        <tr>
+                            <td class="bill-down"></td><td class="bill-down"></td>
+                            <td class="bill-down text-right">
+                                <b><code>Total bill:</code></b>
+                                <b><code>Advance paid:</code></b>
+                                <b><code>Discount:</code></b>
+                                <b><code>Total paid:</code></b>
+                            </td>
+                            <td class="bill-down text-right">
+                                <b><samp>{{ $bill->total_bill + $bill->discount }}</samp></b>
+                                <b><samp>{{ -$bill->advance_paid }}</samp></b>
+                                <b><samp>{{ -$bill->discount }}</samp></b>
+                                <b><samp>-{{ $bill->total_paid }}</samp></b>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="bill-down"></td><td class="bill-down"></td>
+                            <td class="bill-down text-right">
+                                <b><code>Due:</code></b>
+                            </td>
+                            <td class="bill-down text-right">
+                                <b><samp>{{ $bill->total_bill - $bill->total_paid }}</samp></b>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

@@ -47,8 +47,9 @@ class SaleController extends Controller
         foreach ( $input as $item ) {
             $item['bill'] = Menu::find($item['menu_id'])->price * $item['quantity'];
             $food_bill = FoodSale::create( $item);
+            $vat = ($food_bill->bill * 10) / 100;
 
-            $food_bill->billing->total_bill += ($food_bill->bill * 10) / 100;
+            $food_bill->billing->total_bill += $food_bill->bill + $vat;
             $food_bill->billing->save();
 //            return $item;
         }

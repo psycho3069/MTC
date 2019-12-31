@@ -10,7 +10,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Total Bill</label>
-                        <input type="text" class="form-control" id="total_bill" value="{{ $data['total'] }}" disabled>
+                        <input type="text" class="form-control" id="total_bill" value="{{ $bill->total_bill }}" disabled>
                     </div>
                     <div class="form-group">
                         <label>Total Paid</label>
@@ -18,7 +18,7 @@
                     </div>
                     <div class="form-group">
                         <label>Payment Amount</label>
-                        <input type="number" class="form-control" name="amount" min="0" max="{{ $data['due'] }}">
+                        <input type="number" class="form-control" name="amount" min="0" max="{{ $bill->total_bill - $bill->total_paid }}">
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-light form-control">Submit</button>
@@ -28,7 +28,7 @@
                     <br><br>
                     <div class="form-group">
                         <label>Due</label>
-                        <input type="number" class="form-control" id="due" value="{{ $data['due'] }}" disabled>
+                        <input type="number" class="form-control" id="due" value="{{ $bill->total_bill - $bill->total_paid }}" disabled>
                     </div>
 
                     <br>

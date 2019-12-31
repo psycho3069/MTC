@@ -233,7 +233,7 @@
                         '<td><input type="hidden" name="booking['+i+'][end_date]" value="'+end_date+'">'+end_date+'</td>' +
                         '<td><input type="hidden" name="booking['+i+'][room_id]" value="'+room_id+'">'+$('#room_id :selected').text()+'</td>' +
                         '<td><input type="hidden" name="booking['+i+'][discount]" value="'+discount+'">'+discount+'</td>' +
-                        '<td><input type="hidden" name="booking['+i+'][visitors]" value="'+visitors+'">'+visitors+'</td>' +
+                        '<td><input type="hidden" name="booking['+i+'][no_of_visitors]" value="'+visitors+'">'+visitors+'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
                     )

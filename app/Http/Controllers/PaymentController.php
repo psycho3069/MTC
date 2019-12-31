@@ -30,11 +30,7 @@ class PaymentController extends Controller
     public function create($bill_id)
     {
         $bill = Billing::find($bill_id);
-        $data['vat'] = $bill->total_bill * 5 / 100;
-        $data['total'] = $bill->total_bill + $data['vat'];
-        $data['due'] = $data['total'] - $bill->total_paid;
-
-        return view('admin.mis.hotel.billing.payment.create', compact('bill', 'data'));
+        return view('admin.mis.hotel.billing.payment.create', compact('bill'));
 
     }
 
@@ -85,9 +81,7 @@ class PaymentController extends Controller
     public function edit($bill_id, $id)
     {
         $payment = Payment::find($id);
-        $data['vat'] = $payment->bill->total_bill * 5 / 100;
-        $data['total'] = $payment->bill->total_bill + $data['vat'];
-        $data['due'] = $data['total'] - $payment->bill->total_paid;
+        $data['due'] = $payment->bill->total_bill - $payment->bill->total_paid;
 
         return view('admin.mis.hotel.billing.payment.edit', compact('payment', 'data'));
     }
