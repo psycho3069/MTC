@@ -34,16 +34,16 @@
                             <td>{{ $bill->checking_status ? 'Yes' : 'No' }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         Action
                                     </button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{ route('billing.show', $bill->id) }}">View</a>
-                                        <a class="dropdown-item" href="">Edit</a>
-                                        <a class="dropdown-item" href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
-                                        <a class="dropdown-item" href="{{ route('payment.index', $bill->id) }}">All Payments</a>
+                                        <a class="dropdown-item font-color" href="{{ route('billing.show', $bill->id) }}">View</a>
+                                        <a class="dropdown-item font-color" href="">Edit</a>
+                                        <a class="dropdown-item font-color" href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
+                                        <a class="dropdown-item font-color" href="{{ route('payment.index', $bill->id) }}">All Payments</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Delete</a>
+                                        <a class="dropdown-item font-color" href="#">Delete</a>
                                     </div>
                                 </div>
                             </td>

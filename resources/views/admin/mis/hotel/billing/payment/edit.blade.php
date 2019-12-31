@@ -11,7 +11,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Amount</label>
-                        <input type="number" class="form-control" name="amount" value="{{ $payment->amount }}">
+                        <input type="number" class="form-control" name="amount" value="{{ $payment->amount }}" min="0" max="{{ $data['due'] }}">
                     </div>
                     <div class="form-group">
                         <label>Note</label>

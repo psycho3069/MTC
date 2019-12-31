@@ -81,9 +81,14 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('visitor/{booking_id}', ['as' => 'visitor.list', 'uses' => 'BookingController@listVisitor']);
     Route::get('visitor/create/{booking_id}', ['as' => 'visitor.create', 'uses' => 'BookingController@addVisitor']);
     Route::post('visitor', ['as' => 'visitor.store', 'uses' => 'BookingController@storeVisitor']);
-    Route::resource('booking', 'BookingController');
+
+    Route::post('sales/room', ['as' => 'sales.room', 'uses' => 'SaleController@room']);
+
     Route::resource('billing', 'BillingController');
+    Route::resource('booking', 'BookingController');
+    Route::resource('restaurant/sales', 'SaleController');
     Route::resource('{bill_id}/payment', 'PaymentController');
+//    Route::resource('restaurant')
 
     Route::post('accounts/balance/check', ['as' => 'balance.check', 'uses' => 'BalanceController@check']);
     Route::resource('accounts/balance', 'BalanceController');

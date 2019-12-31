@@ -10,7 +10,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Total Bill</label>
-                        <input type="text" class="form-control" id="total_paid" value="{{ $data['total'] }}" disabled>
+                        <input type="text" class="form-control" id="total_bill" value="{{ $data['total'] }}" disabled>
                     </div>
                     <div class="form-group">
                         <label>Total Paid</label>
