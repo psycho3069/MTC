@@ -17,7 +17,8 @@
                         <th class="">Total Paid</th>
                         <th class="">Due</th>
                         <th class="">Checkout</th>
-                        <th class="">Action</th>
+                        <th class=""></th>
+                        <th class=""></th>
                         <th></th>
                     </tr>
                     </thead>
@@ -26,28 +27,38 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td><a href="{{ route('billing.show', $bill->id) }}">{{ $bill->guest->name }}</a></td>
-                            <td>{{ $bill->guest->org_name ? $bill->guest->org_name : ' ' }}</td>
+                            <td><code>{{ $bill->guest->org_name ? $bill->guest->org_name : 'Not Found' }}</code></td>
                             <td>{{ $bill->total_bill }}</td>
                             <td>{{ $bill->total_paid }}</td>
                             <td>{{ $bill->total_bill - $bill->total_paid }}</td>
-                            <td>{{ $bill->checking_status ? 'Yes' : 'No' }}</td>
+                            <td>{{ $bill->checkout_status ? 'Yes' : 'No' }}</td>
                             <td>
                                 <div class="btn-group">
                                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        Action
+                                        Bill
                                     </button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item font-color" href="{{ route('booking.show', $bill->id) }}">View Bookings</a>
+                                        <a class="dropdown-item font-color" href="{{ route('billing.show', $bill->id) }}">View</a>
+                                        <a class="dropdown-item font-color" href="{{ route('booking.show', $bill->id) }}">Booking</a>
                                         <a class="dropdown-item font-color" href="">Edit</a>
-                                        <a class="dropdown-item font-color" href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
-                                        <a class="dropdown-item font-color" href="{{ route('payment.index', $bill->id) }}">All Payments</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item font-color" href="#">Delete</a>
                                     </div>
                                 </div>
                             </td>
-                            <td><code>
-                                    <button type="button" class="btn">Checkout</button></code></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        Payment
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item font-color" href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
+                                        <a class="dropdown-item font-color" href="{{ route('payment.index', $bill->id) }}">All Payments</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item font-color" href="#">Checkout</a>
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
 
                     @endforeach

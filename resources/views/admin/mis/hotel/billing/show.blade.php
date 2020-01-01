@@ -108,7 +108,7 @@
                             <td class="bill-down"></td><td class="bill-down"></td>
                             <td class="bill-down">
                                 <strong class="float-right"><code>Sub Total:</code></strong>
-                                <strong class="float-right"><code>Vat(5%):</code></strong>
+                                <strong class="float-right"><code>Vat(10%):</code></strong>
                             </td>
                             <td class="bill-down">
                                 <strong class="float-right"><samp>{{ $bill->restaurant ? $bill->restaurant->sum('bill') : 0 }}</samp></strong>
@@ -121,16 +121,16 @@
                             <td class="bill-sub text-right"><b><samp>{{ $restaurant['total'] ? $restaurant['total'] : 0 }}</samp></b></td>
                         </tr>
                         <tr>
-                            <td class="bill-down"></td><td class="bill-down"></td>
+                            <td class="bill-down"></td><td class="bill-down">
+                                <b><code>Advance paid: <samp>{{ $bill->advance_paid }}</samp></code></b>
+                            </td>
                             <td class="bill-down text-right">
                                 <b><code>Total bill:</code></b>
-                                <b><code>Advance paid:</code></b>
                                 <b><code>Discount:</code></b>
                                 <b><code>Total paid:</code></b>
                             </td>
                             <td class="bill-down text-right">
                                 <b><samp>{{ $bill->total_bill + $bill->discount }}</samp></b>
-                                <b><samp>{{ -$bill->advance_paid }}</samp></b>
                                 <b><samp>{{ -$bill->discount }}</samp></b>
                                 <b><samp>-{{ $bill->total_paid }}</samp></b>
                             </td>
@@ -147,10 +147,12 @@
                         </tr>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-success btn-lg btn-block" onclick='window.location="{{ route('payment.create', $bill->id) }}"'>
-                        Pay Now   
-{{--                        <span class="glyphicon glyphicon-chevron-right"></span>--}}
-                    </button>
+                    @if( !$bill->checkout_status)
+                        <button type="button" class="btn btn-info btn-lg btn-block" onclick='window.location="{{ route('payment.create', [$bill->id, 'co' => 1]) }}"'>
+                            Checkout   
+                        </button>
+                    @endif
+
                 </div>
             </div>
         </div>

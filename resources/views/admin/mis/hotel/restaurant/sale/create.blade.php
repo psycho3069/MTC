@@ -18,7 +18,7 @@
                         <div class="form-group">
                             <label>Guest</label>
                             <select class="form-control" id="bill">
-                                <option value="0">Choose One</option>
+                                <option value="">Choose One</option>
                                 @foreach( $billing as $bill )
                                     <option value="{{ $bill->id }}">{{ $bill->guest->name }} </option>
                                 @endforeach
@@ -63,7 +63,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Quantity</label>
-                            <input type="number" class="form-control" id="quantity" min="1" max="100">
+                            <input type="number" class="form-control" id="quantity" min="1" max="100" value="1">
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                         <thead>
                         <tr>
                             <th scope="col">Guest Name</th>
-                            <th scope="col">Room No</th>
+                            <th scope="col">Item</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Action</th>
                         </tr>

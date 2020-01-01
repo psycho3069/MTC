@@ -44,8 +44,8 @@
       <div class="dropdown-menu sm-menu">
         <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_viewer')}}">Rooms Viewer</a>
           <a class="dropdown-item" href="{{URL::to('/hotel_management/reservation/room_reservation_list')}}">Reservation</a>
-          <a class="dropdown-item" href="{{URL::to('/hotel_management/booking/booking_list')}}">Booking</a>
-          <a class="dropdown-item" href="{{URL::to('/hotel_management/billing/billing_list')}}">Billing</a>
+{{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/booking/booking_list')}}">Booking</a>--}}
+{{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/billing/billing_list')}}">Billing</a>--}}
           <a class="dropdown-item" href="{{URL::to('/hotel_management/building/building_type_list')}}">Building Types</a>
           <a class="dropdown-item" href="{{URL::to('/hotel_management/building/building_list')}}">Buildings</a>
           <a class="dropdown-item" href="{{URL::to('/hotel_management/floor/floor_type_list')}}">Floor Types</a>
@@ -62,6 +62,7 @@
           </a>
           <div class="dropdown-menu sm-menu">
               <a class="dropdown-item" href="{{ route('billing.index') }}">Billing</a>
+              <a class="dropdown-item" href="{{ route('sales.create') }}">Restaurant</a>
           </div>
       </li>
 
@@ -88,7 +89,7 @@
               <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Grocery Category</a>
               <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Grocery List</a>
               <a class="dropdown-item" href="{{ route('purchase.create', ['type_id' => 3]) }}">Purchase</a>
-              <a class="dropdown-item" href="{{URL::to('/restaurant/sale/food-sale')}}">Sales</a>
+              <a class="dropdown-item" href="{{ route('sales.create') }}">Sales</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item/meal_items')}}">Meal Items</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item_type/meal_item_types')}}">Meal Types</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu/menus')}}">Menus</a>
@@ -104,8 +105,8 @@
       <div class="dropdown-menu sm-menu">
         <a class="dropdown-item" href="{{URL::to('/training/venue')}}">Venue</a>
         <a class="dropdown-item" href="{{URL::to('/training/venueRes')}}">Venue Reservation</a>
-        <a class="dropdown-item" href="{{URL::to('/training/venue-booking-list')}}">Venue Booking</a>
-        <a class="dropdown-item" href="{{URL::to('/training/venue-billing-list/')}}">Venue Billing</a>
+{{--        <a class="dropdown-item" href="{{URL::to('/training/venue-booking-list')}}">Venue Booking</a>--}}
+{{--        <a class="dropdown-item" href="{{URL::to('/training/venue-billing-list/')}}">Venue Billing</a>--}}
       </div>
     </li>
 

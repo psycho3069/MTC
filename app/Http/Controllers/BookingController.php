@@ -95,7 +95,7 @@ class BookingController extends Controller
     {
 //        return $request->all();
         $input = $request->except('_token');
-        $bill = 0;
+        $hotel_bill = 0;
 
         $guest = Guest::where( 'contact_no', $request->guest['contact_no'])->get()->first();
         if ( !$guest)
@@ -106,15 +106,14 @@ class BookingController extends Controller
         foreach ($input['booking'] as $item) {
             $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
             $room_price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
-            $bill += $room_price * $days - $item['discount'];
+            $hotel_bill += $room_price * $days - $item['discount'] * $days;
 
-            $booking['bill'][$item['room_id']] = $room_price * $days - $item['discount'];
+            $booking['bill'][$item['room_id']] = $room_price * $days - $item['discount'] * $days;
+            $booking['discount'][$item['room_id']] = $item['discount'] * $days;
         }
 
-        $total_bill = $bill - $input['billing']['discount'];
-        $vat = $total_bill * 5 / 100;
-
-        $input['billing']['total_bill'] = $total_bill + $vat;
+        $vat = ($hotel_bill * 5) / 100;
+        $input['billing']['total_bill'] = $hotel_bill + $vat - $input['billing']['discount'];
         $input['billing']['total_paid'] = $input['billing']['advance_paid'];
         $input['billing']['guest_id'] = $guest->id;
 
@@ -127,6 +126,7 @@ class BookingController extends Controller
         //Compute AIS
         $voucher = $this->computeAIS( $data, $date);
         $input['billing']['mis_voucher_id'] = $voucher->id;
+//        return $input['billing'];
         $billing = Billing::create( $input['billing']);
 
         //Store Booking Data
@@ -134,6 +134,7 @@ class BookingController extends Controller
             $item['type_id'] = $item['room_id'] < 50 ? 1 : 2;
             $item['guest_id'] = $guest->id;
             $item['bill'] = $booking['bill'][$item['room_id']];
+            $item['discount'] = $booking['discount'][$item['room_id']];
             $billing->booking()->create($item);
         }
 

@@ -27,10 +27,15 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($bill_id)
+    public function create($bill_id, Request $request)
     {
+//        return $request->all();
         $bill = Billing::find($bill_id);
+        if ( $request->co)
+            return view('admin.mis.hotel.billing.payment.checkout', compact('bill'));
+
         return view('admin.mis.hotel.billing.payment.create', compact('bill'));
+
 
     }
 
@@ -45,6 +50,12 @@ class PaymentController extends Controller
 //        return $request->all();
         $input = $request->all();
         $bill = Billing::find($bill_id);
+        if ( $request->co ){
+            $input['amount'] = $bill->total_bill - $bill->total_paid + $bill->discount - $input['discount'];
+            $bill->total_bill += $bill->discount - $input['discount'];
+            $bill->discount = $input['discount'];
+            $bill->checkout_status = 1;
+        }
         $bill->total_paid += $input['amount'];
         $bill->save();
 
