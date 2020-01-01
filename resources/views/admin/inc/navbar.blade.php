@@ -23,8 +23,8 @@
           <!-- <a class="dropdown-item" href="{{URL::to('/maintenance')}}">Role Wise Permission</a> -->
           <!-- <a class="dropdown-item" href="{{URL::to('/admin/change_password/changepassword')}}">Change Password</a> -->
               <a class="dropdown-item" href="{{URL::to('/maintenance')}}">Change Password</a>
-              <a class="dropdown-item" href="{{URL::to('/guest-list')}}">Guest List</a>
-              <a class="dropdown-item" href="{{ route('checkoutList') }}">Entery Register List</a>
+              {{-- <a class="dropdown-item" href="{{URL::to('/guest-list')}}">Guest List</a> --}}
+              {{-- <a class="dropdown-item" href="{{ route('checkoutList') }}">Entery Register List</a> --}}
           </div>
       </li>
 
