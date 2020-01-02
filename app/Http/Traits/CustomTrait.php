@@ -132,20 +132,20 @@ trait CustomTrait{
     }
 
 
-    public function updateAIS( $old_record, $new_amount, $data )
+    public function updateAIS( $old_record, $amount, $data )
     {
         $credit_ac = Process::Where( 'thead_id', $old_record->mis_voucher->credit_head_id )->where('date_id', $old_record->mis_voucher->date_id)->first();
         $debit_ac = Process::Where( 'thead_id', $old_record->mis_voucher->debit_head_id )->where('date_id', $old_record->mis_voucher->date_id)->first();
 
-        $credit_ac->update([ 'credit' => $credit_ac->credit - $old_record->amount + $new_amount ]);
-        $debit_ac->update([ 'debit' => $debit_ac->debit - $old_record->amount + $new_amount ]);
+        $credit_ac->update([ 'credit' => $credit_ac->credit - $amount['old'] + $amount['new'] ]);
+        $debit_ac->update([ 'debit' => $debit_ac->debit - $amount['old'] + $amount['new'] ]);
 
         $ais_voucher = $old_record->mis_voucher->voucher;
         $data['amount'] = $ais_voucher->amount;
         $ais_voucher->voucherHistory()->create( $data);
-        $ais_voucher->update([ 'amount' => $data['amount'] - $old_record->amount + $new_amount ]);
+        $ais_voucher->update([ 'amount' => $data['amount'] - $amount['old'] + $amount['new'] ]);
 
-        $old_record->mis_voucher->update( ['amount' => $old_record->mis_voucher->amount  - $old_record->amount + $new_amount ]);
+        $old_record->mis_voucher->update( ['amount' => $old_record->mis_voucher->amount - $amount['old'] + $amount['new'] ]);
 
     }
 

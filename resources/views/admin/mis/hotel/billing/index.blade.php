@@ -40,7 +40,7 @@
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item font-color" href="{{ route('billing.show', $bill->id) }}">View</a>
                                         <a class="dropdown-item font-color" href="{{ route('booking.show', $bill->id) }}">Booking</a>
-                                        <a class="dropdown-item font-color" href="">Edit</a>
+                                        <a class="dropdown-item font-color" href="{{ route('billing.edit', $bill->id) }}">Edit</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item font-color" href="#">Delete</a>
                                     </div>
@@ -55,7 +55,7 @@
                                         <a class="dropdown-item font-color" href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
                                         <a class="dropdown-item font-color" href="{{ route('payment.index', $bill->id) }}">All Payments</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item font-color" href="#">Checkout</a>
+                                        <a class="dropdown-item font-color" href="{{ route('payment.create', [$bill->id, 'co' => 1]) }}">Checkout</a>
                                     </div>
                                 </div>
                             </td>

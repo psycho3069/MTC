@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Billing;
+use App\Http\Traits\CustomTrait;
+use App\Room;
+use App\Venue;
 use Illuminate\Http\Request;
 
 class BillingController extends Controller
 {
+    use CustomTrait;
     /**
      * Display a listing of the resource.
      *
@@ -93,7 +97,19 @@ class BillingController extends Controller
      */
     public function edit($id)
     {
-        //
+        $bill = Billing::find($id);
+        $data['room'] = Room::get();
+        $data['venue'] = Venue::all();
+
+//        return $bill->booking;
+        foreach ($bill->booking as $key => $book) {
+//            return $key;
+            $days = ( strtotime($book->end_date) - strtotime($book->start_date)) / (60*60*24);
+            $data['discount'][$book->id] = $book->discount / $days;
+        }
+
+//        return $data['discount'];
+        return view('admin.mis.hotel.billing.edit', compact('bill', 'data'));
     }
 
     /**
@@ -105,7 +121,62 @@ class BillingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->except('_token', '_method');
+        $bill = Billing::find($id);
+
+//        return $input;
+
+        $old_bill = 0;
+        $new_bill = 0;
+        foreach ($input['booking'] as $key => $item) {
+//            return $item;
+            $book = $bill->booking->find($key);
+            $days = ( strtotime( $item['end_date']) - strtotime( $item['start_date'])) / (60*60*24);
+            $price = $book->room_id < 50 ? $book->room->price : $book->venue->price;
+            $item['discount'] = $item['discount'] * $days;
+            $item['bill'] = $price * $days - $item['discount'];
+
+            $old_bill += $book->bill;
+            $new_bill += $item['bill'];
+//            return $item;
+            $book->update( $item);
+        }
+
+//        return $new_bill;
+        if ( isset($input['new_booking']))
+            foreach ($input['new_booking'] as $item) {
+                $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
+                $price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
+                $item['discount'] = $item['discount'] * $days;
+                $item['bill'] = $price * $days - $item['discount'];
+                $item['guest_id'] = $bill->guest_id;
+                $bill->booking()->create( $item);
+
+                $new_bill += $item['bill'];
+            }
+
+        $old_bill += ($old_bill * 5) / 100;
+        $new_bill += ($new_bill * 5) / 100;
+
+//        return $new_bill;
+
+
+        $input['billing']['total_paid'] = $bill->total_paid + $input['billing']['advance_paid'] - $bill->advance_paid;
+        $input['billing']['total_bill'] = $bill->total_bill + $new_bill - $old_bill + $bill->discount - $input['billing']['discount'];
+
+//        return $input
+
+
+        //updating AIS
+        $amount['old'] = $bill->total_paid;
+        $amount['new'] = $input['billing']['total_paid'];
+        $data['note'] = 'Edited From MIS Bill';
+        if ( $amount['old'] != $amount['new'])
+            $this->updateAIS( $bill, $amount, $data);
+
+        $bill->update( $input['billing']);
+
+        return redirect('billing/'.$bill->id);
     }
 
     /**

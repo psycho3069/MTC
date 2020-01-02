@@ -34,4 +34,10 @@ class Billing extends Model
         return $this->hasMany('App\FoodSale', 'billing_id');
     }
 
+
+    public function mis_voucher()
+    {
+        return $this->belongsTo('App\MisVoucher', 'mis_voucher_id');
+    }
+
 }

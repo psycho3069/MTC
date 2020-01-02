@@ -98,6 +98,18 @@ strong {
     color: white;
 }
 
+.card-booking {
+    margin-top: 45%;
+}
+
+.btn-default {
+    color: #fff;
+    background-color: #174eb8;
+    border-color: #343a40;
+}
+
+
+
 /*p {*/
 /*    white-space: nowrap;*/
 /*}*/

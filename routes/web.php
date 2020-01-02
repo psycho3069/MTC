@@ -88,7 +88,6 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('booking', 'BookingController');
     Route::resource('restaurant/sales', 'SaleController');
     Route::resource('{bill_id}/payment', 'PaymentController');
-//    Route::resource('restaurant')
 
     Route::post('accounts/balance/check', ['as' => 'balance.check', 'uses' => 'BalanceController@check']);
     Route::resource('accounts/balance', 'BalanceController');

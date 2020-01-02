@@ -109,8 +109,12 @@ class PaymentController extends Controller
         $input = $request->except('_token', '_method');
         $payment = Payment::find($id);
 
+        //updating AIS
         $data['note'] = 'Updated From MIS Partial Payment';
-        $this->updateAIS( $payment, $input['amount'], $data);
+        $amount['old'] = $payment->amount;
+        $amount['new'] = $input['amount'];
+        $this->updateAIS( $payment, $amount, $data);
+
         $payment->bill->total_paid = $payment->bill->total_paid - $payment->amount + $input['amount'];
         $payment->bill->save();
         $payment->update( $input);
