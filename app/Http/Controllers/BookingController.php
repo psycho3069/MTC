@@ -94,6 +94,7 @@ class BookingController extends Controller
     public function store(Request $request)
     {
 //        return $request->all();
+
         $input = $request->except('_token');
         $hotel_bill = 0;
 
@@ -137,6 +138,9 @@ class BookingController extends Controller
             $item['discount'] = $booking['discount'][$item['room_id']];
             $billing->booking()->create($item);
         }
+
+        if ( $request->check)
+            return redirect('restaurant/sales/create?bill_id='.$billing->id );
 
         return redirect('billing/'.$billing->id );
     }

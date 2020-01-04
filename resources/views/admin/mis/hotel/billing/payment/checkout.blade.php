@@ -54,7 +54,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-outline-info form-control">Checkout</button>
+                            <button type="submit" class="btn btn-info form-control">Checkout</button>
                         </div>
                     </form>
                 </samp>
@@ -82,8 +82,6 @@
             })
 
         })
-
-
     </script>
 @endsection
 

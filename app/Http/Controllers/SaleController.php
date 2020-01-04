@@ -17,7 +17,15 @@ class SaleController extends Controller
      */
     public function index()
     {
-        return 55;
+//        $sales = FoodSale::get()->groupBy('billing_id');
+        $billing = Billing::orderBy('id', 'desc')->get();
+
+        foreach ($billing as $item) {
+            $food_bill = $item->restaurant->sum('bill');
+            $data[$item->id]['bill'] = $food_bill + $food_bill*10 / 100;
+        }
+
+        return view('admin.mis.hotel.restaurant.sale.index', compact('billing', 'data'));
     }
 
     /**
@@ -25,12 +33,14 @@ class SaleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        $billing = Billing::where('checkout_status', 0)->get();
-        $menu_type = MenuType::all();
+        $data['bill_id'] = $request->bill_id ? $request->bill_id : 0;
 
-        return view('admin.mis.hotel.restaurant.sale.create', compact('billing', 'menu_type'));
+        $billing = Billing::where('checkout_status', 0)->get();
+        $data['menu_type'] = MenuType::all();
+
+        return view('admin.mis.hotel.restaurant.sale.create', compact('billing', 'data'));
 
     }
 
@@ -54,7 +64,7 @@ class SaleController extends Controller
 //            return $item;
         }
 
-        return redirect('billing');
+        return redirect('billing/'.$food_bill->billing_id);
     }
 
     /**
@@ -63,21 +73,12 @@ class SaleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($bill_id)
     {
-        $bill = Billing::find($id);
-
-
-        return MenuType::find(1)->menu;
-
-        foreach ($bill->booking as $item) {
-            $room[$item->id] = $item->room_id < 50 ? 'Room No-'.$item->room->room_no : $item->venue->name;
-        }
-
-        return $room;
-
-        return $bill->booking->pluck('room_id');
-        return $id;
+        $bill = Billing::find($bill_id);
+        $data['vat'] = $bill->restaurant->sum('bill') * 5 / 100;
+        $data['total'] = $bill->restaurant->sum('bill') + $data['vat'] ;
+        return view('admin.mis.hotel.restaurant.sale.show', compact('bill', 'data'));
     }
 
 
@@ -99,9 +100,13 @@ class SaleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($bill_id)
     {
-        //
+        $bill = Billing::find($bill_id);
+        $menu_type = MenuType::all();
+
+//        return $bill->restaurant->pluck('id');
+        return view('admin.mis.hotel.restaurant.sale.edit', compact('bill', 'menu_type'));
     }
 
     /**
@@ -111,9 +116,32 @@ class SaleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $bill_id)
     {
-        //
+        $input = $request->except('_token', '_method');
+        $bill = Billing::find($bill_id);
+
+        $new_bill = 0;
+        foreach ($input['food'] as $key => $item) {
+            $food = FoodSale::find($key);
+            $item['bill'] = $food->menu->price * $item['quantity'];
+            $new_bill += $item['bill'] - $food->bill;
+            $food->update($item);
+        }
+
+        if ( isset($input['new_food']))
+            foreach ($input['new_food'] as $item) {
+//            return $item;
+                $item['bill'] = Menu::find($item['menu_id'])->price * $item['quantity'];
+                $new_bill += $item['bill'];
+                $bill->restaurant()->create($item);
+            }
+
+        $vat = $new_bill * 10 / 100;
+        $new_bill += $vat;
+        $bill->update([ 'total_bill' => $bill->total_bill + $new_bill ]);
+
+        return redirect('restaurant/sales/'.$bill_id);
     }
 
     /**

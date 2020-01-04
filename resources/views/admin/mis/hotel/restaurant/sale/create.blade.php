@@ -20,7 +20,7 @@
                             <select class="form-control" id="bill">
                                 <option value="">Choose One</option>
                                 @foreach( $billing as $bill )
-                                    <option value="{{ $bill->id }}">{{ $bill->guest->name }} </option>
+                                    <option value="{{ $bill->id }}" {{ $data['bill_id'] == $bill->id ? 'selected' : '' }}>{{ $bill->guest->name }} </option>
                                 @endforeach
                             </select>
                         </div>
@@ -41,7 +41,7 @@
                             <label>Menu Type</label>
                             <select class="form-control" id="menu_type">
 {{--                                <option></option>--}}
-                                @foreach( $menu_type as $item )
+                                @foreach( $data['menu_type'] as $item )
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
@@ -52,7 +52,7 @@
                             <label>Menu</label>
                             <select class="form-control" id="menu">
 {{--                                <option></option>--}}
-                                @foreach( $menu_type as $type )
+                                @foreach( $data['menu_type'] as $type )
                                     @foreach( $type->menu as $item )
                                         <option value="{{ $item->id }}">{{ $item->name }} </option>
                                     @endforeach

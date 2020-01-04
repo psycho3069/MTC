@@ -16,7 +16,7 @@ class CreateVV7VoucherUpdateHistoriesTable extends Migration
         Schema::create('voucher_update_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('voucher_id')->unsigned()->index();
-            $table->double('amount',14,2)->unsigned();
+            $table->double('amount',14,2)->default(0);
             $table->text('note');
             $table->timestamps();
         });

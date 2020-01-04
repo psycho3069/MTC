@@ -56,6 +56,7 @@ class PaymentController extends Controller
             $bill->discount = $input['discount'];
             $bill->checkout_status = 1;
         }
+        $bill->checkout_status = $input['checkout_status'];
         $bill->total_paid += $input['amount'];
         $bill->save();
 

@@ -3,8 +3,11 @@
 
 @section('content')
     <div class="col-md-6 offset-md-3">
+    <samp>
         <div class="card">
-            <div class="card-header">Book Room</div>
+            <div class="card-header">
+                Book Room
+            </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
@@ -13,13 +16,13 @@
                             <input type="text" class="form-control" id="name">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Contact No*</label>
                             <input type="text" class="form-control" id="contact_no">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Address</label>
                             <input type="text" class="form-control" id="address">
@@ -28,13 +31,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Organization Name</label>
                             <input type="text" class="form-control" id="org_name">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Designation</label>
                             <input type="text" class="form-control" id="designation">
@@ -47,13 +50,13 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>Start Date*</label>
+                            <label>Check-In*</label>
                             <input type="date" class="form-control date" id="start_date" aria-describedby="emailHelp">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>End Date*</label>
+                            <label>Check-Out*</label>
                             <input type="date" class="form-control date" id="end_date" aria-describedby="emailHelp">
                         </div>
                     </div>
@@ -89,8 +92,8 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
+                    <div class="col-md-3">
+                        <div class="form-group no-wrap">
                             <label>Discount <small>(tk.)</small></label>
                             <input type="number" id="discount" class="form-control" min="0" value="0">
                         </div>
@@ -98,8 +101,8 @@
                 </div>
 
 
-                <button type="button" id="add-button" class="btn btn-primary btn-dark float-right">Add</button>
-{{--                <button type="submit" class="btn btn-primary">Submit</button>--}}
+                <button type="button" id="add-button" class="btn btn-primary btn-block btn-dark float-right">Add</button>
+                {{--                <button type="submit" class="btn btn-primary">Submit</button>--}}
             </div>
         </div>
 
@@ -110,12 +113,16 @@
             <div class="card-body">
                 <form method="POST" action="{{ route('booking.store') }}">
                     {{ csrf_field() }}
+                <span class="float-right">
+                    <label>With Restaurant</label>
+                    <input type="checkbox" name="check" value="1" checked>
+                </span>
 
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th scope="col">Start Date</th>
-                            <th scope="col">End Date</th>
+                            <th scope="col">Check-In</th>
+                            <th scope="col">Check-Out</th>
                             <th scope="col">Room no</th>
                             <th scope="col">Discount</th>
                             <th scope="col">Visitors</th>
@@ -160,8 +167,8 @@
             </div>
         </div>
 
-    </div>
 
+    </samp>
 @endsection
 
 

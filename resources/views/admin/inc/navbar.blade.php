@@ -62,7 +62,7 @@
           </a>
           <div class="dropdown-menu sm-menu">
               <a class="dropdown-item" href="{{ route('billing.index') }}">Billing</a>
-              <a class="dropdown-item" href="{{ route('sales.create') }}">Restaurant</a>
+              <a class="dropdown-item" href="{{ route('sales.index') }}">Restaurant</a>
           </div>
       </li>
 

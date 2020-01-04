@@ -19,7 +19,8 @@
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6 text-right">
                         <p>
-                            <code>Date: 1st November, 2013</code>
+                            <code>Date: {{ date('jS F, Y') }}</code>
+
                         </p>
                         <p>
                             <code>Receipt #: 34522677W</code>
@@ -72,6 +73,7 @@
                         </tr>
                         </tbody>
                     </table>
+
 
 
 
