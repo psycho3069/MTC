@@ -1,4 +1,4 @@
-vendor/
+
 node_modules/
 npm-debug.log
 .gitignore
@@ -12,7 +12,7 @@ public/hot
 storage/*.key
 .env.*.php
 .env.php
-.env
+
 .idea
 Homestead.yaml
 Homestead.json
