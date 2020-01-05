@@ -7,7 +7,7 @@
             color: #ff0000;
         }
     </style>
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
         <h1>Create New Account for {{ strtoupper($type) }}</h1>
 
 

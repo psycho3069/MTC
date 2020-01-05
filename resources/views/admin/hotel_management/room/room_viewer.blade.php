@@ -79,7 +79,7 @@
         @endforeach
     @stop
 
-@section('content')
+@section('rooms')
 <style>
 
           main.py-4 {

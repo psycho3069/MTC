@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-8">
             <br><br><br>
             <table class="table table-bordered table-hover table-primary">
                 <thead>

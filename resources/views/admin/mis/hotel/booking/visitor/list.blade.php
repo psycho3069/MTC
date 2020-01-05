@@ -7,7 +7,7 @@
             color: #fff;
         }
     </style>
-    <div class="col-md-7 offset-md-2">
+    <div class="col-md-7">
         <br><br><br>
         <div class="card">
             <div class="card-header">

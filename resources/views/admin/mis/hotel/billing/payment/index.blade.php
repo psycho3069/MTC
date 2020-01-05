@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-4 offset-md-4">
+    <div class="col-md-4">
         <br><br><br>
         <div class="card">
             <div class="card-header">Billing List</div>

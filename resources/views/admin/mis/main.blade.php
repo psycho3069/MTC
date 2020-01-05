@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
         <h1> List </h1>
         <a class="btn btn-light float-right" href="{{ route('mis.accounts.create', [ 'type' => $type ]) }}">Add Account for {{ strtoupper($type) }}</a>
         <br><br><br>

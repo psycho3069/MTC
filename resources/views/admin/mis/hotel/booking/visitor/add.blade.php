@@ -7,7 +7,7 @@
             color: #ff0000;
         }
     </style>
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
         <div class="card">
             <div class="card-header">
                 <b>{{ $booking->room_id < 50 ? 'Room No-'.$booking->room->room_no : $booking->venue->name }} Visitors</b>

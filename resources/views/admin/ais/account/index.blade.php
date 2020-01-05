@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
         <h1> Account Data</h1>
 
         <div class="offset-md-11">
@@ -12,7 +12,7 @@
         <div class="tree">
             <ul>
                 @foreach( $heads as $head)
-                    <li>
+                    <li class="text-left">
                         <span>
                             {!! count( $head->child )>0 ? '<i class="fa fa-minus-square"></i> '.$head->name : $head->name !!}
                         </span>

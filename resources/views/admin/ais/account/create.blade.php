@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
         <h1>Create New {{ $type != 2 ? 'Account' : 'Transaction Head' }}</h1>
 
 

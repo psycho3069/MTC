@@ -2,11 +2,11 @@
 
 
 @section('content')
-    <div class="col-md-7 offset-md-2">
+    <div class="col-md-7">
         <br><br><br>
         <samp>
             <div class="card">
-                <div class="card-header">
+                <div class="card-header text-left">
                     Food Sales
                     <button type="button" class="btn btn-info float-right" onclick='window.location="{{ route('sales.create') }}"'>Add Sales</button>
                 </div>
@@ -19,7 +19,6 @@
                             <th>Total Bill</th>
                             <th>Checkout</th>
                             <th class="">Action</th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -55,3 +54,18 @@
 
 @endsection
 
+@section('datatable')
+
+    <!-- datatable -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                "paging": true,
+                "ordering":  true,
+            });
+        } );
+    </script>
+
+@endsection

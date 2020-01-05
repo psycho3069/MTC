@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-5 offset-md-4">
+    <div class="col-md-5">
         <div class="card">
             <div class="card-header">{{ $bill->guest->name }}</div>
             <div class="card-body">

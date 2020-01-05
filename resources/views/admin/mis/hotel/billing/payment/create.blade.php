@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-4 offset-md-3">
+    <div class="col-md-4">
         <samp>
             <form action="{{ route('payment.store', $bill->id) }}" method="POST">
                 <div class="card">

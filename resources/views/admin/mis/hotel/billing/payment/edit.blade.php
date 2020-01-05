@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-7 offset-md-4">
+    <div class="col-md-7">
         <form action="{{ route('payment.update', [ $payment->billing_id, $payment->id ]) }}" method="POST">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="_method" value="PATCH">

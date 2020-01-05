@@ -2,14 +2,14 @@
 
 
 @section('content')
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header text-left">
                 {!! $data['type_id'] == 3 ? 'Restaurant' : 'Inventory' !!} {{ $data['cat_id']  == 1 ? 'Supplier' : 'Receiver' }} List
                 <button class="btn btn-primary float-right" onclick='window.location="{{ route('staff.create', [ 'type_id' => $data['type_id'], 'cat_id' => $data['cat_id']]) }}"'>Add New</button>
             </div>
             <div class="card-body">
-                <table class="table table-bordered table-hover table-primary">
+                <table class="table">
                     <thead>
                     <tr>
                         <th></th>
@@ -78,9 +78,8 @@
 @section('datatable')
 
     <!-- datatable -->
-    {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.table').DataTable({
@@ -91,4 +90,5 @@
     </script>
 
 @endsection
+
 

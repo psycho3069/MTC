@@ -4,7 +4,7 @@
 
 
 @section('content')
-    <div class="col-md-7 offset-md-2">
+    <div class="col-md-7">
         <form action="{{ route('vouchers.list') }}" method="POST">
             {{ csrf_field() }}
             <div class="col-md-10">

@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
 
         <form method="POST" action="{{ route('balance.store') }}">
             {{ csrf_field() }}

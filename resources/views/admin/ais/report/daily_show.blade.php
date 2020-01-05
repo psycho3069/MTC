@@ -4,7 +4,7 @@
 
 
 @section('content')
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
         <form action="{{ route('report.show.daily') }}" method="POST">
             {{ csrf_field() }}
             <div class="form-horizontal">

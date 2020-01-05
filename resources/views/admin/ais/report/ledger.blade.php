@@ -4,7 +4,7 @@
 
 
 @section('content')
-    <div class="col-md-7 offset-md-2">
+    <div class="col-md-7">
         <form class="" action="{{ route('report.show.ledger') }}" method="POST" >
             {{ csrf_field() }}
             <div class="row">

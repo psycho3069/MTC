@@ -7,97 +7,91 @@
             color: #ff0000;
         }
     </style>
-    <div class="col-md-6 offset-md-3">
-        <div class="card">
-            <div class="card-header">
-                Sale Food
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Guest</label>
-                            <select class="form-control" id="bill">
-                                <option value="">Choose One</option>
-                                @foreach( $billing as $bill )
-                                    <option value="{{ $bill->id }}" {{ $data['bill_id'] == $bill->id ? 'selected' : '' }}>{{ $bill->guest->name }} </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-{{--                    <div class="col-md-6">--}}
-{{--                        <div class="form-group">--}}
-{{--                            <label>Room</label>--}}
-{{--                            <select class="form-control" id="room">--}}
-{{--                                <option></option>--}}
-{{--                            </select>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
+    <div class="col-md-5">
+        <samp>
+            <div class="card">
+                <div class="card-header text-left">
+                    Sale Food
                 </div>
-
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label>Menu Type</label>
-                            <select class="form-control" id="menu_type">
-{{--                                <option></option>--}}
-                                @foreach( $data['menu_type'] as $item )
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label>Menu</label>
-                            <select class="form-control" id="menu">
-{{--                                <option></option>--}}
-                                @foreach( $data['menu_type'] as $type )
-                                    @foreach( $type->menu as $item )
-                                        <option value="{{ $item->id }}">{{ $item->name }} </option>
+                <div class="card-body text-left">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Guest</label>
+                                <select class="form-control" id="bill">
+                                    <option value="">Choose One</option>
+                                    @foreach( $billing as $bill )
+                                        <option value="{{ $bill->id }}" {{ $data['bill_id'] == $bill->id ? 'selected' : '' }}>{{ $bill->guest->name }} </option>
                                     @endforeach
-                                @endforeach
-                            </select>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label>Quantity</label>
-                            <input type="number" class="form-control" id="quantity" min="1" max="100" value="1">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Menu Type</label>
+                                <select class="form-control" id="menu_type">
+                                    {{--                                <option></option>--}}
+                                    @foreach( $data['menu_type'] as $item )
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Menu</label>
+                                <select class="form-control" id="menu">
+                                    {{--                                <option></option>--}}
+                                    @foreach( $data['menu_type'] as $type )
+                                        @foreach( $type->menu as $item )
+                                            <option value="{{ $item->id }}">{{ $item->name }} </option>
+                                        @endforeach
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" class="form-control" id="quantity" min="1" max="100" value="1">
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <button type="button" id="add-button" class="btn btn-primary float-right">Add</button>
+                <div class="card-footer">
+                    <button type="button" id="add-button" class="btn btn-default btn-block">Add</button>
+                </div>
             </div>
-        </div>
+        </samp>
         <br><br>
 
 
 
-        <div class="card">
-            <div class="card-body">
-                <form method="POST" action="{{ route('sales.store') }}">
-                    {{ csrf_field() }}
+        <samp>
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ route('sales.store') }}">
+                        {{ csrf_field() }}
 
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">Guest Name</th>
-                            <th scope="col">Item</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody id="list">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">Guest Name</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="list">
 
-                        </tbody>
-                    </table>
-                    <button type="submit" class="btn btn-dark">Submit</button>
-                </form>
+                            </tbody>
+                        </table>
+                        <button type="submit" class="btn btn-dark float-right">Submit</button>
+                    </form>
 
+                </div>
             </div>
-        </div>
+        </samp>
 
 
 

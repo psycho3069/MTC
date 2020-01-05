@@ -168,9 +168,9 @@
         @endforeach
     @stop
 
-@section('content')
+@section('rooms')
 <style>
-    
+
           main.py-4 {
               min-height: 450px !important;
               width: auto;

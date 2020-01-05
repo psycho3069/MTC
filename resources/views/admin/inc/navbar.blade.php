@@ -37,59 +37,55 @@
               <a class="dropdown-item" href="{{URL::to('/maintenance')}}">Discount</a>
           </div>
       </li>
-    <li class="nav-item dropdown dmenu">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Hotel Management
-      </a>
-      <div class="dropdown-menu sm-menu">
-        <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_viewer')}}">Rooms Viewer</a>
-          <a class="dropdown-item" href="{{URL::to('/hotel_management/reservation/room_reservation_list')}}">Reservation</a>
-{{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/booking/booking_list')}}">Booking</a>--}}
-{{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/billing/billing_list')}}">Billing</a>--}}
-          <a class="dropdown-item" href="{{URL::to('/hotel_management/building/building_type_list')}}">Building Types</a>
-          <a class="dropdown-item" href="{{URL::to('/hotel_management/building/building_list')}}">Buildings</a>
-          <a class="dropdown-item" href="{{URL::to('/hotel_management/floor/floor_type_list')}}">Floor Types</a>
-          <a class="dropdown-item" href="{{URL::to('/hotel_management/floor/floor_list')}}">Floors</a>
-          <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_category_list')}}">Room Category</a>
-        <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_list')}}">Rooms</a>
-      </div>
-    </li>
-
 
       <li class="nav-item dropdown dmenu">
           <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-              Billing
+              Management
           </a>
           <div class="dropdown-menu sm-menu">
-              <a class="dropdown-item" href="{{ route('billing.index') }}">Billing</a>
-              <a class="dropdown-item" href="{{ route('sales.index') }}">Restaurant</a>
+              {{--        <a class="dropdown-item" href="{{URL::to('/training/venueRes')}}">Venue Reservation</a>--}}
+              {{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/reservation/room_reservation_list')}}">Reservation</a>--}}
+              {{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/booking/booking_list')}}">Booking</a>--}}
+              {{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/billing/billing_list')}}">Billing</a>--}}
+              <a class="dropdown-item" href="{{URL::to('/hotel_management/building/building_type_list')}}">Building Types</a>
+              <a class="dropdown-item" href="{{URL::to('/hotel_management/building/building_list')}}">Buildings</a>
+              <a class="dropdown-item" href="{{URL::to('/hotel_management/floor/floor_type_list')}}">Floor Types</a>
+              <a class="dropdown-item" href="{{URL::to('/hotel_management/floor/floor_list')}}">Floors</a>
+              <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_category_list')}}">Room Category</a>
+              <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_list')}}">Rooms</a>
+              <a class="dropdown-item" href="{{URL::to('/training/venue')}}">Venue</a>
+
+
+              {{--        <a class="dropdown-item" href="{{URL::to('/training/venue-booking-list')}}">Venue Booking</a>--}}
+              {{--        <a class="dropdown-item" href="{{URL::to('/training/venue-billing-list/')}}">Venue Billing</a>--}}
           </div>
       </li>
 
     <li class="nav-item dropdown dmenu">
       <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        HR & Payroll
+        Hotel
       </a>
       <div class="dropdown-menu sm-menu">
-          <a class="dropdown-item" href="{{URL::to('/hr_payroll/department/departments')}}">Department</a>
-          <a class="dropdown-item" href="{{URL::to('/hr_payroll/employee_designation/employee_designations')}}">Employee Designation</a>
-          <a class="dropdown-item" href="{{URL::to('/hr_payroll/salary_grade/salary_grades')}}">Salary Grade</a>
-          <a class="dropdown-item" href="{{URL::to('/hr_payroll/employee/employees')}}">Employee</a>
-          <a class="dropdown-item" href="{{URL::to('/hr_payroll/leave/leave_categories')}}">Leave Category</a>
-          <a class="dropdown-item" href="{{URL::to('/hr_payroll/leave/leaves')}}">Leave</a>
+          <a class="dropdown-item" href="{{ route('billing.index') }}">Bill</a>
+          <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_viewer')}}">Rooms Viewer</a>
       </div>
     </li>
+
+
+
+
       <li class="nav-item dropdown dmenu">
           <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
               Restaurant
           </a>
           <div class="dropdown-menu sm-menu">
+              <a class="dropdown-item" href="{{ route('sales.index') }}">Sales</a>
+              <a class="dropdown-item" href="{{ route('sales.create') }}">Sale Food</a>
               {{-- type_id = 2 for Restaurant, cat_id = 1 Suppliers--}}
               <a class="dropdown-item" href="{{ route('staff.index', ['type_id' => 3, 'cat_id' => 1]) }}">Supplier</a>
               <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Grocery Category</a>
               <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Grocery List</a>
               <a class="dropdown-item" href="{{ route('purchase.create', ['type_id' => 3]) }}">Purchase</a>
-              <a class="dropdown-item" href="{{ route('sales.create') }}">Sales</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item/meal_items')}}">Meal Items</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item_type/meal_item_types')}}">Meal Types</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu/menus')}}">Menus</a>
@@ -98,17 +94,23 @@
               <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 3]) }}">Opening Balance</a>
           </div>
       </li>
-    <li class="nav-item dropdown dmenu">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Training Centre
-      </a>
-      <div class="dropdown-menu sm-menu">
-        <a class="dropdown-item" href="{{URL::to('/training/venue')}}">Venue</a>
-        <a class="dropdown-item" href="{{URL::to('/training/venueRes')}}">Venue Reservation</a>
-{{--        <a class="dropdown-item" href="{{URL::to('/training/venue-booking-list')}}">Venue Booking</a>--}}
-{{--        <a class="dropdown-item" href="{{URL::to('/training/venue-billing-list/')}}">Venue Billing</a>--}}
-      </div>
-    </li>
+
+
+      <li class="nav-item dropdown dmenu">
+          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              HR & Payroll
+          </a>
+          <div class="dropdown-menu sm-menu">
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/department/departments')}}">Department</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/employee_designation/employee_designations')}}">Employee Designation</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/salary_grade/salary_grades')}}">Salary Grade</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/employee/employees')}}">Employee</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/leave/leave_categories')}}">Leave Category</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/leave/leaves')}}">Leave</a>
+          </div>
+      </li>
+
+
 
       <li class="nav-item dropdown dmenu">
           <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">

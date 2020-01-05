@@ -4,7 +4,7 @@
 
 
 @section('content')
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6">
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>

@@ -76,7 +76,7 @@ class SaleController extends Controller
     public function show($bill_id)
     {
         $bill = Billing::find($bill_id);
-        $data['vat'] = $bill->restaurant->sum('bill') * 5 / 100;
+        $data['vat'] = $bill->restaurant->sum('bill') * 10 / 100;
         $data['total'] = $bill->restaurant->sum('bill') + $data['vat'] ;
         return view('admin.mis.hotel.restaurant.sale.show', compact('bill', 'data'));
     }
@@ -122,7 +122,8 @@ class SaleController extends Controller
         $bill = Billing::find($bill_id);
 
         $new_bill = 0;
-        foreach ($input['food'] as $key => $item) {
+        if ( isset($input['food']))
+            foreach ($input['food'] as $key => $item) {
             $food = FoodSale::find($key);
             $item['bill'] = $food->menu->price * $item['quantity'];
             $new_bill += $item['bill'] - $food->bill;

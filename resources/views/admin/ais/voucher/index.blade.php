@@ -9,7 +9,7 @@
         color: #fff;
     }
 </style>
-    <div class="col-md-7 offset-md-2">
+    <div class="col-md-7">
 
         <form action="{{ route('vouchers.list') }}" method="POST">
             {{ csrf_field() }}
@@ -58,7 +58,7 @@
                 </div>
                 </div>
             </div>
-            
+
         </form>
         <br><br><br>
         <table class="table table-bordered table-hover table-info">
@@ -141,12 +141,13 @@
     </script>
 @endsection
 
+
+
 @section('datatable')
 
     <!-- datatable -->
-    {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.table').DataTable({

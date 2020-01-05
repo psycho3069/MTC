@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-8 offset-md-2">
+    <div class="col-md-8">
         <form action="{{ route('sales.update', $bill->id) }}" method="POST">
             {{ csrf_field() }}
             <input type="hidden" name="_method" value="PATCH">

@@ -42,7 +42,10 @@
       @endif
 
         <main class="py-4">
-            @yield('content')
+            @yield('rooms')
+            <div align="center">
+                @yield('content')
+            </div>
         </main>
 
         <div class="subfooter" style="background: #1f9bcc; color: #fff; padding-top: 20px;">
