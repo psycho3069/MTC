@@ -26,7 +26,7 @@ class StockController extends Controller
     {
         $type_id = ($type_id != 5) ? 3 : 5;
         $categories = StockHead::where('type_id', $type_id)->get();
-        return view('admin.mis.stock.list', compact('categories'));
+        return view('admin.mis.stock.list', compact('categories', 'type_id'));
     }
 
 

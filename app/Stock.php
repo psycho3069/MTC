@@ -21,5 +21,11 @@ class Stock extends Model
     }
 
 
+    public function deliver()
+    {
+        return $this->hasMany('App\Delivery');
+    }
+
+
 
 }

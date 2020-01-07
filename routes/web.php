@@ -103,7 +103,8 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('staff', 'StaffController');
 
     Route::resource('mis/accounts', 'MisAccountController', ['as' => 'mis']);
-    Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'InventoryPurchaseController@item']);
+//    Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'InventoryPurchaseController@item']);
+    Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'PurchaseController@item']);
     Route::resource('purchase','PurchaseController');
     Route::get('inventory/list', ['as' => 'inventory.list', 'uses' => 'MisInventoryController@list']);
     Route::resource('mis/inventory', 'MisInventoryController', ['as' => 'mis']);

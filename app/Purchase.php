@@ -12,6 +12,26 @@ class Purchase extends Model
         ];
 
 
+    public function stock()
+    {
+        return $this->belongsTo('App\Stock');
+    }
+
+
+    public function supplier()
+    {
+        return $this->belongsTo('App\Staff', 'supplier_id');
+    }
+
+
+    public function receiver()
+    {
+        return $this->belongsTo('App\Employee', 'receiver_id');
+    }
+
+
+
+
 
 
 }

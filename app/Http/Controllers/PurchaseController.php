@@ -6,6 +6,7 @@ use App\Configuration;
 use App\Employee;
 use App\Http\Traits\CustomTrait;
 use App\MisCurrentStock;
+use App\PurchaseGroup;
 use App\Staff;
 use App\StockHead;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class PurchaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function indexOld(Request $request)
     {
 //        return $request->all();
         $data = [];
@@ -30,7 +31,16 @@ class PurchaseController extends Controller
         }
         $stock_id = collect($data)->flatten();
         $current_stock = MisCurrentStock::whereIn( 'stock_id', $stock_id)->get();
-        return view('admin.mis.purchase.index', compact('current_stock'));
+        return view('admin.mis.purchase.index.old', compact('current_stock'));
+
+    }
+
+
+    public function index(Request $request)
+    {
+        $type_id = $request->type_id != 5 ? 3 : 5;
+        $p_groups = PurchaseGroup::where( 'type_id', $type_id)->orderBy('id', 'desc')->get();
+        return view('admin.mis.purchase.index', compact('p_groups', 'type_id'));
 
     }
 
@@ -45,16 +55,21 @@ class PurchaseController extends Controller
         $data['supplier'] = Staff::get()->where( 'type_id', $type_id);
         $data['receiver'] = Employee::get()->where( 'type_id', $type_id);
         $stock_head = StockHead::where( 'type_id', $type_id)->get();
-        $conf = Configuration::find(1)->software_start_date;
-        return view('admin.mis.purchase.create', compact('stock_head', 'type_id', 'data', 'conf'));
+        return view('admin.mis.purchase.create', compact('stock_head', 'type_id', 'data'));
     }
 
 
     public function item(Request $request)
     {
 //        return $request->all();
-        $data = StockHead::find($request->stock_head_id);
-        return $data->stock->pluck('name', 'id');
+        $result = StockHead::find($request->stock_head_id);
+        foreach ($result->stock as $item) {
+//            return $item;
+            $data['stock'][$item->id] = $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr');
+        }
+        $data['item'] = $result->stock->pluck('name', 'id');
+
+        return $data;
     }
 
     /**
@@ -83,6 +98,7 @@ class PurchaseController extends Controller
         $p_group['date_id'] = $mis_voucher->date->id;
         $p_group['user_id'] = auth()->user()->id;
         $p_group['type_id'] = $data['mis_ac_head_id'];
+        $p_group['note'] = $request->note;
 
         $purchase_group = $mis_voucher->purchaseGroup()->create( $p_group);
 
@@ -101,7 +117,7 @@ class PurchaseController extends Controller
                 $purchase_group->date->misStock()->create( $joji);
         }
 
-        return redirect()->back();
+        return redirect('purchase?type_id=').$purchase_group->type_id;
 
     }
 
@@ -116,7 +132,8 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        //
+        $p_group = PurchaseGroup::find($id);
+        return view('admin.mis.purchase.show', compact('p_group'));
     }
 
     /**
@@ -127,7 +144,7 @@ class PurchaseController extends Controller
      */
     public function edit($id)
     {
-        //
+
     }
 
     /**

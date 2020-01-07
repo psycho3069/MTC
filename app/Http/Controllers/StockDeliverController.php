@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Configuration;
+use App\Date;
+use App\Delivery;
 use App\Stock;
+use App\StockHead;
 use Illuminate\Http\Request;
 
 class StockDeliverController extends Controller
@@ -14,7 +18,9 @@ class StockDeliverController extends Controller
      */
     public function index()
     {
-        return 55;
+        $deliveries = Delivery::orderBy('id', 'desc')->get();
+//        return $deliveries;
+        return view('admin.mis.stock.deliver.index', compact('deliveries'));
     }
 
     /**
@@ -24,8 +30,8 @@ class StockDeliverController extends Controller
      */
     public function create()
     {
-        $stocks = Stock::where('stock_head_id', 1)->get();
-        return view('admin.mis.stock.deliver.create', compact('stocks'));
+        $stock_head = StockHead::where( 'type_id', 3)->get();
+        return view('admin.mis.stock.deliver.create', compact('stock_head'));
 
     }
 
@@ -38,8 +44,32 @@ class StockDeliverController extends Controller
     public function store(Request $request)
     {
 //        return $request->all();
-        $stock = Stock::find($request->item_id);
-        return $stock;
+
+        $input = $request->input;
+//        return $input;
+
+        $conf_date = Configuration::find(1)->software_start_date;
+        $date = Date::where( 'date', $conf_date)->first();
+
+        if ( empty($date) )
+            $date = Date::create([ 'date' => $conf_date ]);
+
+        foreach ($input as $item) {
+            $stock = Stock::find($item['stock_id']);
+            $total = $stock->currentStock->sum('quantity_dr') - $stock->currentStock->sum('quantity_cr');
+
+            if ( $total >= $item['quantity']){
+                $item['date_id'] = $date->id;
+                $stock->deliver()->create($item);
+
+                $item['quantity_cr'] = $item['quantity'];
+                $stock->currentStock()->create($item);
+            }
+
+        }
+
+        return redirect('stocks/deliver');
+
     }
 
     /**

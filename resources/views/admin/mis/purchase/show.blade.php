@@ -1,41 +1,42 @@
 @extends('admin.master')
 
 @section('content')
-    <div class="col-md-8">
+    <div class="col-md-7">
         <samp>
             <div class="card text-left">
+                {{--                <div class="card-header"> <strong>All {{ ucfirst($categories->first()->category) }} Item</strong></div>--}}
                 <div class="card-header">
-                    {{ $type_id != 5 ? 'Grocerie\'s' : 'Inventorie\'s' }} Purchase List
-                    <code>
-                        <button type="button" class="btn btn-sm btn-default" onclick='window.location="{{ route('purchase.create', [$type_id => 3]) }}"'>New Purchase</button>
-                    </code>
+                    {{ date('d M, Y', strtotime($p_group->created_at)) }} Purchase List
                 </div>
 
                 <div class="card-body">
-                    <table class="table table-info table-hover table-bordered">
+                    <table class="table table-info table-hover">
                         <thead>
                         <tr>
                             <th></th>
-                            <th>Date</th>
-                            <th>Total cost</th>
-                            <th>Note</th>
-                            <th></th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Cost</th>
+                            <th>Supplier</th>
+                            <th>Receiver</th>
+                            <td></td>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach( $p_groups as $item )
+                        @foreach( $p_group->purchases as $item )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d M, y', strtotime($item->created_at)) }}</td>
-                                <td>{{ $item->purchases->sum('amount') }} tk.</td>
-                                <td>{{ $item->note ? $item->note : 'No notes' }}</td>
+                                <td>{{ $item->stock->name }}</td>
+                                <td>{{ $item->quantity_dr.' '.$item->stock->unit }}</td>
+                                <td>{{ $item->amount }} tk.</td>
+                                <td>{{ $item->supplier->name }}</td>
+                                <td>{{ $item->receiver->name }}</td>
                                 <td>
                                     <div class="btn-group">
                                         <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                             More
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item font-color" href="{{ route('purchase.show', $item->id) }}">View</a>
                                             <a class="dropdown-item font-color" href="">Edit</a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item font-color" href="">Delete</a>

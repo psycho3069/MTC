@@ -150,7 +150,7 @@
                         var item = $('#item')
                         item.empty()
                         item.append('<option value="">Choose an Item</option>')
-                        $.each(data, function (key, val) {
+                        $.each(data['item'], function (key, val) {
                             item.append('<option value="'+key+'">'+val+'</option>')
                         })
                     }

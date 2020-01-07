@@ -24,28 +24,16 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <div class="tree ">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <b><code>{{ $stock_head->name }}</code></b>
-                                                <ul>
-                                                    @foreach( $stock_head->stock as $item )
-                                                        <li>
-                                                        <span>
-                                                            {{ $item->name }} ({{ $item->currentStock ? $item->currentStock->sum('quantity') : 0 }})
-                                                        </span>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <b><code>Balance</code></b>
-                                                @foreach( $stock_head->stock as $item )
-                                                    <li>{{ $item->currentStock ? $item->currentStock->sum('amount') : 0 }}</li>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <b><code>{{ $stock_head->name }}</code></b>
+                                    <ul>
+                                        @foreach( $stock_head->stock as $item )
+                                            <li>
+                                                <span>
+                                                    {{ $item->name }} ({{ $item->currentStock ? $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr').' '.$item->unit : 0 }})
+                                                </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
 
                                 </td>
                                 <td>{{ $stock_head->description ? $stock_head->description : 'Not Found'}}</td>

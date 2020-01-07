@@ -73,6 +73,20 @@
     </li>
 
 
+      <li class="nav-item dropdown dmenu">
+      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        Grocery
+      </a>
+          <div class="dropdown-menu sm-menu">
+              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Groceries</a>
+              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Stock</a>
+              <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 3]) }}">Purchase</a>
+              <a class="dropdown-item" href="{{ route('deliver.index') }}">Delivery</a>
+              <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 3]) }}">Opening Balance</a>
+          </div>
+    </li>
+
+
 
 
       <li class="nav-item dropdown dmenu">
@@ -84,15 +98,15 @@
               <a class="dropdown-item" href="{{ route('sales.create') }}">Sale Food</a>
               {{-- type_id = 2 for Restaurant, cat_id = 1 Suppliers--}}
               <a class="dropdown-item" href="{{ route('staff.index', ['type_id' => 3, 'cat_id' => 1]) }}">Supplier</a>
-              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Grocery Category</a>
-              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Grocery List</a>
-              <a class="dropdown-item" href="{{ route('purchase.create', ['type_id' => 3]) }}">Purchase</a>
+{{--              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Grocery Category</a>--}}
+{{--              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Grocery List</a>--}}
+{{--              <a class="dropdown-item" href="{{ route('purchase.create', ['type_id' => 3]) }}">Purchase</a>--}}
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item/meal_items')}}">Meal Items</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item_type/meal_item_types')}}">Meal Types</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu/menus')}}">Menus</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu_type/menu_types')}}">Menu Types</a>
-              <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 3]) }}">Grocery Balance</a>
-              <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 3]) }}">Opening Balance</a>
+{{--              <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 3]) }}">Grocery Balance</a>--}}
+{{--              <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 3]) }}">Opening Balance</a>--}}
           </div>
       </li>
 
