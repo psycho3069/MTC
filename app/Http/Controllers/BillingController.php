@@ -74,6 +74,7 @@ class BillingController extends Controller
      */
     public function show($id)
     {
+//        return $id;
         $bill = Billing::find( $id);
 
         $data['total'] = 0;

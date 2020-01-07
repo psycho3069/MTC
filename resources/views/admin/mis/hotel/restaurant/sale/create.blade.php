@@ -106,11 +106,14 @@
         $(document).ready(function () {
             var i = 0;
             // alert(55)
+            var bill_id = {!! json_encode($data['bill_id']) !!}
 
             $(':submit').click(function (e) {
                 if( i < 1 ){
                     e.preventDefault()
-                    alert('Please add at least one item')
+                    // alert('Please add at least one item')
+                    bill_id ? window.location.href = '{{ route('billing.show', $data['bill_id']) }}' : alert('Please add at least one item')
+
                 }
             })
 
