@@ -18,9 +18,8 @@ class CreateM5StocksTable extends Migration
             $table->integer('stock_head_id')->unsigned()->index();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('quantity')->unsigned()->default(0);
-            $table->enum('unit', ['kg', 'liter', 'number', ])->nullable();
-            $table->double('amount',14,2)->unsigned()->default(0);
+            $table->smallInteger('quantity')->unsigned()->default(0);
+            $table->enum('unit', ['kg', 'liter', 'piece'])->nullable();
             $table->timestamps();
         });
     }

@@ -31,12 +31,15 @@ class BillingController extends Controller
         return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $billing = Billing::orderBy('id','desc')->get();
-//        foreach ($billing as $bill) {
-//            $data[$bill->id]['vat'] = $bill->total_bill * 5 / 100;
-//        }
+        $data['reserved'] = $request->res ? 1 : 0;
+        $billing = Billing::where('reserved', 0)->orderBy('id','desc')->get();
+        if ($request->res){
+            $billing = Billing::where('reserved', 1)->orderBy('id','desc')->get();
+            return view('admin.mis.hotel.billing.reservation.index', compact('billing'));
+        }
+
         return view('admin.mis.hotel.billing.index', compact('billing'));
     }
 
@@ -73,7 +76,6 @@ class BillingController extends Controller
     {
         $bill = Billing::find( $id);
 
-//        return $bill->restaurant;
         $data['total'] = 0;
 //        return $bill->booking->sum('bill');
         foreach ($bill->booking as $item ) {

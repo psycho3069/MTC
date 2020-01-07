@@ -7,115 +7,116 @@
             color: #ff0000;
         }
     </style>
+    <div class="col-md-5">
+        <samp>
+            <div class="card text-left">
+                <div class="card-header">
+                    Purchase {{ $type_id != 3 ? 'Inventory' : 'Grocery' }} Item
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="stock_head_id">Select a category</label>
+                                <select class="form-control" id="category" required>
+                                    <option value="" >Choose One</option>
+                                    @foreach( $stock_head as $item )
+                                        <option value="{{ $item->id }}">{{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Item</label>
+                                <select class="form-control" id="item" >
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Supplier<span class="required">*</span></label>
+                                <select class="form-control" id="supplier">
+                                    <option></option>
+                                    @foreach( $data['supplier'] as $item )
+                                        <option value="{{ $item->id }}">{{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Quantity <span class="required">*</span></label>
+                                <input type="number" class="form-control" id="quantity" min="1" value="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Total Cost <small>(tk)</small><span class="required">*</span></label>
+                                <input type="number" class="form-control" id="amount" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Receiver <span class="required">*</span></label>
+                                <select class="form-control" id="receiver">
+                                    <option></option>
+                                    @foreach( $data['receiver'] as $item )
+                                        <option value="{{ $item->id }}">{{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="button" id="add-button" class="btn btn-info btn-block">Add</button>
+                </div>
+            </div>
+        </samp>
+    </div>
+
+    <br><br>
+
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                Purchase {{ $type_id != 3 ? 'Inventory' : 'Grocery' }} Item
+        <samp>
+            <div class="card text-left">
+                <div class="card-header">Purchased List</div>
+                <div class="card-body purchase-list">
+                    <form method="POST" action="{{ route('purchase.store') }}" >
+                        {{ csrf_field() }}
+                        <input type="hidden" name="mis_ac_head_id" value="{{ $stock_head->first()->type->id }}">
+
+                        <table class="table table-info">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+                                <th>Supplier</th>
+                                <th>Receiver</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="list-item">
+                            </tbody>
+                        </table>
+                        <div class="form-group">
+                            <label>Note</label>
+                            <textarea name="note" class="form-control" cols="3" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Submit</button>
+
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Mis Date</label>
-                            <input type="date" class="form-control" id="date" name="date" value="{{ $conf }}" disabled>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="stock_head_id">Select a category</label>
-                            <select class="form-control" id="category" required>
-                                <option value="" >Choose One</option>
-                                @foreach( $stock_head as $item )
-                                    <option value="{{ $item->id }}">{{ $item->name }} </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Item</label>
-                            <select class="form-control" id="item">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Select a supplier</label>
-                            <select class="form-control" id="supplier">
-                                <option></option>
-                                @foreach( $data['supplier'] as $item )
-                                    <option value="{{ $item->id }}">{{ $item->name }} </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Select a receiver</label>
-                            <select class="form-control" id="receiver">
-                                <option></option>
-                                @foreach( $data['receiver'] as $item )
-                                    <option value="{{ $item->id }}">{{ $item->name }} </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Quantity <span class="required">*</span></label>
-                            <input type="number" class="form-control" id="quantity" min="1" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Total Cost</label>
-                            <input type="number" class="form-control" id="amount" min="1">
-                        </div>
-                    </div>
-                </div>
-
-                <button type="button" id="add-button" class="btn btn-primary float-right">Add</button>
-            </div>
-        </div>
-        <br><br>
-
-        <div class="card">
-            <div class="card-header">Purchased List</div>
-            <div class="card-body purchase-list">
-                <form method="POST" action="{{ route('purchase.store') }}" >
-                    {{ csrf_field() }}
-                    <input type="hidden" name="type_id" value="{{ $stock_head->first()->type->id }}">
-
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">Category</th>
-                            <th scope="col">Item</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Supplier</th>
-                            <th scope="col">Receiver</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody id="vouchers">
-
-                        </tbody>
-                    </table>
-                    <button type="submit" class="btn btn-dark">Submit</button>
-
-                </form>
-            </div>
-        </div>
+        </samp>
     </div>
 
 
@@ -165,17 +166,17 @@
                 var supplier = $('#supplier').val()
                 var receiver = $('#receiver').val()
                 var amount = $('#amount').val()
-                var date = $('#date').val()
 
                 if( !item || !quantity || !amount || !supplier || !receiver)
                     alert('Please Enter all fields')
                 else {
                     i++
-                    $('#vouchers').append(
+                    $('#list-item').append(
                         '<tr id="row'+i+'">' +
-                        '<td>'+$('#category :selected').text()+'</td>' +
+                        '<td>'+i+'</td>' +
+                        // '<td>'+$('#category :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][stock_id]" value="'+item+'">'+$('#item :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'"><input type="hidden" name="date" value="'+date+'">'+quantity+'</td>' +
+                        '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][amount]" value="'+amount+'">'+amount+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][supplier_id]" value="'+supplier+'">'+$('#supplier :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][receiver_id]" value="'+receiver+'">'+$('#receiver :selected').text()+'</td>' +

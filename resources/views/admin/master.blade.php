@@ -31,6 +31,11 @@
     <!-- treeview end -->
 @yield('style')
 @yield('header_styles')
+      <style>
+          input[type="number"] {
+              height: auto;
+          }
+      </style>
    </head>
 
    <body>

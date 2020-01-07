@@ -28,13 +28,15 @@
 
 
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Check-Out</label>
-                                    <select class="form-control" name="checkout_status">
-                                        <option value="0" selected>No</option>
-                                        <option value="1">Yes</option>
-                                    </select>
-                                </div>
+                                @if( !$bill->reserved)
+                                    <div class="form-group">
+                                        <label>Check-Out</label>
+                                        <select class="form-control" name="checkout_status">
+                                            <option value="0" selected>No</option>
+                                            <option value="1">Yes</option>
+                                        </select>
+                                    </div>
+                                @endif
                                 <div class="form-group">
                                     <label>Due</label>
                                     <input type="number" class="form-control" id="due" value="{{ $bill->total_bill - $bill->total_paid }}" disabled>

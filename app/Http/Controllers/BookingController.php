@@ -81,7 +81,9 @@ class BookingController extends Controller
     {
         $data['room'] = Room::get();
         $data['venue'] = Venue::all();
-
+        $data['selected'] = $request->room_id ? $request->room_id : 0;
+        $data['reserved'] = $request->res ? 1 : 0;
+//        return !$data['reservation'] ? 55 : 'Nazia';
         return view('admin.mis.hotel.booking.create', compact('data'));
     }
 
@@ -96,8 +98,10 @@ class BookingController extends Controller
 //        return $request->all();
 
         $input = $request->except('_token');
-        $hotel_bill = 0;
 
+        $input['billing']['advance_paid'] = $input['billing']['reserved'] ? 0 : $input['billing']['advance_paid'];
+
+        $hotel_bill = 0;
         $guest = Guest::where( 'contact_no', $request->guest['contact_no'])->get()->first();
         if ( !$guest)
             $guest = Guest::create($input['guest']);
@@ -125,9 +129,9 @@ class BookingController extends Controller
         $date = Configuration::find(1)->software_start_date;
 
         //Compute AIS
-        $voucher = $this->computeAIS( $data, $date);
-        $input['billing']['mis_voucher_id'] = $voucher->id;
-//        return $input['billing'];
+        if ( !$input['billing']['reserved'])
+            $voucher = $this->computeAIS( $data, $date);
+        $input['billing']['mis_voucher_id'] = $input['billing']['reserved'] ? 0 : $voucher->id;
         $billing = Billing::create( $input['billing']);
 
         //Store Booking Data
@@ -136,6 +140,7 @@ class BookingController extends Controller
             $item['guest_id'] = $guest->id;
             $item['bill'] = $booking['bill'][$item['room_id']];
             $item['discount'] = $booking['discount'][$item['room_id']];
+            $item['booking_status'] = $input['billing']['reserved'] ? 1 : 2;
             $billing->booking()->create($item);
         }
 

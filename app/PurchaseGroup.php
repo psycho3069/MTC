@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PurchaseGroup extends Model
 {
-    protected $fillable = [ 'type_id', 'mis_voucher_id', 'date_id', 'user_id' ];
+    protected $fillable = [ 'type_id', 'mis_voucher_id', 'date_id', 'user_id', 'note', ];
 
 
     public function purchases()

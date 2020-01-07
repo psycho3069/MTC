@@ -19,6 +19,7 @@ class CreateM7PurchaseGroupsTable extends Migration
             $table->integer('mis_voucher_id')->unsigned()->index();
             $table->integer('date_id')->unsigned()->index();
             $table->integer('user_id')->unsigned()->index();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

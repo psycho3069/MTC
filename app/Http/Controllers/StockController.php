@@ -41,10 +41,11 @@ class StockController extends Controller
     public function balance(Request $request)
     {
         $input = $request->input;
+//        return $input;
         foreach ($input as $key => $item) {
             $stock = Stock::find($key);
             $stock->update( $item);
-            $stock->currentStock()->where( 'date_id', 0)->first()->update($item);
+            $stock->currentStock()->where( 'date_id', 0)->first()->update([ 'quantity_dr' => $stock->quantity]);
         }
 
         return redirect('stock/opening/'.$stock->stockHead->type_id);

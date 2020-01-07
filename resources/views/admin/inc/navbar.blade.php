@@ -68,6 +68,7 @@
       <div class="dropdown-menu sm-menu">
           <a class="dropdown-item" href="{{ route('billing.index') }}">Bill</a>
           <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_viewer')}}">Rooms Viewer</a>
+          <a class="dropdown-item" href="{{ route('billing.index',['res' => 1]) }}">Reservation</a>
       </div>
     </li>
 

@@ -18,7 +18,7 @@ class SaleController extends Controller
     public function index()
     {
 //        $sales = FoodSale::get()->groupBy('billing_id');
-        $billing = Billing::orderBy('id', 'desc')->get();
+        $billing = Billing::where('reserved', 0)->orderBy('id', 'desc')->get();
 
         foreach ($billing as $item) {
             $food_bill = $item->restaurant->sum('bill');
@@ -37,7 +37,7 @@ class SaleController extends Controller
     {
         $data['bill_id'] = $request->bill_id ? $request->bill_id : 0;
 
-        $billing = Billing::where('checkout_status', 0)->get();
+        $billing = Billing::where('reserved', 0)->where('checkout_status', 0)->orderBy('id', 'desc')->get();
         $data['menu_type'] = MenuType::all();
 
         return view('admin.mis.hotel.restaurant.sale.create', compact('billing', 'data'));

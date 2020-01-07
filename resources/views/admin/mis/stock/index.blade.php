@@ -1,20 +1,19 @@
 @extends('admin.master')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card">
-                    <div class="card-header"> <strong>{{ $type_id != 3 ? 'Inventory' : 'Grocery' }} List</strong> </div>
+    <div class="col-md-7">
+        <samp>
+            <div class="card text-left">
+                <div class="card-header">
+                    <strong>{{ $type_id != 3 ? 'Inventory' : 'Grocery' }} List</strong>
+                    <a href="{{ route('stock.create', ['type_id' => $type_id]) }}" class="btn btn-primary float-right">Add Category </a>
+                </div>
 
-                    <div class="card-body">
-                        <a href="{{ route('stock.create', ['type_id' => $type_id]) }}" class="btn btn-primary">New {{ $type_id != 3 ? 'Inventory' : 'Grocery' }} Category </a>
-                    </div>
-
-                    <table class="table table-bordered table-hover">
+                <div class="card-body">
+                    <table class="table table-bordered table-hover table-info">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            <th></th>
                             <th>Name</th>
                             <th>Description</th>
                             <th>Action</th>
@@ -23,24 +22,24 @@
                         <tbody>
                         @foreach( $stock_heads as $stock_head )
                             <tr>
-                                <td width="5%">{{ $loop->iteration }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>
                                     <div class="tree ">
                                         <div class="row">
-                                            <div class="col-md-9">
-                                                {{ $stock_head->name }}
+                                            <div class="col-md-8">
+                                                <b><code>{{ $stock_head->name }}</code></b>
                                                 <ul>
                                                     @foreach( $stock_head->stock as $item )
                                                         <li>
-                                                            <span>
-                                                                {{ $item->name }} ({{ $item->currentStock ? $item->currentStock->sum('quantity') : 0 }})
-                                                            </span>
+                                                        <span>
+                                                            {{ $item->name }} ({{ $item->currentStock ? $item->currentStock->sum('quantity') : 0 }})
+                                                        </span>
                                                         </li>
                                                     @endforeach
                                                 </ul>
                                             </div>
-                                            <div class="col-md-3">
-                                                Balance
+                                            <div class="col-md-4">
+                                                <b><code>Balance</code></b>
                                                 @foreach( $stock_head->stock as $item )
                                                     <li>{{ $item->currentStock ? $item->currentStock->sum('amount') : 0 }}</li>
                                                 @endforeach
@@ -49,8 +48,8 @@
                                     </div>
 
                                 </td>
-                                <td>{{ $stock_head->description }}</td>
-                                <td width="15%" align="right">
+                                <td>{{ $stock_head->description ? $stock_head->description : 'Not Found'}}</td>
+                                <td width="18%" align="right">
                                     <a href="{{ route('stock.create', ['stock_head_id' => $stock_head->id] ) }}" class="btn btn-sm btn-info">Add Item</a>
                                     <a href="" class="btn btn-sm btn-info">Edit</a>
                                     <a href="" class="btn btn-sm btn-danger" id="delete">Delete</a>
@@ -59,16 +58,14 @@
                         @endforeach
                         </tbody>
                     </table>
-
                 </div>
             </div>
-        </div>
+        </samp>
     </div>
 @endsection
 
 @section('datatable')
 
-    <!-- datatable -->
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
     <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script>

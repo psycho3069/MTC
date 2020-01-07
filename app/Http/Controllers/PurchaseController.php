@@ -65,33 +65,40 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
-
 //        return $request->all();
-        $voucher = collect($request->input);
+
+        $input = collect($request->input);
 //        return $voucher;
-        $input['amount'] = $voucher->sum('amount');
-        $input['mis_ac_head_id'] = $request->type_id;
+        if ( $request->mis_ac_head_id == 3)
+            $data['type'] = 'restaurant_pv';
+        if ( $request->mis_ac_head_id == 5)
+            $data['type'] = 'inventory_pv';
 
-        if ( $input['mis_ac_head_id'] == 3)
-            $input['type'] = 'restaurant_pv';
-        if ( $input['mis_ac_head_id'] == 5)
-            $input['type'] = 'inventory_pv';
+        $data['mis_ac_head_id'] = $request->mis_ac_head_id;
+        $data['amount'] = $input->sum('amount');
+        $date = Configuration::find(1)->software_start_date;
 
-        $mis_voucher = $this->computeAIS( $input, $request->date );
+        $mis_voucher = $this->computeAIS( $data, $date );
 
-        $data['date_id'] = $mis_voucher->date->id;
-        $data['user_id'] = auth()->user()->id;
-        $data['type_id'] = $request->type_id;
+        $p_group['date_id'] = $mis_voucher->date->id;
+        $p_group['user_id'] = auth()->user()->id;
+        $p_group['type_id'] = $data['mis_ac_head_id'];
 
-        $purchase_group = $mis_voucher->purchaseGroup()->create( $data);
+        $purchase_group = $mis_voucher->purchaseGroup()->create( $p_group);
 
-        foreach ($voucher as $item) {
+        foreach ($input as $item) {
+//            return $item;
+            $item['quantity_dr'] = $item['quantity'];
             $purchase = $purchase_group->purchases()->create( $item);
+
+
+            $joji['stock_id'] = $item['stock_id'];
+            $joji['quantity_dr'] = $item['quantity_dr'];
             $mis_stock = MisCurrentStock::where('stock_id', $item['stock_id'])->where('date_id', $purchase_group->date_id )->get()->first();
             if ( $mis_stock)
-                $mis_stock->update(['quantity' => $mis_stock->quantity + $item['quantity'], 'amount' => $mis_stock->amount + $item['amount'] ]);
+                $mis_stock->update(['quantity_dr' => $mis_stock->quantity_dr + $item['quantity_dr'] ]);
             else
-                $purchase_group->date->misStock()->create($item);
+                $purchase_group->date->misStock()->create( $joji);
         }
 
         return redirect()->back();

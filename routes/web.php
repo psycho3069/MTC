@@ -97,6 +97,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('stock/opening/{type_id}', ['as' => 'stock.opening', 'uses' => 'StockController@opening']);
     Route::get('stock/list/{type_id}', ['as' => 'stock.list', 'uses' => 'StockController@list']);
     Route::resource('stock', 'StockController');
+    Route::resource('stocks/deliver', 'StockDeliverController');
 
     Route::resource('receiver', 'ReceiverController');
     Route::resource('staff', 'StaffController');

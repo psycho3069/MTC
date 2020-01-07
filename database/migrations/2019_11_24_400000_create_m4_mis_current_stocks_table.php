@@ -17,9 +17,8 @@ class CreateM4MisCurrentStocksTable extends Migration
             $table->increments('id');
             $table->integer('stock_id')->unsigned()->index();
             $table->integer('date_id')->unsigned()->index();
-            $table->integer('quantity')->unsigned()->default(0);
-            $table->enum('unit', ['kg', 'liter', 'number', ])->nullable();
-            $table->double('amount',14,2)->default(0);
+            $table->smallInteger('quantity_cr')->default(0);
+            $table->smallInteger('quantity_dr')->default(0);
             $table->timestamps();
         });
     }

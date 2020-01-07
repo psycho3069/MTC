@@ -1,65 +1,61 @@
 @extends('admin.master')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card">
-                    <div class="card-header"> <strong> {{ ucfirst($categories->first()->category) }} Opening Balance</strong></div>
-                    <div class="card-body">
-                        <form action="{{ route('stock.balance') }}" method="POST">
-                            {{ csrf_field()}}
-                            <table id="inventory_category" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    {{--                            <th>Date</th>--}}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach( $categories as $category )
-                                    @foreach( $category->stock as $item )
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->name }}</td>
-                                            <td>{{ $item->stockHead->name }}</td>
-                                            <td style="width: 40%" colspan="2">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <input type="number" class="inputbox form-control" name="input[{{$item->id}}][quantity]" value="{{ $item->quantity }}" min="0">
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="number" class="inputbox form-control" name="input[{{$item->id}}][amount]" value="{{ $item->amount }}" min="0">
-                                                    </div>
+    <div class="col-md-7">
+        <samp>
+            <div class="card text-left">
+                <div class="card-header"> <strong> {{ ucfirst($categories->first()->category) }} Opening Balance</strong></div>
+                <div class="card-body">
+                    <form action="{{ route('stock.balance') }}" method="POST">
+                        {{ csrf_field()}}
+                        <table id="inventory_category" class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach( $categories as $category )
+                                @foreach( $category->stock as $item )
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->stockHead->name }}</td>
+                                        <td class="col-md-4">
+                                            <div class="row">
+                                                <input type="number" class="inputbox form-control" name="input[{{$item->id}}][quantity]" value="{{ $item->quantity }}" min="0">
+                                                <div class="col-md-5">
+                                                    <select class="form-control" name="input[{{$item->id}}][unit]">
+                                                        <option value="kg" {{ $item->unit == 'kg' ? 'selected' : '' }}>Kg</option>
+                                                        <option value="liter" {{ $item->unit == 'liter' ? 'selected' : '' }}>Liter</option>
+                                                        <option value="piece" {{ $item->unit == 'piece' ? 'selected' : '' }}>Piece</option>
+                                                    </select>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
-                                </tbody>
-                            </table>
-                            <button type="submit" class="btn btn-dark">Submit</button>
-                        </form>
-                    </div>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        <button type="submit" class="btn btn-dark">Submit</button>
+                    </form>
                 </div>
             </div>
-        </div>
+        </samp>
     </div>
 @endsection
 
 @section('datatable')
 
-    <!-- datatable -->
-    {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#inventory_category').DataTable({
+            $('.table').DataTable({
                 "paging": true,
                 "ordering":  true,
             });

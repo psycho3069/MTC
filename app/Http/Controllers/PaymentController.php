@@ -49,6 +49,8 @@ class PaymentController extends Controller
     {
 //        return $request->all();
         $input = $request->all();
+        $input['checkout_status'] = $request->checkout_status ? $request->checkout_status : 0;
+
         $bill = Billing::find($bill_id);
         if ( $request->co ){
             $input['amount'] = $bill->total_bill - $bill->total_paid + $bill->discount - $input['discount'];
@@ -56,9 +58,16 @@ class PaymentController extends Controller
             $bill->discount = $input['discount'];
             $bill->checkout_status = 1;
         }
+        $bill->booking()->update(['booking_status' => 2]);
+
+        $bill->reserved = 0;
         $bill->checkout_status = $input['checkout_status'];
         $bill->total_paid += $input['amount'];
         $bill->save();
+
+
+
+
 
         $data['mis_ac_head_id'] = 1;
         $data['type'] = 'hotel_rv';

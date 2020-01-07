@@ -222,9 +222,10 @@
                     $('#venue').val((data['view']['name']));
                     $('#vprice').val((data['view']['price']));
                     $('#feature').val((data['view']['feature']));
-                    $('#venueReserved').attr("href", "/training/addvenueRes/"+id)
+                    // $('#venueReserved').attr("href", "/training/addvenueRes/"+id)
                     // $('#venueBooked').attr("href", "/training/add-booking/"+id)
-                    $('#venueBooked').attr("href", "/booking/create?id="+id)
+                    $('#venueReserved').attr("href", "/booking/create?room_id="+id+"&res="+1)
+                    $('#venueBooked').attr("href", "/booking/create?room_id="+id)
                 }
             })
         }

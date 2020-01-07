@@ -18,6 +18,7 @@ class CreateBillingsTable extends Migration
             $table->integer('guest_id')->unsigned()->index();
             $table->integer('mis_voucher_id')->unsigned()->index();
             $table->boolean('checkout_status')->default(0);
+            $table->boolean('reserved')->default(0);
             $table->double('total_bill', 14,2)->default(0);
             $table->double('advance_paid', 14,2)->default(0);
             $table->double('total_paid', 14,2)->default(0);

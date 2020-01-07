@@ -4,7 +4,7 @@
 @section('content')
     <div class="col-md-6">
     <samp>
-        <div class="card">
+        <div class="card text-left">
             <div class="card-header">
                 Book Room
             </div>
@@ -73,8 +73,8 @@
                             <label>Select Category</label>
                             <select class="form-control" id="category">
                                 <option value="0">All</option>
-                                <option value="1">Room</option>
-                                <option value="2">Venue</option>
+                                <option value="1" {{ $data['selected'] <50 ? 'selected' : '' }}>Room</option>
+                                <option value="2" {{ $data['selected'] >=50 ? 'selected' : '' }}>Venue</option>
                             </select>
                         </div>
                     </div>
@@ -84,10 +84,10 @@
                             <select class="form-control" id="room_id">
                                 <option></option>
                                 @foreach( $data['room'] as $item )
-                                    <option value="{{ $item->id }}" class="room">{{ $item->room_no }} - {{ $item->roomCat->name }} | <small>Price: {{ $item->price }}</small></option>
+                                    <option value="{{ $item->id }}" {{ $data['selected'] = $item->id ? 'selected' : '' }} class="room">{{ $item->room_no }} - {{ $item->roomCat->name }} | <small>Price: {{ $item->price }}</small></option>
                                 @endforeach
                                 @foreach( $data['venue'] as $item )
-                                    <option value="{{ $item->id }}" class="venue">{{ $item->name }}  | Price: {{ $item->price }}</option>
+                                    <option value="{{ $item->id }}" {{ $data['selected'] = $item->id ? 'selected' : '' }} class="venue">{{ $item->name }}  | Price: {{ $item->price }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -113,10 +113,12 @@
             <div class="card-body">
                 <form method="POST" action="{{ route('booking.store') }}">
                     {{ csrf_field() }}
-                <span class="float-right">
-                    <label>With Restaurant</label>
-                    <input type="checkbox" name="check" value="1" checked>
-                </span>
+                @if(!$data['reserved'])
+                    <span class="float-left">
+                        <label>With Restaurant</label>
+                        <input type="checkbox" name="check" value="1" checked>
+                    </span>
+                @endif
 
                     <table class="table table-striped">
                         <thead>
@@ -140,12 +142,13 @@
                     <input type="hidden" name="guest[address]">
                     <input type="hidden" name="guest[org_name]">
                     <input type="hidden" name="guest[designation]">
+                    <input type="hidden" name="billing[reserved]" value="{{ $data['reserved'] }}">
 
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label> Advance Amount <small>(tk.)</small></label>
-                                <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="0" required>
+                                <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="0" {{ $data['reserved'] ? 'disabled' : 'required' }}>
                             </div>
                         </div>
                         <div class="col-md-4">
