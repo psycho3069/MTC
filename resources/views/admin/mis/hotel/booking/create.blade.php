@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-6">
+    <div class="col-md-8">
     <samp>
         <div class="card text-left">
             <div class="card-header">
@@ -10,34 +10,31 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Guest Name*</label>
                             <input type="text" class="form-control" id="name">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Contact No*</label>
                             <input type="text" class="form-control" id="contact_no">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Address</label>
                             <input type="text" class="form-control" id="address">
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label>Organization Name</label>
+                            <label>Organization</label>
                             <input type="text" class="form-control" id="org_name">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Designation</label>
                             <input type="text" class="form-control" id="designation">
@@ -45,30 +42,23 @@
                     </div>
                 </div>
 
+
                 <hr>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Check-In*</label>
                             <input type="date" class="form-control date" id="start_date" aria-describedby="emailHelp">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Check-Out*</label>
                             <input type="date" class="form-control date" id="end_date" aria-describedby="emailHelp">
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <div class="form-group">
-                            <label>Visitors</label>
-                            <input type="number" class="form-control" id="visitors" min="1" value="1">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Select Category</label>
                             <select class="form-control" id="category">
@@ -78,30 +68,37 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Select a Room</label>
                             <select class="form-control" id="room_id">
                                 <option></option>
                                 @foreach( $data['room'] as $item )
-                                    <option value="{{ $item->id }}" {{ $data['selected'] = $item->id ? 'selected' : '' }} class="room">{{ $item->room_no }} - {{ $item->roomCat->name }} | <small>Price: {{ $item->price }}</small></option>
+                                    <option value="{{ $item->id }}" {{ $data['selected'] == $item->id ? 'selected' : '' }} class="room">{{ $item->room_no }} - {{ $item->roomCat->name }} | <small>Price: {{ $item->price }}</small></option>
                                 @endforeach
                                 @foreach( $data['venue'] as $item )
-                                    <option value="{{ $item->id }}" {{ $data['selected'] = $item->id ? 'selected' : '' }} class="venue">{{ $item->name }}  | Price: {{ $item->price }}</option>
+                                    <option value="{{ $item->id }}" {{ $data['selected'] == $item->id ? 'selected' : '' }} class="venue">{{ $item->name }}  | Price: {{ $item->price }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group no-wrap">
                             <label>Discount <small>(tk.)</small></label>
                             <input type="number" id="discount" class="form-control" min="0" value="0">
                         </div>
                     </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Visitors</label>
+                            <input type="number" class="form-control" id="visitors" min="1" value="1">
+                        </div>
+                    </div>
                 </div>
 
 
-                <button type="button" id="add-button" class="btn btn-primary btn-block btn-dark float-right">Add</button>
+                <button type="button" id="add-button" class="btn btn-default btn-block">Add</button>
+
                 {{--                <button type="submit" class="btn btn-primary">Submit</button>--}}
             </div>
         </div>
@@ -109,7 +106,7 @@
         <br><br><br>
 
 
-        <div class="card">
+        <div class="card text-left">
             <div class="card-body">
                 <form method="POST" action="{{ route('booking.store') }}">
                     {{ csrf_field() }}
@@ -145,22 +142,24 @@
                     <input type="hidden" name="billing[reserved]" value="{{ $data['reserved'] }}">
 
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label> Advance Amount <small>(tk.)</small></label>
-                                <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="0" {{ $data['reserved'] ? 'disabled' : 'required' }}>
+                        @if( !$data['reserved'])
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label> Advance Amount <small>(tk.)</small></label>
+                                    <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="0" {{ $data['reserved'] ? 'disabled' : 'required' }}>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
+                        @endif
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Gross Discount <small>(tk.)</small></label>
                                 <input type="number" name="billing[discount]" value="0" min="0" class="form-control">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Note</label>
-                                <input type="text" name="billing[note]" class="form-control">
+                                <textarea class="form-control" name="billing[note]" cols="3" rows="2"></textarea>
                             </div>
                         </div>
                     </div>

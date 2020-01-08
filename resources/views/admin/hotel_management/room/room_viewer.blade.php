@@ -13,70 +13,83 @@
                 color: #fff;
             }
         </style>
-        @foreach($venuereservations as $reseve)
-            @if($reseve->venue_id == 55 && $reseve->end_date >= date('Y-m-d'))
-                <style>
-                    .room_2{
-                        background: #0c4d90;
-                    }
-                    .room_2:hover{
-                        background: #042f5d;
-                    }
-                </style>
+
+        @foreach($booking as $book)
+            @if($book->room_id == 55)
+                @if( $book->booking_status == 1)
+                    <style>
+                        .room_2{
+                            background: #0c4d90;
+                        }
+                        .room_2:hover{
+                            background: #042f5d;
+                        }
+                    </style>
+                @elseif( $book->booking_status == 2)
+                    <style>
+                        .room_2{
+                            background: #ff0000;
+                        }
+                        .room_2:hover{
+                            background: #b70000;
+                        }
+                    </style>
+                @endif
             @endif
-            @if($reseve->venue_id == 56 && $reseve->end_date >= date('Y-m-d') )
-                <style>
-                    .room_7{
-                        background: #0c4d90;
-                    }
-                    .room_7:hover{
-                        background: #042f5d;
-                    }
-                </style>
+
+
+
+            @if($book->room_id == 56)
+                @if( $book->booking_status == 1)
+                    <style>
+                        .room_7{
+                            background: #0c4d90;
+                        }
+                        .room_7:hover{
+                            background: #042f5d;
+                        }
+                    </style>
+                @endif
+
+                @if($book->booking_status == 2)
+                    <style>
+                        .room_7{
+                            background: #ff0000;
+                        }
+                        .room_7:hover{
+                            background: #b70000;
+                        }
+                    </style>
+                @endif
             @endif
-            @if($reseve->venue_id == 57 && $reseve->end_date >= date('Y-m-d') )
-                <style>
-                    .room_8{
-                        background: #0c4d90;
-                    }
-                    .room_8:hover{
-                        background: #042f5d;
-                    }
-                </style>
+
+
+            @if($book->room_id == 57)
+                @if( $book->booking_status == 1)
+                    <style>
+                        .room_8{
+                            background: #0c4d90;
+                        }
+                        .room_8:hover{
+                            background: #042f5d;
+                        }
+                    </style>
+                @endif
+
+                @if($book->booking_status == 2)
+                    <style>
+                        .room_8{
+                            background: #ff0000;
+                        }
+                        .room_8:hover{
+                            background: #b70000;
+                        }
+                    </style>
+                @endif
             @endif
+
         @endforeach
-        @foreach($venuebookings as $bookings)
-            @if($bookings->venue_id == 55 && $bookings->end_date >= date('Y-m-d') )
-                <style>
-                    .room_2{
-                        background: #ff0000;
-                    }
-                    .room_2:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-            @if($bookings->venue_id == 56 && $bookings->end_date >= date('Y-m-d') )
-                <style>
-                    .room_7{
-                        background: #ff0000;
-                    }
-                    .room_7:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-            @if($bookings->venue_id == 57 && $bookings->end_date >= date('Y-m-d') )
-                <style>
-                    .room_8{
-                        background: #ff0000;
-                    }
-                    .room_8:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-        @endforeach
+
     @stop
 
 @section('rooms')

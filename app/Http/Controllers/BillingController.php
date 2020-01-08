@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Billing;
+use App\Booking;
+use App\Configuration;
+use App\Guest;
 use App\Http\Traits\CustomTrait;
 use App\Room;
 use App\Venue;
@@ -35,6 +38,7 @@ class BillingController extends Controller
     {
         $data['reserved'] = $request->res ? 1 : 0;
         $billing = Billing::where('reserved', 0)->orderBy('id','desc')->get();
+
         if ($request->res){
             $billing = Billing::where('reserved', 1)->orderBy('id','desc')->get();
             return view('admin.mis.hotel.billing.reservation.index', compact('billing'));
@@ -63,7 +67,7 @@ class BillingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**

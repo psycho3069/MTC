@@ -7,13 +7,13 @@
             color: #ff0000;
         }
     </style>
-    <div class="col-md-5">
+    <div class="col-md-7">
         <samp>
-            <div class="card">
-                <div class="card-header text-left">
-                    Sale Food
+            <div class="card text-left">
+                <div class="card-header">
+                    <b><code>Sale Food</code></b>
                 </div>
-                <div class="card-body text-left">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -68,7 +68,7 @@
 
 
         <samp>
-            <div class="card">
+            <div class="card text-left">
                 <div class="card-body">
                     <form method="POST" action="{{ route('sales.store') }}">
                         {{ csrf_field() }}
@@ -86,7 +86,7 @@
 
                             </tbody>
                         </table>
-                        <button type="submit" class="btn btn-dark float-right">Submit</button>
+                        <button type="submit" class="btn btn-dark">Submit</button>
                     </form>
 
                 </div>

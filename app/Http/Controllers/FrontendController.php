@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Booking;
 use App\VenueBooking;
 use Illuminate\Http\Request;
 use App\RoomBooking;
@@ -27,7 +28,9 @@ class FrontendController extends Controller
         $venuereservations=DB::table('v2_venue_reservations')->get();
         $venuebookings=DB::table('v3_venue_bookings')->get();
 
-        return view('admin.hotel_management.room.room_viewer', compact('venues','venuereservations','venuebookings'));
+        $booking = Booking::where('end_date','>=', date('Y-m-d'))->get();
+
+        return view('admin.hotel_management.room.room_viewer', compact('venues','venuereservations','venuebookings', 'booking'));
     }
 
 
@@ -39,12 +42,14 @@ class FrontendController extends Controller
     {
         $reservation = DB::table('h7_room_reservations')->get();
         $venuereservation = DB::table('v2_venue_reservations')->get();
-        $booking = DB::table('h8_room_bookings')->get();
+        $booked = DB::table('h8_room_bookings')->get();
         $venuebooking = DB::table('v3_venue_bookings')->get();
         $rooms = DB::table('h6_rooms')->get();
         $room_category = DB::table('h5_room_categories')->get();
         $venues = DB::table('v1_venues')->get();
-        return view('admin.hotel_management.room.floor1', compact('reservation', 'booking', 'rooms', 'room_category', 'venues', 'venuereservation', 'venuebooking'));
+
+        $booking = Booking::where('end_date','>=', date('Y-m-d'))->get();
+        return view('admin.hotel_management.room.floor1', compact('reservation', 'booking', 'rooms', 'room_category', 'venues', 'venuereservation', 'venuebooking', 'booked'));
     }
 
     public function viewFloor1($id)

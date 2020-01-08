@@ -79,10 +79,15 @@ class BookingController extends Controller
      */
     public function create(Request $request)
     {
-        $data['room'] = Room::get();
-        $data['venue'] = Venue::all();
+//        return $request->all();
+        $booked = Booking::where('end_date','>=', date('Y-m-d'))->get()->pluck('room_id');
+//        return $booked;
+        $data['room'] = Room::get()->except($booked->toArray());
+        $data['venue'] = Venue::get()->except($booked->toArray());
+//        return $data['venue'];
         $data['selected'] = $request->room_id ? $request->room_id : 0;
         $data['reserved'] = $request->res ? 1 : 0;
+
 //        return !$data['reservation'] ? 55 : 'Nazia';
         return view('admin.mis.hotel.booking.create', compact('data'));
     }
@@ -98,6 +103,8 @@ class BookingController extends Controller
 //        return $request->all();
 
         $input = $request->except('_token');
+
+//        return $item['booking_status'] = $input['billing']['reserved'] ? 1 : 2;
 
         $input['billing']['advance_paid'] = $input['billing']['reserved'] ? 0 : $input['billing']['advance_paid'];
 

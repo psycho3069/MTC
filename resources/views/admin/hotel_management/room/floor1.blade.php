@@ -67,8 +67,36 @@
             @endif
         @endforeach
 
+
+        @foreach( $booking as $item )
+            @if($book->room_id == $room_id3)
+                @if( $book->booking_status == 1)
+                    <style>
+                        #room<?php echo $room_id3 ?>{
+                            background: #0c4d90;
+                        }
+                        #room<?php echo $room_id3 ?>:hover{
+                            background: #042f5d;
+                        }
+                    </style>
+                @elseif( $book->booking_status == 2)
+                    <style>
+                        #room<?php echo $room_id3 ?>{
+                            background: #ff0000;
+                        }
+                        #room<?php echo $room_id3 ?>:hover{
+                            background: #b70000;
+                        }
+                    </style>
+                @endif
+            @endif
+
+
+
+        @endforeach
+
                     {{--For Booking status--}}
-        @foreach($booking as $value)
+        @foreach($booked as $value)
             @if($value->room_id == $room_id3 && $value->end_date >= date('Y-m-d'))
                 <style>
                     #room<?php echo $room_id3 ?>{
