@@ -283,18 +283,20 @@ class ReportController extends Controller
 //        return $input;
         $amount[] = 0;
         $data['dates'] = Date::whereBetween('date', [$input['start_date'], $input['end_date']])->get();
-        $current_bl = Process::where('date_id', '<=', $data['dates']->max('id'))->where('thead_id', $input['thead_id'] )->get();
-        $data['types'] = VoucherType::all();
-        $data['theads'] = TransactionHead::all();
-        $thead = $data['theads']->find($request->thead_id);
 
-        $vgroups = VoucherGroup::whereIn('date_id', $data['dates']->pluck('id'))->orderBy('date_id', 'desc')->get();
-        if ($request->category == 1)
-            $vgroups = $vgroups->where('type_id', '>', 4);
-        if ( $request->category == 2)
-            $vgroups = $vgroups->where('type_id', '<', 4);
-        if ($request->type_id)
-            $vgroups = $vgroups->where('type_id', $request->type_id);
+        if ( $data['dates']){
+            $current_bl = Process::where('date_id', '<=', $data['dates']->max('id'))->where('thead_id', $input['thead_id'] )->get();
+            $data['types'] = VoucherType::all();
+            $data['theads'] = TransactionHead::all();
+            $thead = $data['theads']->find($request->thead_id);
+
+            $vgroups = VoucherGroup::whereIn('date_id', $data['dates']->pluck('id'))->orderBy('date_id', 'desc')->get();
+            if ($request->category == 1)
+                $vgroups = $vgroups->where('type_id', '>', 4);
+            if ( $request->category == 2)
+                $vgroups = $vgroups->where('type_id', '<', 4);
+            if ($request->type_id)
+                $vgroups = $vgroups->where('type_id', $request->type_id);
 
 
 //        $vgroups = VoucherGroup::where('type_id', '>',4)->whereIn('date_id', $data['dates']->pluck('id'))->orderBy('id')->get();
@@ -303,37 +305,43 @@ class ReportController extends Controller
 //        if ($request->type_id)
 //            $vgroups = $vgroups->where('type_id', $request->type_id);
 
-        $data['vouchers'] = Voucher::where('credit_head_id', $request->thead_id)->orWhere('debit_head_id', $request->thead_id)->get()->whereIn('v_group_id', $vgroups->pluck('id'));
+            $data['vouchers'] = Voucher::where('credit_head_id', $request->thead_id)->orWhere('debit_head_id', $request->thead_id)->get()->whereIn('v_group_id', $vgroups->pluck('id'));
 
-        $data['opening_bl'] = $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
-        $data['prev_bl'] = $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('credit') - $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('debit');
+            $data['opening_bl'] = $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
+            $data['prev_bl'] = $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('credit') - $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('debit');
 
-        if ( ($thead->ac_head_id == 1 || $thead->ac_head_id == 4)){
-            if( $data['opening_bl'])
-                $data['opening_bl'] = - $data['opening_bl'];
-            if ( $data['prev_bl'])
-                $data['prev_bl'] = - $data['prev_bl'];
-        }
+            if ( ($thead->ac_head_id == 1 || $thead->ac_head_id == 4)){
+                if( $data['opening_bl'])
+                    $data['opening_bl'] = - $data['opening_bl'];
+                if ( $data['prev_bl'])
+                    $data['prev_bl'] = - $data['prev_bl'];
+            }
 
 
-        foreach ($data['vouchers']->groupBy('date_id') as $key => $items) {
-            $balance = $current_bl->where('date_id', '<=', $key-1);
+            foreach ($data['vouchers']->groupBy('date_id') as $key => $items) {
+                $balance = $current_bl->where('date_id', '<=', $key-1);
 //            $z = $balance->sum('debit') - $balance->sum('credit');
 //            $data['prev_bl'][$items->first()->id] = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4) ? $z : -$z;
 //            $data['prev_bl'] = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4) ? $z : -$z;
-            $credit = 0; $debit =0;
+                $credit = 0; $debit =0;
 
-            foreach ($items as $item) {
-                if ( $item->credit_head_id == $thead->id)
-                    $credit += $item->amount;
-                if ( $item->debit_head_id == $thead->id)
-                    $debit += $item->amount;
-                $y = $balance->sum('debit') + $debit - $balance->sum('credit') - $credit ;
-                $amount[$item->id] = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4) ? $y  : -$y;
+                foreach ($items as $item) {
+                    if ( $item->credit_head_id == $thead->id)
+                        $credit += $item->amount;
+                    if ( $item->debit_head_id == $thead->id)
+                        $debit += $item->amount;
+                    $y = $balance->sum('debit') + $debit - $balance->sum('credit') - $credit ;
+                    $amount[$item->id] = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4) ? $y  : -$y;
+                }
             }
+
+            return view('admin.ais.report.show_ledger', compact('current_bl', 'data', 'input', 'amount'));
+
         }
 
-        return view('admin.ais.report.show_ledger', compact('current_bl', 'data', 'input', 'amount'));
+//        return view('admin.ais.report.show_ledger', compact('current_bl', 'data', 'input', 'amount'));
+
+//        return $data;
 
     }
 
@@ -378,6 +386,7 @@ class ReportController extends Controller
                     }
                 }
             }
+
 
             return view('admin.ais.report.daily', compact('data', 'record', 'info'));
         }
@@ -443,6 +452,7 @@ class ReportController extends Controller
                 }
             }
         }
+
 
 
         return view('admin.ais.report.daily', compact('data', 'record', 'info', 'input'));

@@ -23,8 +23,6 @@
           <!-- <a class="dropdown-item" href="{{URL::to('/maintenance')}}">Role Wise Permission</a> -->
           <!-- <a class="dropdown-item" href="{{URL::to('/admin/change_password/changepassword')}}">Change Password</a> -->
               <a class="dropdown-item" href="{{URL::to('/maintenance')}}">Change Password</a>
-              {{-- <a class="dropdown-item" href="{{URL::to('/guest-list')}}">Guest List</a> --}}
-              {{-- <a class="dropdown-item" href="{{ route('checkoutList') }}">Entery Register List</a> --}}
           </div>
       </li>
 
@@ -43,10 +41,6 @@
               Management
           </a>
           <div class="dropdown-menu sm-menu">
-              {{--        <a class="dropdown-item" href="{{URL::to('/training/venueRes')}}">Venue Reservation</a>--}}
-              {{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/reservation/room_reservation_list')}}">Reservation</a>--}}
-              {{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/booking/booking_list')}}">Booking</a>--}}
-              {{--          <a class="dropdown-item" href="{{URL::to('/hotel_management/billing/billing_list')}}">Billing</a>--}}
               <a class="dropdown-item" href="{{URL::to('/hotel_management/building/building_type_list')}}">Building Types</a>
               <a class="dropdown-item" href="{{URL::to('/hotel_management/building/building_list')}}">Buildings</a>
               <a class="dropdown-item" href="{{URL::to('/hotel_management/floor/floor_type_list')}}">Floor Types</a>
@@ -54,10 +48,22 @@
               <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_category_list')}}">Room Category</a>
               <a class="dropdown-item" href="{{URL::to('/hotel_management/room/room_list')}}">Rooms</a>
               <a class="dropdown-item" href="{{URL::to('/training/venue')}}">Venue</a>
+          </div>
+      </li>
 
 
-              {{--        <a class="dropdown-item" href="{{URL::to('/training/venue-booking-list')}}">Venue Booking</a>--}}
-              {{--        <a class="dropdown-item" href="{{URL::to('/training/venue-billing-list/')}}">Venue Billing</a>--}}
+      <li class="nav-item dropdown dmenu">
+          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              HR & Payroll
+          </a>
+          <div class="dropdown-menu sm-menu">
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/department/departments')}}">Department</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/employee_designation/employee_designations')}}">Employee Designation</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/salary_grade/salary_grades')}}">Salary Grade</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/employee/employees')}}">Employee</a>
+              <a class="dropdown-item" href="{{ route('supplier.index') }}">Supplier</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/leave/leave_categories')}}">Leave Category</a>
+              <a class="dropdown-item" href="{{URL::to('/hr_payroll/leave/leaves')}}">Leave</a>
           </div>
       </li>
 
@@ -73,21 +79,6 @@
     </li>
 
 
-      <li class="nav-item dropdown dmenu">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Grocery
-      </a>
-          <div class="dropdown-menu sm-menu">
-              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Groceries</a>
-              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Stock</a>
-              <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 3]) }}">Purchase</a>
-              <a class="dropdown-item" href="{{ route('deliver.index') }}">Delivery</a>
-              <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 3]) }}">Opening Balance</a>
-          </div>
-    </li>
-
-
-
 
       <li class="nav-item dropdown dmenu">
           <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
@@ -96,32 +87,24 @@
           <div class="dropdown-menu sm-menu">
               <a class="dropdown-item" href="{{ route('sales.index') }}">Sales</a>
               <a class="dropdown-item" href="{{ route('sales.create') }}">Sale Food</a>
-              {{-- type_id = 2 for Restaurant, cat_id = 1 Suppliers--}}
-              <a class="dropdown-item" href="{{ route('staff.index', ['type_id' => 3, 'cat_id' => 1]) }}">Supplier</a>
-{{--              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Grocery Category</a>--}}
-{{--              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Grocery List</a>--}}
-{{--              <a class="dropdown-item" href="{{ route('purchase.create', ['type_id' => 3]) }}">Purchase</a>--}}
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item/meal_items')}}">Meal Items</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item_type/meal_item_types')}}">Meal Types</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu/menus')}}">Menus</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu_type/menu_types')}}">Menu Types</a>
-{{--              <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 3]) }}">Grocery Balance</a>--}}
-{{--              <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 3]) }}">Opening Balance</a>--}}
           </div>
       </li>
 
 
       <li class="nav-item dropdown dmenu">
           <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-              HR & Payroll
+              Grocery
           </a>
           <div class="dropdown-menu sm-menu">
-              <a class="dropdown-item" href="{{URL::to('/hr_payroll/department/departments')}}">Department</a>
-              <a class="dropdown-item" href="{{URL::to('/hr_payroll/employee_designation/employee_designations')}}">Employee Designation</a>
-              <a class="dropdown-item" href="{{URL::to('/hr_payroll/salary_grade/salary_grades')}}">Salary Grade</a>
-              <a class="dropdown-item" href="{{URL::to('/hr_payroll/employee/employees')}}">Employee</a>
-              <a class="dropdown-item" href="{{URL::to('/hr_payroll/leave/leave_categories')}}">Leave Category</a>
-              <a class="dropdown-item" href="{{URL::to('/hr_payroll/leave/leaves')}}">Leave</a>
+              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Groceries</a>
+              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Stock</a>
+              <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 3]) }}">Purchase</a>
+              <a class="dropdown-item" href="{{ route('deliver.index') }}">Delivery</a>
+              <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 3]) }}">Opening Balance</a>
           </div>
       </li>
 
@@ -133,11 +116,9 @@
           </a>
           <div class="dropdown-menu sm-menu">
               {{-- type_id = 1 for Inventory, cat_id = 1 Suppliers--}}
-              <a class="dropdown-item" href="{{ route('staff.index', ['type_id' => 5, 'cat_id' => 1]) }}">Supplier</a>
-              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 5]) }}">Inv List</a>
-              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 5]) }}">Category List</a>
-              <a class="dropdown-item" href="{{ route('purchase.create', ['type_id' => 5]) }}">Purchase</a>
-              <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 5]) }}">Inventory Balance</a>
+              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 5]) }}">Inventories</a>
+              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 5]) }}">Stock</a>
+              <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 5]) }}">Purchase</a>
               <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 5]) }}">Opening Balance</a>
           </div>
       </li>

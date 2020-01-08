@@ -110,7 +110,7 @@ class StockController extends Controller
      */
     public function edit($id)
     {
-        //
+
     }
 
     /**

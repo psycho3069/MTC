@@ -20,5 +20,11 @@ class PurchaseGroup extends Model
     }
 
 
+    public function mis_voucher()
+    {
+        return $this->belongsTo('App\MisVoucher', 'mis_voucher_id');
+    }
+
+
 
 }

@@ -7,7 +7,7 @@
             color: #ff0000;
         }
     </style>
-    <div class="col-md-5">
+    <div class="col-md-7">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -83,7 +83,7 @@
 
     <br><br>
 
-    <div class="col-md-6">
+    <div class="col-md-7">
         <samp>
             <div class="card text-left">
                 <div class="card-header">Purchased List</div>

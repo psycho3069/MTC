@@ -11,96 +11,92 @@
 </style>
     <div class="col-md-7">
 
-        <form action="{{ route('vouchers.list') }}" method="POST">
-            {{ csrf_field() }}
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Start Date</label>
-                            <div>
+        <samp>
+            <div class="card text-left">
+                <div class="card-header">
+                    <form action="{{ route('vouchers.list') }}" method="POST">
+                        {{ csrf_field() }}
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Start Date</label>
                                 <input type="date" name="start_date" class="form-control">
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label>End Date</label>
-                            <div>
+                            <div class="col-md-3">
+                                <label>End Date</label>
                                 <input type="date" name="end_date" value="{{ date('Y-m-d') }}" class="form-control">
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Type</label>
-                            <select name="category" class="form-control" id="category">
-                                <option value="0">All</option>
-                                <option value="1">Auto</option>
-                                <option value="2">Manual</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Category</label>
-                            <select name="type_id" class="form-control" id="type">
-                                <option value="0">All</option>
-                                @foreach( $data['types'] as $item )
-                                    <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} >{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="col-md-2" style="margin-top: 15px;">
-                    <button class="btn btn-dark btn-sm show-button">Show</button>
-                </div>
-                </div>
-            </div>
 
-        </form>
-        <br><br><br>
-        <table class="table table-bordered table-hover table-info">
-            <thead>
-            <tr>
-                <th></th>
-                <th class="">Code</th>
-                <th class="">Type</th>
-                <th class="">Amount</th>
-                <th class="">Narration/Cheque Details</th>
-                <th class="">Entry By</th>
-                <th class="">Date</th>
-                <th class="">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach( $data['v_group'] as $item )
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $item->code }}</td>
-                    <td>{{ $item->type_id == 8 || $item->type_id == 9 ? 'Auto Payment Voucher' : ( $item->type_id >= 5 ? 'Auto Receipt Voucher' : $item->type->name) }}</td>
-                    <td>{{ $item->vouchers->sum('amount') }}</td>
-                    <td>{{ str_limit($item->note, 18) }}</td>
-                    <td>{{ $item->user->name }}</td>
-                    <td>{{ $item->date->date }}</td>
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="{{ route('vouchers.show', $item->id) }}">View</a>
-                                <a class="dropdown-item" href="{{ route('vouchers.edit', $item->id) }}">Edit</a>
-                                <div class="dropdown-divider"></div>
-{{--                                <a class="dropdown-item" href="#">Delete</a>--}}
+                            <div class="col-md-2">
+                                <label>Type</label>
+                                <select name="category" class="form-control" id="category">
+                                    <option value="0">All</option>
+                                    <option value="1">Auto</option>
+                                    <option value="2">Manual</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Category</label>
+                                <select name="type_id" class="form-control" id="type">
+                                    <option value="0">All</option>
+                                    @foreach( $data['types'] as $item )
+                                        <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} >{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-1" style="margin-top: 2%;">
+                                <button class="btn btn-dark btn-sm show-button">Show</button>
                             </div>
                         </div>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <table class="table table-bordered table-hover table-info">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th class="">Code</th>
+                            <th class="">Type</th>
+                            <th class="">Amount</th>
+                            <th class="">Narration/Cheque Details</th>
+                            <th class="">Entry By</th>
+                            <th class="">Date</th>
+                            <th class="">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach( $data['v_group'] as $item )
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->code }}</td>
+                                <td>{{ $item->type_id == 8 || $item->type_id == 9 ? 'Auto Payment Voucher' : ( $item->type_id >= 5 ? 'Auto Receipt Voucher' : $item->type->name) }}</td>
+                                <td>{{ $item->vouchers->sum('amount') }}</td>
+                                <td>{{ str_limit($item->note, 18) }}</td>
+                                <td>{{ $item->user->name }}</td>
+                                <td>{{ $item->date->date }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="{{ route('vouchers.show', $item->id) }}">View</a>
+                                            <a class="dropdown-item" href="{{ route('vouchers.edit', $item->id) }}">Edit</a>
+                                            <div class="dropdown-divider"></div>
+                                            {{--                                <a class="dropdown-item" href="#">Delete</a>--}}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </samp>
+
 
     </div>
 
@@ -144,10 +140,8 @@
 
 
 @section('datatable')
-
-    <!-- datatable -->
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.table').DataTable({
@@ -156,5 +150,4 @@
             });
         } );
     </script>
-
 @endsection

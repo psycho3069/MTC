@@ -6,7 +6,7 @@
             <div class="card text-left">
                 {{--                <div class="card-header"> <strong>All {{ ucfirst($categories->first()->category) }} Item</strong></div>--}}
                 <div class="card-header">
-                    {{ date('d M, Y', strtotime($p_group->created_at)) }} Purchase List
+                    <b>{{ date('d M, Y', strtotime($p_group->created_at)) }} Purchase</b>
                 </div>
 
                 <div class="card-body">
@@ -58,8 +58,8 @@
 
 @section('datatable')
 
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.table').DataTable({
@@ -70,5 +70,3 @@
     </script>
 
 @endsection
-
-

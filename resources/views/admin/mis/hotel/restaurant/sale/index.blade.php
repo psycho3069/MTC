@@ -5,8 +5,8 @@
     <div class="col-md-7">
         <br><br><br>
         <samp>
-            <div class="card">
-                <div class="card-header text-left">
+            <div class="card text-left">
+                <div class="card-header">
                     Food Sales
                     <button type="button" class="btn btn-info float-right" onclick='window.location="{{ route('sales.create') }}"'>Add Sales</button>
                 </div>
@@ -56,9 +56,8 @@
 
 @section('datatable')
 
-    <!-- datatable -->
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.table').DataTable({

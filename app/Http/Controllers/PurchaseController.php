@@ -7,8 +7,8 @@ use App\Employee;
 use App\Http\Traits\CustomTrait;
 use App\MisCurrentStock;
 use App\PurchaseGroup;
-use App\Staff;
 use App\StockHead;
+use App\Supplier;
 use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
@@ -52,8 +52,8 @@ class PurchaseController extends Controller
     public function create(Request $request)
     {
         $type_id = $request->type_id != 5 ? 3 : 5;
-        $data['supplier'] = Staff::get()->where( 'type_id', $type_id);
-        $data['receiver'] = Employee::get()->where( 'type_id', $type_id);
+        $data['supplier'] = Supplier::all();
+        $data['receiver'] = Employee::all();
         $stock_head = StockHead::where( 'type_id', $type_id)->get();
         return view('admin.mis.purchase.create', compact('stock_head', 'type_id', 'data'));
     }
@@ -144,6 +144,12 @@ class PurchaseController extends Controller
      */
     public function edit($id)
     {
+        $p_group = PurchaseGroup::find($id);
+        $data['supplier'] = Supplier::all();
+        $data['receiver'] = Employee::all();
+//        return $p_group->purchases;
+        return view('admin.mis.purchase.edit', compact('p_group', 'data'));
+//        return $id;
 
     }
 
@@ -156,7 +162,25 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+//        return $request->all();
+        $input = collect($request->input);
+
+        $p_group = PurchaseGroup::find($id);
+
+        //updating AIS
+        $data['note'] = 'Updated From Grocery Purchase';
+        $amount['old'] = $p_group->purchases->sum('amount');
+        $amount['new'] = $input->sum('amount');
+        $this->updateAIS( $p_group, $amount, $data);
+
+        foreach ($input as $key => $item) {
+            $p_group->purchases->find($key)->update($item);
+        }
+
+        $p_group->update([ 'note' => $request->note]);
+
+        return redirect('purchase?type_id='.$p_group->type_id);
+
     }
 
     /**

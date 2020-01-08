@@ -2,12 +2,12 @@
 
 
 @section('content')
-    <div class="col-md-8">
+    <div class="col-md-7">
         <br><br><br>
         <div class="card text-left">
             <div class="card-header">
-                Delivery List
-                <button type="button" class="btn btn-default btn-sm pull-right" onclick='window.location="{{ route('deliver.create') }}"'>New Delivery</button>
+                Supplier List
+                <button type="button" class="btn btn-sm btn-default pull-right" onclick='window.location="{{ route('supplier.create') }}"'>Add New</button>
             </div>
             <div class="card-body">
                 <samp>
@@ -15,34 +15,36 @@
                         <thead>
                         <tr>
                             <th></th>
-                            <th class="">Date</th>
-                            <th class="">Item name</th>
-                            <th class="">Delivery quantity</th>
-                            <th class=""></th>
+                            <th>Name</th>
+                            <th>Contact No.</th>
+                            <th>Address</th>
+                            <th>Designation</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach( $deliveries as $item )
+                        @foreach( $suppliers as $item )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d M,y', strtotime($item->created_at)) }}</td>
-                                <td>{{ $item->stock->name }}</td>
-                                <td>{{ $item->quantity.' '.$item->stock->unit }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td>{{ $item->contact_no }}</td>
+                                <td>{{ $item->address ? $item->address : 'Not found' }}</td>
+                                <td>{{ $item->designation }}</td>
                                 <td>
                                     <div class="btn-group">
                                         <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            Action
+                                            More
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item font-color" href="">Edit</a>
+                                            <a class="dropdown-item font-color" href="{{ route('supplier.edit', $item->id) }}">Edit</a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item font-color" href="#">Delete</a>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-
                         @endforeach
+
                         </tbody>
                     </table>
                 </samp>

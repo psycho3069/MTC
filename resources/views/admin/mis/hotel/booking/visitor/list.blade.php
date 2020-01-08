@@ -14,7 +14,7 @@
                 <b>{{ $booking->room_id < 50 ? 'Room No-'.$booking->room->room_no : $booking->venue->name }} Visitors</b>
             </div>
             <div class="card-body">
-                <table class="table table-borderless table-hover">
+                <table class="table table-borderless table-hover table-info">
                     <thead>
                     <tr>
                         <th></th>
