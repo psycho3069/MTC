@@ -10,18 +10,19 @@ use App\TransactionHistory;
 use App\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class ProcessController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $all_bl = Process::all();
         $dates = Date::all();
 
-        if ( $dates->isEmpty() ){
-            $status = 0;
-            return view('admin.ais.report.daily', compact('status'));
-        }
+//        $data = Process::where('debit', '>', 0)->orWhere('credit', '>', 0)->get()->groupBy('date_id');
+//        $data = new LengthAwarePaginator($data, count($data), 2);
+//        $data->setPath('process');
 
         return view('admin.ais.process.index', compact('dates', 'all_bl'));
     }

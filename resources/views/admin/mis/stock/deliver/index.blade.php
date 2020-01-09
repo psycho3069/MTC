@@ -7,7 +7,7 @@
         <div class="card text-left">
             <div class="card-header">
                 Delivery List
-                <button type="button" class="btn btn-default btn-sm pull-right" onclick='window.location="{{ route('deliver.create') }}"'>New Delivery</button>
+                <button type="button" class="btn btn-i btn-sm pull-right" onclick='window.location="{{ route('deliver.create') }}"'>New Delivery</button>
             </div>
             <div class="card-body">
                 <samp>

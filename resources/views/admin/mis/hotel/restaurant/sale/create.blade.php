@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="button" id="add-button" class="btn btn-default btn-block">Add</button>
+                    <button type="button" id="add-button" class="btn btn-i btn-block">Add</button>
                 </div>
             </div>
         </samp>

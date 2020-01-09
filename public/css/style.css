@@ -102,10 +102,34 @@ strong {
     margin-top: 45%;
 }
 
-.btn-default {
+
+.btn-ii {
+    color: #f0f8ffed;
+    background-color: #91c429;
+    border-color: #ccc;
+}
+
+.btn-ii.focus, .btn-ii:focus, .btn-ii:hover {
+    color: #f2f2f2 !important;
+    background: #a8c444e6;
+}
+
+
+.btn-i {
     color: #fff;
     background-color: #174eb8;
     border-color: #343a40;
+}
+
+.btn-i.focus, .btn-i:focus, .btn-i:hover {
+    color: #ffffffd9 !important;
+    background: #2154cee6;
+}
+
+
+.ml-book {
+    margin-bottom: 18% !important;
+    margin-left: 1%;
 }
 
 
@@ -113,6 +137,11 @@ strong {
 .no-wrap {
     white-space: nowrap;
 }
+
+
+
+
+
 
 
 

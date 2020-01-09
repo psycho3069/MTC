@@ -6,7 +6,7 @@
     <samp>
         <div class="card text-left">
             <div class="card-header">
-                Book Room
+                <b>Booking</b>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -97,7 +97,7 @@
                 </div>
 
 
-                <button type="button" id="add-button" class="btn btn-default btn-block">Add</button>
+                <button type="button" id="add-button" class="btn btn-i btn-block">Add</button>
 
                 {{--                <button type="submit" class="btn btn-primary">Submit</button>--}}
             </div>
@@ -163,7 +163,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-dark">Submit</button>
+                    <button type="submit" class="btn btn-default">Submit</button>
                 </form>
 
             </div>

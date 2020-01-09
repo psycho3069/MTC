@@ -104,7 +104,7 @@
                             </samp>
                         </div>
                         <div class="card-footer">
-                            <button type="button" class="btn btn-block btn-default pull-right" id="add-button">Add</button>
+                            <button type="button" class="btn btn-block btn-i pull-right" id="add-button">Add</button>
                         </div>
                     </div>
                 </div>

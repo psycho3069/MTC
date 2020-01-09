@@ -3,167 +3,32 @@
     @section('header_styles')
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
         <link href="{{asset('css/room_style.css')}}" rel="stylesheet">
-        <?php
-        $room_id40 = 40;
-        $room_id41 = 41;
-        $room_id42 = 42;
-        $room_id43 = 43;
-        $room_id44 = 44;
-        $room_id45 = 45;
 
-        {   ?>
-        @foreach($reservation as $value)
-            @if($value->room_id == $room_id40 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id40 ?>{
+    @foreach( $booking as $item )
+        @php( $room_id = 'room_'.$item->room_id)
+        {{--Reservation--}}
+        @if( $item->booking_status == 1)
+            <style>
+                #{{ $room_id }}{
                         background: #0c4d90;
-                    }
-                    #room<?php echo $room_id40 ?>:hover{
-                        background: #042f5d;
-                    }
-                </style>
-            @endif
-            @if($value->room_id == $room_id41 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id41 ?>{
-                        background: #0c4d90;
-                    }
-                    #room<?php echo $room_id41 ?>:hover{
-                        background: #042f5d;
-                    }
-                </style>
-            @endif
-            @if($value->room_id == $room_id42 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id42 ?>{
-                        background: #0c4d90;
-                    }
-                    #room<?php echo $room_id42 ?>:hover{
-                        background: #042f5d;
-                    }
-                </style>
-            @endif
-            @if($value->room_id == $room_id43 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id43 ?>{
-                        background: #0c4d90;
-                    }
-                    #room<?php echo $room_id43 ?>:hover{
-                        background: #042f5d;
-                    }
-                </style>
-            @endif
+                        }
+                    #{{ $room_id }}:hover{
+                    background: #042f5d;
+                }
+            </style>
+        @elseif( $item->booking_status == 2)
+            <style>
+                #{{ $room_id }}{
+                        background: #ff0000;
+                                }
+                    #{{ $room_id }}:hover{
+                    background: #b70000;
+                }
+            </style>
+        @endif
 
-            @if($value->room_id == $room_id44 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id44 ?>{
-                        background: #0c4d90;
-                    }
-                    #room<?php echo $room_id44 ?>:hover{
-                        background: #042f5d;
-                    }
-                </style>
-            @endif
-            @if($value->room_id == $room_id45 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id45 ?>{
-                        background: #0c4d90;
-                    }
-                    #room<?php echo $room_id45 ?>:hover{
-                        background: #042f5d;
-                    }
-                </style>
-            @endif
-        @endforeach
-        @foreach($booking as $value)
-            @if($value->room_id == $room_id40 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id40 ?>{
-                        background: #ff0000;
-                    }
-                    #room<?php echo $room_id40 ?>:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-            @if($value->room_id == $room_id41 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id41 ?>{
-                        background: #ff0000;
-                    }
-                    #room<?php echo $room_id41 ?>:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-            @if($value->room_id == $room_id42 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id42 ?>{
-                        background: #ff0000;
-                    }
-                    #room<?php echo $room_id42 ?>:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-            @if($value->room_id == $room_id43 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id43 ?>{
-                        background: #ff0000;
-                    }
-                    #room<?php echo $room_id43 ?>:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
+    @endforeach
 
-            @if($value->room_id == $room_id44 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id44 ?>{
-                        background: #ff0000;
-                    }
-                    #room<?php echo $room_id44 ?>:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-            @if($value->room_id == $room_id45 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    #room<?php echo $room_id45 ?>{
-                        background: #ff0000;
-                    }
-                    #room<?php echo $room_id45 ?>:hover{
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-        @endforeach
-
-                {{-- for venue table --}}
-        @foreach($venuereservation as $value)
-            @if($value->venue_id == 53 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    .four_room_7{
-                        background: #0c4d90;
-                    }
-                    .four_room_7:hover {
-                        background: #042f5d;
-                    }
-                </style>
-            @endif
-        @endforeach
-        @foreach($venuebooking as $value)
-            @if($value->venue_id == 53 && $value->end_date >= date('Y-m-d'))
-                <style>
-                    .four_room_7{
-                        background: #ff0000;
-                    }
-                    .four_room_7:hover {
-                        background: #b70000;
-                    }
-                </style>
-            @endif
-        @endforeach
     @stop
 
 @section('rooms')
@@ -178,6 +43,7 @@
     {{--side menu dropdown--}}
     <nav class="custom navbar navbar-expand-sm navbar-dark" style="width: 150px; margin-top: 70px; float: left;">
         <div class="custom navbar-collapse collapse" id="navbar4">
+            <code><small><button type="button" class="btn btn-i btn-lg ml-book" onclick='window.location="{{ route('booking.create') }}"'>Mul-Booking</button></small></code>
             <ul class="custom navbar-nav nav-fill w-100" style="width: 150px;">
                 <li class="custom nav-item dropdown dmenu" style="width: 150px;">
                     <a class="custom nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" style="width: 150px;">
@@ -209,7 +75,7 @@
             @foreach($rooms as $room)
                 @foreach($room_category as $category)
                     @if($room->id == 43 && $category->id == $room->category_id)
-                        <button class="four_room_2" <?php echo 'id=room'.$room_id43; ?> data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
+                        <button class="four_room_2" id="room_43" data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
                         {{ $room->room_no }} -- {{ $category->name }}
                         </button>
                     @endif
@@ -219,7 +85,7 @@
             @foreach($rooms as $room)
                 @foreach($room_category as $category)
                     @if($room->id == 42 && $category->id == $room->category_id)
-                        <button class="four_room_3" <?php echo 'id=room'.$room_id42; ?> data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
+                        <button class="four_room_3" id="room_42" data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
                         {{ $room->room_no }} -- {{ $category->name }}
                         </button>
                     @endif
@@ -230,7 +96,7 @@
             @foreach($rooms as $room)
                 @foreach($room_category as $category)
                     @if($room->id == 45 && $category->id == $room->category_id)
-                        <button class="four_room_4" <?php echo 'id=room'.$room_id45; ?> data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
+                        <button class="four_room_4" id="room_45" data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
                         {{ $room->room_no }}<br>{{ $category->name }}
                         </button>
                     @endif
@@ -242,7 +108,7 @@
             @foreach($rooms as $room)
                 @foreach($room_category as $category)
                     @if($room->id == 44 && $category->id == $room->category_id)
-                        <button class="four_room_6" <?php echo 'id=room'.$room_id44; ?> data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
+                        <button class="four_room_6" id="room_44" data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
                         {{ $room->room_no }}<br>{{ $category->name }}
                         </button>
                     @endif
@@ -252,7 +118,7 @@
     <div class="four_room_list_4 ">
             @foreach($venues as $venue)
                 @if($venue->id == 53)
-                    <button class="four_room_7" data-toggle="modal" data-target="#venueModalCenter">
+                    <button class="four_room_7" id="room_53" data-toggle="modal" data-target="#venueModalCenter">
                     {{ $venue->name }}<br>{{ $venue->feature }}
                     </button>
                 @endif
@@ -260,7 +126,7 @@
             @foreach($rooms as $room)
                 @foreach($room_category as $category)
                     @if($room->id == 41 && $category->id == $room->category_id)
-                        <button class="four_room_8" <?php echo 'id=room'.$room_id41; ?> data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
+                        <button class="four_room_8" id="room_41" data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
                         <p>{{ $room->room_no }} -- {{ $category->name }}</p>
                         </button>
                     @endif
@@ -271,7 +137,7 @@
             @foreach($rooms as $room)
                 @foreach($room_category as $category)
                     @if($room->id == 40 && $category->id == $room->category_id)
-                        <button class="four_room_9" <?php echo 'id=room'.$room_id40; ?> data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
+                        <button class="four_room_9" id="room_40" data-toggle="modal" data-target="#exampleModalCenter" onclick="PopulateModal('<?php echo $room->id ?>')">
                         {{ $room->room_no }} -- {{ $category->name }}
                         </button>
                     @endif
@@ -315,8 +181,8 @@
                             </table>
 
                         <div class="form-group" STYLE="display: inline">
-                            <a href="{{ URL::to('/training/addvenueRes',$venue->id) }}" type="button" class="btn btn-primary">Reserve Now</a>
-                            <a href="{{ URL::to('/training/add-booking',$venue->id) }}" type="button" class="btn btn-success">Book Now</a>
+                            <a href="{{ route('booking.create', [ 'room_id' => 53, 'res' => 1]) }}" type="button" class="btn btn-primary">Reserve Now</a>
+                            <a href="{{ route('booking.create', [ 'room_id' => 53]) }}" type="button" class="btn btn-success">Book Now</a>
                         </div>
 
                         @endif
@@ -376,6 +242,11 @@
         </div>
     </div>
 
+@endsection
+
+
+
+@section('script')
     <script>
 
         function PopulateModal(id)
@@ -391,13 +262,13 @@
                     $('#room_no').val((data['view']['room_no']));
                     $('#price').val((data['view']['price']));
                     $('#capacity').val((data['view']['persons_capacity']));
-                    $('#reserved').attr("href", "/addreservation/"+id)
-                    $('#booked').attr("href", "/addbooking/"+id)
+                    // $('#reserved').attr("href", "/addreservation/"+id)
+                    // $('#booked').attr("href", "/addbooking/"+id)
+                    $('#reserved').attr("href", "/booking/create?room_id="+id+"&res="+1)
+                    $('#booked').attr("href", "/booking/create?room_id="+id)
                     $('#image').attr("src", "/uploads/rooms_image/"+image)
                 }
             })
         }
     </script>
-
-    <?php } ?>
 @endsection

@@ -24,7 +24,7 @@ class VoucherController extends Controller
     public function index()
     {
         $data['types'] = VoucherType::all();
-        $data['v_group'] = VoucherGroup::orderBy('date_id', 'desc')->get();
+        $data['v_group'] = VoucherGroup::orderBy('date_id', 'desc')->paginate(2);
         return view('admin.ais.voucher.index', compact('data' ));
     }
 

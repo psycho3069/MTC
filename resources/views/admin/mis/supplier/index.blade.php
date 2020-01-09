@@ -7,7 +7,7 @@
         <div class="card text-left">
             <div class="card-header">
                 Supplier List
-                <button type="button" class="btn btn-sm btn-default pull-right" onclick='window.location="{{ route('supplier.create') }}"'>Add New</button>
+                <button type="button" class="btn btn-sm btn-i pull-right" onclick='window.location="{{ route('supplier.create') }}"'>Add New</button>
             </div>
             <div class="card-body">
                 <samp>

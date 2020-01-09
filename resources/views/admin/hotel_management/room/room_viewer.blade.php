@@ -102,11 +102,14 @@
           }
 </style>
     {{--side menu dropdown--}}
+
     <div class="custom_side_nav">
         <nav class="custom navbar navbar-expand-sm navbar-dark" style="width: 150px; margin-top: 70px; float: left;">
             <div class="custom navbar-collapse collapse" id="navbar4">
+                <code><small><button type="button" class="btn btn-i btn-lg ml-book" onclick='window.location="{{ route('booking.create') }}"'>Mul-Booking</button></small></code>
                 <ul class="custom navbar-nav nav-fill w-100" style="width: 150px;">
                     <li class="custom nav-item dropdown dmenu" style="width: 150px;">
+
                         <a class="custom nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" style="width: 150px;">
                             Rooms
                         </a>
@@ -121,7 +124,10 @@
                 </ul>
             </div>
         </nav>
+
     </div>
+
+
 
     <div class="room_status" style="float: right; margin-right: 30px; margin-top: 20px;">
         <p><button class="available" style="padding: 12px; border: 0; margin: 5px; background: #1c8c00;"></button>Available</p>
