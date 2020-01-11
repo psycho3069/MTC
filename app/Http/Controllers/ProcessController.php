@@ -34,25 +34,79 @@ class ProcessController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function test()
+    {
+        $dates = Date::orderBy('id')->get();
+
+        $x = $dates->where('status', 0);
+        $date = $x->isEmpty() ? $dates->first() : $x->first();
+
+        foreach ($dates as $item) {
+            $year = date( 'Y', strtotime($item->date));
+            $month[$year] = date( 'M', strtotime($item->date));
+            $years[$year][$month[$year]][$item->id] = date( 'd', strtotime($item->date));
+        }
+
+
+//        return $years;
+
+
+        return view('admin.ais.process.test', compact('dates', 'date', 'years') );
+    }
+
+
+
+
+    public function year(Request $request)
+    {
+//        return $request->all();
+        $dates = Date::whereYear('date', $request->year)->get();
+//        return $dates;
+
+        foreach ($dates as $item) {
+            $month[$item->id] = date( 'M', strtotime($item->date));
+        }
+
+
+        if ( $request->month){
+
+            $dates = Date::all();
+            $dt = $dates->find($request->month);
+            $yr = date('Y', strtotime( $dt->date));
+            $mo = date('M', strtotime( $dt->date));
+            foreach ($dates as $item) {
+                $yr_1 = date('Y', strtotime($item->date));
+                $mo_1 = date('M', strtotime($item->date));
+                if ( $yr == $yr_1 && $mo == $mo_1)
+                    $days[$item->id] = date('d', strtotime($item->date));
+            }
+            $data['day'] = collect($days);
+        }
+
+
+        $data['month'] = collect($month)->unique();
+        return $data;
+    }
+
 
     public function list()
     {
         $dates = Date::orderBy('id')->get();
 
-        if ( $dates->isEmpty() ){
-            $status = 0;
-            return view('admin.ais.report.daily', compact('status'));
+
+        foreach ($dates as $item) {
+
+            $year = date( 'Y', strtotime($item->date));
+            $month[$year] = date( 'M', strtotime($item->date));
+            $years[$year][$month[$year]][$item->id] = date( 'd', strtotime($item->date));
         }
 
         $x = $dates->where('status', 0);
         $date = $x->isEmpty() ? $dates->first() : $x->first();
 
 
-//        $date = !($request->date_id) ? $dates->where( 'status', 0)->first() : $dates->find( $request->date_id );
-//        return $date;
-//        return $date;
 
-        return view('admin.ais.process.list', compact('dates', 'date') );
+        return view('admin.ais.process.list', compact('dates', 'date', 'years') );
     }
 
 

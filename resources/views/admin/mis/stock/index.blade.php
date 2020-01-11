@@ -1,7 +1,7 @@
 @extends('admin.master')
 
 @section('content')
-    <div class="col-md-7">
+    <div class="col-md-8">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
