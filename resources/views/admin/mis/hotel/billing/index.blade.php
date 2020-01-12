@@ -2,10 +2,10 @@
 
 
 @section('content')
-    <div class="col-md-7">
+    <div class="col-md-10">
         <br><br><br>
         <div class="card text-left">
-            <div class="card-header">Billing List</div>
+            <div class="card-header"><code><b>Billing List</b></code></div>
             <div class="card-body">
                 <samp>
                     <table class="table table-bordered table-hover table-info">
@@ -14,8 +14,8 @@
                             <th></th>
                             <th class="">Guest Name</th>
                             <th class="">Organization</th>
-                            <th class="">Bill w/o discount</th>
-                            <th class="">Total Paid</th>
+                            <th class="no-wrap">Bill w/o discount</th>
+                            <th class="no-wrap">Total Paid</th>
                             <th class="">Due</th>
                             <th class="">Checkout</th>
                             <th class=""></th>

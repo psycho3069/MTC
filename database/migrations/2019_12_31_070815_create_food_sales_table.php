@@ -19,9 +19,9 @@ class CreateFoodSalesTable extends Migration
 //            $table->integer('booking_id')->unsigned()->index();
             $table->integer('menu_id')->unsigned()->index();
             $table->tinyInteger('quantity')->unsigned()->default(0);
-            $table->double('bill',12,2)->unsigned()->default(0);
+            $table->double('bill',12,2)->default(0);
+            $table->double('discount',14,2)->default(0);
             $table->tinyInteger('vat')->unsigned()->default(15);
-
             $table->timestamps();
         });
     }

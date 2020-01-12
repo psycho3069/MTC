@@ -34,39 +34,61 @@ class ProcessController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function test()
+    public function list()
     {
         $dates = Date::orderBy('id')->get();
-
         $x = $dates->where('status', 0);
         $date = $x->isEmpty() ? $dates->first() : $x->first();
+
+        return $this->getDate( $dates, $date);
+    }
+
+
+    public function showList(Request $request)
+    {
+        $dates = Date::orderBy('id')->get();
+        $date = $dates->find( $request->date_id);
+        return $this->getDate( $dates, $date);
+    }
+
+    public function getDate( $dates, $date)
+    {
+        $format['year'] = date('Y', strtotime( $date->date));
+        $format['month'] = date('M', strtotime( $date->date));
+        $format['day'] = date('d', strtotime( $date->date));
+
 
         foreach ($dates as $item) {
             $year = date( 'Y', strtotime($item->date));
             $month[$year] = date( 'M', strtotime($item->date));
-            $years[$year][$month[$year]][$item->id] = date( 'd', strtotime($item->date));
+            $data['years'][$year][$month[$year]][$item->id] = date( 'd', strtotime($item->date));
+            if ( $format['year'] == $year ){
+                $data['months'][$item->id] = date('M', strtotime( $item->date));
+                if ( $format['month'] == $month[$year])
+                    $data['days'][$item->id] = date('d', strtotime( $item->date));
+            }
         }
 
+//        return $data['days'];
+        $data['months'] = collect($data['months'])->unique();
 
-//        return $years;
-
-
-        return view('admin.ais.process.test', compact('dates', 'date', 'years') );
+        return view('admin.ais.process.list', compact('date', 'data', 'format') );
     }
+
+
+
 
 
 
 
     public function year(Request $request)
     {
-//        return $request->all();
+
         $dates = Date::whereYear('date', $request->year)->get();
-//        return $dates;
 
         foreach ($dates as $item) {
             $month[$item->id] = date( 'M', strtotime($item->date));
         }
-
 
         if ( $request->month){
 
@@ -89,40 +111,7 @@ class ProcessController extends Controller
     }
 
 
-    public function list()
-    {
-        $dates = Date::orderBy('id')->get();
 
-
-        foreach ($dates as $item) {
-
-            $year = date( 'Y', strtotime($item->date));
-            $month[$year] = date( 'M', strtotime($item->date));
-            $years[$year][$month[$year]][$item->id] = date( 'd', strtotime($item->date));
-        }
-
-        $x = $dates->where('status', 0);
-        $date = $x->isEmpty() ? $dates->first() : $x->first();
-
-
-
-        return view('admin.ais.process.list', compact('dates', 'date', 'years') );
-    }
-
-
-    public function showList(Request $request)
-    {
-        $dates = Date::orderBy('id')->get();
-        if ( $dates->isEmpty() ){
-            $status = 0;
-            return view('admin.ais.report.daily', compact('status'));
-        }
-        $date = $dates->find( $request->date_id);
-//        return $request->all();
-        return view('admin.ais.process.list', compact('dates', 'date') );
-
-//        return $request->all();
-    }
 
 
     public function record(Request $request)
@@ -136,14 +125,6 @@ class ProcessController extends Controller
     }
 
 
-    public function listOld()
-    {
-        $dates = Date::get();
-        $opening_bl = Process::where( 'date_id', 0 )->get();
-        $all_bl = Process::all();
-
-        return view('admin.ais.process.list', compact('dates', 'opening_bl', 'all_bl'));
-    }
 
 
     public static function calculate($item)
@@ -180,6 +161,7 @@ class ProcessController extends Controller
         $x = Configuration::find(1);
         $x->software_start_date = date('Y-m-d', strtotime('+1 day', strtotime($x->software_start_date)));;
         $x->save();
+        $day_end->create([ 'date' => $x->software_start_date]);
 
         return redirect('process/list');
     }

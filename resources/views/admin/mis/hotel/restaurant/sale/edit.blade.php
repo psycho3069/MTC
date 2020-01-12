@@ -2,13 +2,13 @@
 
 
 @section('content')
-    <div class="col-md-8">
+    <div class="col-md-10 text-left">
         <form action="{{ route('sales.update', $bill->id) }}" method="POST">
             {{ csrf_field() }}
             <input type="hidden" name="_method" value="PATCH">
 
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-6">
                     <div class="card">
                         <div class="card-header"><samp>{{ $bill->guest->name }}'s Food Bill</samp></div>
                         <div class="card-body">
@@ -34,12 +34,12 @@
                                                 <input type="number" class="form-control" name="food[{{$food->id }}][quantity]" value="{{ $food->quantity }}" min="0">
                                             </div>
                                         </div>
-                                        {{--                                <div class="col-md-3">--}}
-                                        {{--                                    <div class="form-group">--}}
-                                        {{--                                        <label>Total</label>--}}
-                                        {{--                                        <input type="number" class="form-control" value="{{ $food->bill }}" disabled>--}}
-                                        {{--                                    </div>--}}
-                                        {{--                                </div>--}}
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Discount</label>
+                                                <input type="number" class="form-control" name="food[{{$food->id }}][discount]" value="{{ $food->discount / $food->quantity }}" min="0">
+                                            </div>
+                                        </div>
                                     </div>
                                 @endforeach
 
@@ -50,6 +50,7 @@
                                         <th></th>
                                         <th scope="col">Item</th>
                                         <th scope="col">Quantity</th>
+                                        <th scope="col">Discount</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                     </thead>
@@ -64,13 +65,13 @@
                 </div>
 
 
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <div class="card">
                         <div class="card-header"><samp>Add Sale</samp></div>
                         <div class="card-body">
                             <samp>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Menu Type</label>
                                             <select class="form-control" id="menu_type">
@@ -81,14 +82,14 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Menu</label>
                                             <select class="form-control" id="menu">
                                                 {{--                                <option></option>--}}
                                                 @foreach( $menu_type as $type )
                                                     @foreach( $type->menu as $item )
-                                                        <option value="{{ $item->id }}">{{ $item->name }} </option>
+                                                        <option value="{{ $item->id }}">{{ $item->name.' -'.$item->price.' tk.' }} </option>
                                                     @endforeach
                                                 @endforeach
                                             </select>
@@ -98,6 +99,12 @@
                                         <div class="form-group">
                                             <label>Quantity</label>
                                             <input type="number" class="form-control" id="quantity" min="1" max="100" value="1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Discount</label>
+                                            <input type="number" class="form-control" id="discount" min="0" value="0">
                                         </div>
                                     </div>
                                 </div>
@@ -129,6 +136,7 @@
 
                 var menu_id = $('#menu').val()
                 var quantity = $('#quantity').val()
+                var discount = $('#discount').val()
 
 
                 if( !menu_id || !quantity )
@@ -141,6 +149,7 @@
                         '<td>'+count+'.</td>' +
                         '<td><input type="hidden" name="new_food['+i+'][menu_id]" value="'+menu_id+'">'+$('#menu :selected').text()+'</td>' +
                         '<td><input type="hidden" name="new_food['+i+'][quantity]" value="'+quantity+'">'+quantity+'</td>' +
+                        '<td><input type="hidden" name="new_food['+i+'][discount]" value="'+discount+'">'+discount+'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
                     )

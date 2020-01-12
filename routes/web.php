@@ -77,21 +77,22 @@ Route::get('insert', function (){
 
 Route::group(['middleware' => 'auth'], function (){
 
-    Route::get('test/{year}/{id}', 'ProcessController@test2');
-    Route::get('test', 'ProcessController@test');
-    Route::post('date', ['as' => 'process.year', 'uses' => 'ProcessController@year']);
 
+    Route::get('discount', ['as' => 'discount.index', 'uses' => 'DiscountController@index']);
+    Route::post('discount/{id}', ['as' => 'discount.show', 'uses' => 'DiscountController@show']);
+
+    Route::post('year', ['as' => 'process.year', 'uses' => 'ProcessController@year']);
 
     Route::get('visitor/{booking_id}', ['as' => 'visitor.list', 'uses' => 'BookingController@listVisitor']);
     Route::get('visitor/create/{booking_id}', ['as' => 'visitor.create', 'uses' => 'BookingController@addVisitor']);
     Route::post('visitor', ['as' => 'visitor.store', 'uses' => 'BookingController@storeVisitor']);
     Route::resource('supplier', 'SupplierController');
 
-    Route::post('sales/room', ['as' => 'sales.room', 'uses' => 'SaleController@room']);
+    Route::post('sales/room', ['as' => 'sales.room', 'uses' => 'FoodSaleController@room']);
 
     Route::resource('billing', 'BillingController');
     Route::resource('booking', 'BookingController');
-    Route::resource('restaurant/sales', 'SaleController');
+    Route::resource('restaurant/sales', 'FoodSaleController');
     Route::resource('{bill_id}/payment', 'PaymentController');
 
     Route::post('accounts/balance/check', ['as' => 'balance.check', 'uses' => 'BalanceController@check']);

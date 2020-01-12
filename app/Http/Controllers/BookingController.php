@@ -24,9 +24,6 @@ class BookingController extends Controller
     public function index()
     {
         $billing = Billing::all();
-//        foreach ($billing as $item) {
-//            return $item->booking->pluck('room_id');
-//        }
         return view('admin.mis.hotel.booking.index', compact('billing'));
     }
 

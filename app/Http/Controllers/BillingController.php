@@ -76,10 +76,12 @@ class BillingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showOld($id)
     {
 //        return $id;
         $bill = Billing::find( $id);
+
+//        return $bill->checkout_status ? 0 : 1;
 
         $data['total'] = 0;
 //        return $bill->booking->sum('bill');
@@ -93,8 +95,44 @@ class BillingController extends Controller
         $restaurant['vat'] = $bill->restaurant->sum('bill') * 10 / 100;
         $restaurant['total'] = $bill->restaurant->sum('bill') + $restaurant['vat'];
 
-        return view('admin.mis.hotel.billing.show', compact('bill', 'booking', 'restaurant'));
+        return view('admin.mis.hotel.billing.showOld', compact('bill', 'booking', 'restaurant'));
     }
+
+
+    public function show($id)
+    {
+//        return $id;
+        $bill = Billing::find( $id);
+
+//        return $bill->checkout_status ? 0 : 1;
+
+        foreach ($bill->booking as $item ) {
+
+            if ( $item->room_id < 50)
+                $data['room'][$item->id] = $item;
+
+            if ( $item->room_id >= 50)
+                $data['venue'][$item->id] = $item;
+
+            $booking[$item->id]['days'] = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
+            $booking[$item->id]['room_no'] = $item->room_id < 50 ? 'Room No-'.$item->room->room_no : $item->venue->name;
+            $booking[$item->id]['unit_price'] = ( $item->room_id < 50 ? $item->room->price : $item->venue->price);
+        }
+
+        $info['venue']['total'] = isset($data['venue']) ? collect( $data['venue'])->sum('bill') : 0;
+        $info['room']['total'] = isset($data['room']) ? collect( $data['room'])->sum('bill') : 0;
+
+        $info['venue']['vat'] = $info['venue']['total'] * 5 / 100;
+        $info['room']['vat'] = $info['room']['total'] * 5 / 100;
+
+        $booking['vat'] = $bill->booking->sum('bill') * 5 / 100;
+        $booking['total'] = $bill->booking->sum('bill') + $booking['vat'];
+        $restaurant['vat'] = $bill->restaurant->sum('bill') * 10 / 100;
+        $restaurant['total'] = $bill->restaurant->sum('bill') + $restaurant['vat'];
+
+        return view('admin.mis.hotel.billing.show', compact('bill', 'booking', 'restaurant', 'data', 'info'));
+    }
+
 
     /**
      * Show the form for editing the specified resource.

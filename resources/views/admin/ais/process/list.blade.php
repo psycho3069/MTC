@@ -3,11 +3,11 @@
 
 @section('content')
 
-<style >
-    a.dropdown-item {
-    color: #fff;
-}
-</style>
+    <style >
+        a.dropdown-item {
+            color: #fff;
+        }
+    </style>
     <div class="col-md-8">
         <samp>
             <div class="card text-left">
@@ -15,10 +15,21 @@
                     <b>Day End Process</b>
                     <form action="{{ route('process.show.list') }}" method="POST" class="pull-right">
                         {{ csrf_field() }}
-                        {{--                            <input type="date" class="form-horizontal" name="date">--}}
-                        <select name="date_id" class="form-horizontal">
-                            @foreach( $dates as $item )
-                                <option value="{{ $item->id }}" {!! $date->id == $item->id ? 'selected="selected"': '' !!}>{{ $item->date }}</option>
+
+                        <select id="year" class="form-horizontal">
+                            @foreach( $data['years'] as $y_key => $year )
+                                <option {{ $format['year'] == $y_key ? 'selected' : '' }}>{{ $y_key }}</option>
+                            @endforeach
+                        </select>
+
+                        <select id="month">
+                            @foreach( $data['months'] as $key => $item )
+                                <option value="{{ $key }}" {{ $format['month'] == $item ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                        <select id="day" name="date_id">
+                            @foreach( $data['days'] as $key => $item)
+                                <option value="{{ $key }}" {{ $format['day'] == $item ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
                         </select>
                         <button class="btn btn-dark btn-sm">Show</button>
@@ -32,56 +43,122 @@
                     </form>
                 </div>
                 <div class="card-body">
-                    @if( $date)
-                        <table class="table table-bordered table-hover table-primary">
-                            <thead>
+                    <table class="table table-bordered table-hover table-primary">
+                        <thead>
+                        <tr>
+                            <th scope="col">Type</th>
+                            <th scope="col">Code</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Note</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach( $date->vGroup as $v_group )
                             <tr>
-                                <th scope="col">Type</th>
-                                <th scope="col">Code</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Note</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Action</th>
-                                <th scope="col">Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach( $date->vGroup as $v_group )
-                                <tr>
-                                    <td>{{ $v_group->type->name }}</td>
-                                    <td>{{ $v_group->code }}</td>
-                                    <td>{{ $v_group->vouchers->sum('amount') }}</td>
-                                    <td>{{ str_limit( $v_group->note, 40)  }}</td>
-                                    <td>{{ $v_group->date->date }}</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Action
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="{{ route('vouchers.show', $v_group->id) }}">View</a>
-                                                <a class="dropdown-item" href="{{ route('vouchers.edit', $v_group->id) }}">Edit</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="#">Delete</a>
-                                            </div>
+                                <td>{{ $v_group->type->name }}</td>
+                                <td>{{ $v_group->code }}</td>
+                                <td>{{ $v_group->vouchers->sum('amount') }}</td>
+                                <td>{{ str_limit( $v_group->note, 40)  }}</td>
+                                <td>{{ $v_group->date->date }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="{{ route('vouchers.show', $v_group->id) }}">View</a>
+                                            <a class="dropdown-item" href="{{ route('vouchers.edit', $v_group->id) }}">Edit</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Delete</a>
                                         </div>
-                                    </td>
-                                    <td>
-                                        {!! $v_group->date->status ? '<span class="badge badge-success">Success</span>' : '<span class="badge badge-warning">Pending</span>' !!}
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <h3 class="text-center">No Vouchers Found</h3>
-                    @endif
+                                    </div>
+                                </td>
+                                <td>
+                                    {!! $v_group->date->status ? '<span class="badge badge-success">Success</span>' : '<span class="badge badge-warning">Pending</span>' !!}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
+
             </div>
         </samp>
     </div>
 
 @endsection
+
+
+
+
+@section('script')
+    <script>
+        $(document).ready(function () {
+
+            var _token = $("input[name='_token']").val()
+            $('#year').on('change', function () {
+                var year = $(this).val()
+                $.ajax({
+                    type:'POST',
+                    url: '{{ route("process.year") }}',
+                    data: {_token: _token, year: year},
+                    success:function (data) {
+                        console.log(data)
+                        // console.log(data['month'])
+                        var month = $('#month')
+                        month.empty()
+                        $.each(data['month'], function (key, val) {
+                            month.append('<option value="'+key+'">'+val+'</option>')
+                        })
+
+
+                        var month = $('#month').val()
+
+                        getDay(month, year)
+
+                    }
+                })
+
+            })
+
+
+            $('#month').on('change mouserover', function () {
+                var year = $('#year').val()
+                var month = $('#month').val()
+                // alert(month)
+                getDay(month, year)
+
+            })
+
+
+
+            function getDay(month, year) {
+
+                $.ajax({
+                    type:'POST',
+                    url: '{{ route("process.year") }}',
+                    data: {_token: _token, month: month, year: year},
+                    success:function (data) {
+                        console.log(data)
+                        var day = $('#day')
+                        day.empty()
+                        $.each(data['day'], function (key, val) {
+                            day.append('<option value="'+key+'">'+val+'</option>')
+                        })
+                    }
+                })
+
+            }
+
+
+        })
+    </script>
+@endsection
+
+
 
 
 

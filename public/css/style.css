@@ -134,6 +134,12 @@ strong {
 
 
 
+
+.receipt {
+    margin-bottom: 7%;
+}
+
+
 .no-wrap {
     white-space: nowrap;
 }

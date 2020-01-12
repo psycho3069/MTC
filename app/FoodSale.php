@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FoodSale extends Model
 {
-    protected $fillable = [ 'billing_id', 'booking_id', 'quantity', 'bill', 'menu_id', 'vat', ];
+    protected $fillable = [ 'billing_id', 'booking_id', 'quantity', 'bill', 'discount', 'menu_id', 'vat', ];
 
 
     public function billing()
