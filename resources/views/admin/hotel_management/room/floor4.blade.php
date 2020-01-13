@@ -235,7 +235,9 @@
                     </table>
                     <div class="form-group" style="display: inline">
                         <a type="button" id="reserved" class="btn btn-primary">Reserve Now</a>
-                        <a type="button" id="booked" class="btn btn-success">Book Now</a>
+                        @if(auth()->check())
+                            <a type="button" id="booked" class="btn btn-success">Book Now</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -264,7 +266,7 @@
                     $('#capacity').val((data['view']['persons_capacity']));
                     // $('#reserved').attr("href", "/addreservation/"+id)
                     // $('#booked').attr("href", "/addbooking/"+id)
-                    $('#reserved').attr("href", "/booking/create?room_id="+id+"&res="+1)
+                    $('#reserved').attr("href", "/reserve?room_id="+id)
                     $('#booked').attr("href", "/booking/create?room_id="+id)
                     $('#image').attr("src", "/uploads/rooms_image/"+image)
                 }

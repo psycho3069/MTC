@@ -28,9 +28,9 @@
     <meta name="keywords" content="">
     <meta name="author" content="">
     <!------Add-favicon------->
-    
+
     <link rel="icon" href="/img/mtclogo.png">
-    
+
     <!------Add-css-link------->
     <link rel="stylesheet" href="/homefile/bootstrap.min.css">
     <link rel="stylesheet" href="/homefile/bootstrap-select.min.css">
@@ -113,12 +113,12 @@
                 <div class="top-right-menu">
                     <ul class="top-menu">
                         <li class="d-none d-md-inline">
-                            <a href="tel:+880 1685-882470"><i class="fa fa-phone"></i> +880 1708-559698 </a>
+                            <a href="tel:+880 1685-882470"><i class="fa fa-phone"></i> +880 1708-559695 </a>
                         </li>
 
                         <li class="d-none d-md-inline">
                             <a href="#"><i class="fa fa-envelope-o "></i>
-                                <span class="__cf_email__">aspadabd@yahoo.com</span>
+                                <span class="__cf_email__">aspadatraining@yahoo.com</span>
                             </a>
                         </li>
                     </ul>
@@ -144,7 +144,7 @@
                     <ul class="menu">
                         <li class="menu-item menu-btn">
                             <a href="{{ route('login') }}"><i class="fa fa-signin"></i>Login</a>
-                        </li>                        
+                        </li>
 
                     </ul>
                 </nav>
@@ -357,70 +357,6 @@
         </div>
 
         <footer class="dark">
-            <!-- <div class="footer-widgets">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-md-3">
-                            <div class="footer-widget">
-                                <img src="/homefile/footer-logo.png" class="footer-logo" alt="Hotel The mtc Today">
-                                <div class="inner">
-                                    <p>Hotel The mtc Today is one of the best five-star standard luxury hotel in mtc's Bazar.</p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="footer-widget">
-                                <h3>Dhaka Office</h3>
-                                <div class="inner">
-                                    <ul class="contact-details">
-                                        <li>Suvastu Madhobilota, Flat # 5B</li>
-                                        <li>House # 67, Road # 17, Bloack # C</li>
-                                        <li>Banani, Dhaka - 1213</li>
-                                        <li><i class="fa fa-mobile"> </i>+8801755598446-47, +88 01844 114 822</li>
-                                        <li><i class="fa fa-phone"> </i>+880255035731-32 </li>
-                                        <li><i class="fa fa-envelope"></i>salesdhk@hotelthemtctoday.com</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="footer-widget">
-                                <h3>Chittagong Office</h3>
-                                <div class="inner">
-                                    <ul class="contact-details">
-                                        <li>206/217, Jamal Khan Road</li>
-                                        <li>Pacific Tower (2nd Floor)</li>
-                                        <li>Chittagong</li>
-                                        <li><i class="fa fa-mobile"> </i>+8801755598448</li>
-                                        <li><i class="fa fa-phone"> </i>+88-031 2853931-32 </li>
-                                        <li><i class="fa fa-envelope"></i>salesctg@hotelthemtctoday.com</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="footer-widget">
-                                <h3>mtc's Bazar Office</h3>
-                                <div class="inner">
-                                    <ul class="contact-details">
-                                        <li>Plot-7, Road-02</li>
-                                        <li>Hotel Motel Zone, Kolatoly Road</li>
-                                        <li>mtc's Bazar</li>
-                                        <li><i class="fa fa-mobile"> </i>+8801755598449, +8801755598450</li>
-                                        <li><i class="fa fa-phone"> </i>+88-0341 52410-22</li>
-                                        <li><i class="fa fa-envelope"></i>reservation@hotelthemtctoday.com</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
 
             <div class="subfooter">
                 <div class="container">

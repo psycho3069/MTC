@@ -61,7 +61,7 @@ class PaymentController extends Controller
         $bill->booking()->update(['booking_status' => 2]);
 
         $bill->reserved = 0;
-        $bill->checkout_status = $input['checkout_status'];
+        $bill->checkout_status = 1;
         $bill->total_paid += $input['amount'];
         $bill->save();
 

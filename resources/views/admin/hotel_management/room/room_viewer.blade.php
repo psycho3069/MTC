@@ -220,7 +220,9 @@
                     </table>
                     <div class="form-group" style="display: inline">
                         <a type="button" id="venueReserved" class="btn btn-primary">Reserve Now</a>
-                        <a type="button" id="venueBooked" class="btn btn-success">Book Now</a>
+                        @if(auth()->check())
+                            <a type="button" id="venueBooked" class="btn btn-success">Book Now</a>
+                        @endif
                     </div>
                 </div>
             </div>

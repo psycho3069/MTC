@@ -37,14 +37,15 @@ class BillingController extends Controller
     public function index(Request $request)
     {
         $data['reserved'] = $request->res ? 1 : 0;
+        $data['checkout'] = $request->chk ? 1 : 0;
         $billing = Billing::where('reserved', 0)->orderBy('id','desc')->get();
+        $billing = $data['checkout'] ? $billing->where('checkout_status', 1) : $billing->where('checkout_status', 0);
 
-        if ($request->res){
+        if ( $request->res){
             $billing = Billing::where('reserved', 1)->orderBy('id','desc')->get();
             return view('admin.mis.hotel.billing.reservation.index', compact('billing'));
         }
-
-        return view('admin.mis.hotel.billing.index', compact('billing'));
+        return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
     }
 
 

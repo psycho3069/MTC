@@ -67,8 +67,6 @@ class BookingController extends Controller
 
 
 
-
-
     /**
      * Show the form for creating a new resource.
      *
@@ -81,11 +79,8 @@ class BookingController extends Controller
 //        return $booked;
         $data['room'] = Room::get()->except($booked->toArray());
         $data['venue'] = Venue::get()->except($booked->toArray());
-//        return $data['venue'];
         $data['selected'] = $request->room_id ? $request->room_id : 0;
-        $data['reserved'] = $request->res ? 1 : 0;
 
-//        return !$data['reservation'] ? 55 : 'Nazia';
         return view('admin.mis.hotel.booking.create', compact('data'));
     }
 
@@ -97,16 +92,12 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-//        return $request->all();
-
         $input = $request->except('_token');
-
-//        return $item['booking_status'] = $input['billing']['reserved'] ? 1 : 2;
-
-        $input['billing']['advance_paid'] = $input['billing']['reserved'] ? 0 : $input['billing']['advance_paid'];
+//        $input['billing']['advance_paid'] = $input['billing']['reserved'] ? 0 : $input['billing']['advance_paid'];
 
         $hotel_bill = 0;
         $guest = Guest::where( 'contact_no', $request->guest['contact_no'])->get()->first();
+
         if ( !$guest)
             $guest = Guest::create($input['guest']);
         $guest->update([ 'appearance' => $guest->appearance + 1 ]);
@@ -133,9 +124,8 @@ class BookingController extends Controller
         $date = Configuration::find(1)->software_start_date;
 
         //Compute AIS
-        if ( !$input['billing']['reserved'])
-            $voucher = $this->computeAIS( $data, $date);
-        $input['billing']['mis_voucher_id'] = $input['billing']['reserved'] ? 0 : $voucher->id;
+        $voucher = $this->computeAIS( $data, $date);
+        $input['billing']['mis_voucher_id'] = $voucher->id;
         $billing = Billing::create( $input['billing']);
 
         //Store Booking Data
@@ -144,7 +134,7 @@ class BookingController extends Controller
             $item['guest_id'] = $guest->id;
             $item['bill'] = $booking['bill'][$item['room_id']];
             $item['discount'] = $booking['discount'][$item['room_id']];
-            $item['booking_status'] = $input['billing']['reserved'] ? 1 : 2;
+            $item['booking_status'] = 2;
             $billing->booking()->create($item);
         }
 

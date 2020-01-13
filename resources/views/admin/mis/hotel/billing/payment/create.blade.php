@@ -6,8 +6,8 @@
         <samp>
             <form action="{{ route('payment.store', $bill->id) }}" method="POST">
                 <div class="card">
-                    <div class="card-header">Payment</div>
-                    <div class="card-body">
+                    <div class="card-header"><b>Payment</b></div>
+                    <div class="card-body text-left">
                         {{ csrf_field() }}
 
                         <div class="row">
@@ -31,9 +31,9 @@
                                 @if( !$bill->reserved)
                                     <div class="form-group">
                                         <label>Check-Out</label>
-                                        <select class="form-control" name="checkout_status">
-                                            <option value="0" selected>No</option>
-                                            <option value="1">Yes</option>
+                                        <select class="form-control" name="checkout_status" {{ $bill->checkout_status ? 'disabled' : '' }}>
+                                            <option value="0" {{ !$bill->checkout_status ? 'selected' : '' }}>No</option>
+                                            <option value="1" {{ $bill->checkout_status ? 'selected' : '' }}>Yes</option>
                                         </select>
                                     </div>
                                 @endif

@@ -75,11 +75,17 @@ Route::get('insert', function (){
     return redirect('process');
 });
 
+
+Route::get('reserve', ['as' => 'reserve.create' , 'uses' => 'ResidualController@reserve']);
+Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@reserveStore']);
+
+
+
+
 Route::group(['middleware' => 'auth'], function (){
 
 
     Route::get('discount', ['as' => 'discount.index', 'uses' => 'ResidualController@discount']);
-    Route::get('checkout', ['as' => 'checkout.index', 'uses' => 'ResidualController@checkout']);
 
     Route::post('year', ['as' => 'process.year', 'uses' => 'ProcessController@year']);
 

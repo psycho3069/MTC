@@ -15,6 +15,7 @@
                         <thead>
                         <tr>
                             <th></th>
+                            <th>Date</th>
                             <th>Guest Name</th>
                             <th>Total Bill</th>
                             <th>Checkout</th>
@@ -25,6 +26,7 @@
                         @foreach( $billing as $bill )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ date('d-m-Y', strtotime( $bill->created_at)) }}</td>
                                 <td><a href="{{ route('sales.show', $bill->id) }}">{{ $bill->guest->name }}</a></td>
                                 <td class="text-center"><code>{{ $data[$bill->id]['bill'] }} tk.</code></td>
                                 <td class="text-center"><code>{{ $bill->checkout_status ? 'Yes' : 'No' }}</code></td>

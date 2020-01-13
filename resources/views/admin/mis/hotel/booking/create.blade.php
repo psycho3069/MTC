@@ -95,11 +95,7 @@
                         </div>
                     </div>
                 </div>
-
-
                 <button type="button" id="add-button" class="btn btn-i btn-block">Add</button>
-
-                {{--                <button type="submit" class="btn btn-primary">Submit</button>--}}
             </div>
         </div>
 
@@ -110,12 +106,10 @@
             <div class="card-body">
                 <form method="POST" action="{{ route('booking.store') }}">
                     {{ csrf_field() }}
-                @if(!$data['reserved'])
                     <span class="float-left">
                         <label>With Restaurant</label>
                         <input type="checkbox" name="check" value="1" checked>
                     </span>
-                @endif
 
                     <table class="table table-striped">
                         <thead>
@@ -139,17 +133,14 @@
                     <input type="hidden" name="guest[address]">
                     <input type="hidden" name="guest[org_name]">
                     <input type="hidden" name="guest[designation]">
-                    <input type="hidden" name="billing[reserved]" value="{{ $data['reserved'] }}">
 
                     <div class="row">
-                        @if( !$data['reserved'])
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label> Advance Amount <small>(tk.)</small></label>
-                                    <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="0" {{ $data['reserved'] ? 'disabled' : 'required' }}>
-                                </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label> Advance Amount <small>(tk.)</small></label>
+                                <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="0">
                             </div>
-                        @endif
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Gross Discount <small>(tk.)</small></label>
@@ -246,6 +237,7 @@
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
                     )
+
 
 
                     $('input[name="guest[name]"]').val(name)

@@ -224,7 +224,7 @@
                             </td>
                             <td class="bill-down text-right">
                                 <b><samp>{{ $bill->total_bill + $bill->discount }}</samp></b>
-                                <b><samp>{{ -$bill->discount }}</samp></b>
+                                <b><samp>{{ -$bill->discount }}</samp></b><br>
                                 <b><samp>-{{ $bill->total_paid }}</samp></b>
                             </td>
                         </tr>
