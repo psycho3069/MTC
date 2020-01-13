@@ -76,6 +76,7 @@
           <a class="dropdown-item" href="{{ route('billing.index',['res' => 1]) }}">Reservation</a>
           <a class="dropdown-item" href="{{ route('billing.index') }}">Bill</a>
           <a class="dropdown-item" href="{{ route('discount.index') }}">Discount</a>
+          <a class="dropdown-item" href="{{ route('checkout.index') }}">Checkout</a>
       </div>
     </li>
 

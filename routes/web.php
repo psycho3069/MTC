@@ -78,8 +78,8 @@ Route::get('insert', function (){
 Route::group(['middleware' => 'auth'], function (){
 
 
-    Route::get('discount', ['as' => 'discount.index', 'uses' => 'DiscountController@index']);
-    Route::post('discount/{id}', ['as' => 'discount.show', 'uses' => 'DiscountController@show']);
+    Route::get('discount', ['as' => 'discount.index', 'uses' => 'ResidualController@discount']);
+    Route::get('checkout', ['as' => 'checkout.index', 'uses' => 'ResidualController@checkout']);
 
     Route::post('year', ['as' => 'process.year', 'uses' => 'ProcessController@year']);
 
