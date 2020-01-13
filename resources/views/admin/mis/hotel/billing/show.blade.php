@@ -201,6 +201,7 @@
                             </td>
                             <td class="bill-down">
                                 <strong class="float-right"><samp>{{ $bill->restaurant->sum('bill') }}</samp></strong>
+                                <br>
                                 <strong class="float-right"><samp>+{{ $restaurant['vat'] }}</samp></strong>
                             </td>
                         </tr>

@@ -29,7 +29,7 @@
                                 {{ $key ? $accounts->first()->date->date : 'Current Balance' }}
                                 <ul class="list-group">
                                     @foreach( $accounts as $item )
-                                        @if( $item->debit || $item->credit)
+                                        @if( $item->debit !=0 || $item->credit !=0)
                                             <li class="list-group-item">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -74,7 +74,7 @@
                                 <br>
                                 <ul class="list-group">
                                     @foreach( $accounts as $item )
-                                        @if( $item->debit || $item->credit)
+                                        @if( $item->debit != 0 || $item->credit != 0)
                                             @php( $balance = ProcessController::calculate( $item ) )
                                             <li class="list-group-item">
                                                 {{ $balance }}
