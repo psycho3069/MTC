@@ -130,8 +130,9 @@ class BookingController extends Controller
 
         //Store Booking Data
         foreach ($input['booking'] as $item) {
-            $item['type_id'] = $item['room_id'] < 50 ? 1 : 2;
             $item['guest_id'] = $guest->id;
+            $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
+            $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
             $item['bill'] = $booking['bill'][$item['room_id']];
             $item['discount'] = $booking['discount'][$item['room_id']];
             $item['booking_status'] = 2;

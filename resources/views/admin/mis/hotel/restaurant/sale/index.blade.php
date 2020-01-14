@@ -31,17 +31,15 @@
                                 <td class="text-center"><code>{{ $data[$bill->id]['bill'] }} tk.</code></td>
                                 <td class="text-center"><code>{{ $bill->checkout_status ? 'Yes' : 'No' }}</code></td>
                                 <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            Bill
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item font-color" href="{{ route('billing.show', $bill->id) }}">View</a>
-                                            <a class="dropdown-item font-color" href="{{ route('sales.edit', $bill->id) }}">Edit</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item font-color" href="#">Delete</a>
+
+                                    <div class="dropdown">
+                                        <button class="btn btn-i" for="btnControl">Bill</button>
+                                        <div class="dropdown-content">
+                                            <a href="{{ route('billing.show', $bill->id) }}">View</a>
+                                            <a href="{{ route('sales.edit', $bill->id) }}">Edit</a>
                                         </div>
                                     </div>
+                                    
                                 </td>
                             </tr>
 

@@ -73,7 +73,10 @@ class ResidualController extends Controller
 
         //Store Booking Data
         foreach ($input['booking'] as $item) {
+
             $item['guest_id'] = $guest->id;
+            $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
+            $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
             $item['bill'] = $booking['bill'][$item['room_id']];
             $item['booking_status'] = 1;
             $billing->booking()->create($item);

@@ -213,10 +213,11 @@
                         </tr>
 
                         <tr>
-                            <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
+                            <td class="bill-down text-left"></td><td class="bill-down"></td><td class="bill-down"></td>
                             <td class="bill-down">
                                 <b><code>Advance paid: <samp>{{ $bill->advance_paid }}</samp></code></b>
                             </td>
+
                             <td class="bill-down text-right">
                                 <b><code>Total bill:</code></b>
                                 <b><code>Discount:</code></b>
@@ -227,6 +228,10 @@
                                 <b><samp>{{ -$bill->discount }}</samp></b><br>
                                 <b><samp>-{{ $bill->total_paid }}</samp></b>
                             </td>
+                        </tr>
+                        <tr>
+                            <td><b><code>In Words:</code></b></td>
+                            <td colspan="5" class="text-right"><b><code>{{ ucfirst($data['words']['total_bill']) }} Taka (only)</code></b></td>
                         </tr>
 
                         <tr>

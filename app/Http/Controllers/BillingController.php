@@ -10,6 +10,7 @@ use App\Http\Traits\CustomTrait;
 use App\Room;
 use App\Venue;
 use Illuminate\Http\Request;
+use NumberFormatter;
 
 class BillingController extends Controller
 {
@@ -33,6 +34,9 @@ class BillingController extends Controller
         }
         return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
     }
+
+
+
 
     public function index(Request $request)
     {
@@ -105,8 +109,6 @@ class BillingController extends Controller
 //        return $id;
         $bill = Billing::find( $id);
 
-//        return $bill->checkout_status ? 0 : 1;
-
         foreach ($bill->booking as $item ) {
 
             if ( $item->room_id < 50)
@@ -131,7 +133,11 @@ class BillingController extends Controller
         $restaurant['vat'] = $bill->restaurant->sum('bill') * 10 / 100;
         $restaurant['total'] = $bill->restaurant->sum('bill') + $restaurant['vat'];
 
+        $x = new NumberFormatter('en', NumberFormatter::SPELLOUT);
+        $data['words']['total_bill'] = $x->format( $bill->total_bill);
+
         return view('admin.mis.hotel.billing.show', compact('bill', 'booking', 'restaurant', 'data', 'info'));
+//        return view('admin.mis.hotel.billing.dropdown', compact('bill', 'booking', 'restaurant', 'data', 'info'));
     }
 
 
@@ -182,6 +188,9 @@ class BillingController extends Controller
             $item['discount'] = $item['discount'] * $days;
             $item['bill'] = $price * $days - $item['discount'];
 
+            $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
+            $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
+
             $old_bill += $book->bill;
             $new_bill += $item['bill'];
 //            return $item;
@@ -196,6 +205,8 @@ class BillingController extends Controller
                 $item['discount'] = $item['discount'] * $days;
                 $item['bill'] = $price * $days - $item['discount'];
                 $item['guest_id'] = $bill->guest_id;
+                $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
+                $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
                 $bill->booking()->create( $item);
 
                 $new_bill += $item['bill'];

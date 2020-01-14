@@ -135,13 +135,13 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-In*</label>
-                                            <input type="date" class="form-control date" id="start_date">
+                                            <input class="form-control date" id="start_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-Out*</label>
-                                            <input type="date" class="form-control date" id="end_date">
+                                            <input class="form-control date" id="end_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -196,6 +196,12 @@
     </div>
 @endsection
 
+
+
+@section('style')
+    <link href="{{ asset('css/datepicker.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/flatpickr.min.css') }}" rel="stylesheet">
+@endsection
 
 
 
@@ -286,4 +292,9 @@
 
         })
     </script>
+
+
+    <script src="{{asset('js/flatpickr.min.js')}}"></script>
+    <script src="{{asset('js/custom_datepicker.js')}}"></script>
+
 @endsection
