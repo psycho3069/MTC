@@ -99,7 +99,7 @@
 
             <div class="card text-left">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('booking.store') }}">
+                    <form method="POST" action="{{ route('reserve.store') }}">
                         {{ csrf_field() }}
 
                         <table class="table table-striped">
@@ -108,7 +108,6 @@
                                 <th scope="col">Check-In</th>
                                 <th scope="col">Check-Out</th>
                                 <th scope="col">Room no</th>
-                                <th scope="col">Discount</th>
                                 <th scope="col">Visitors</th>
                                 <th scope="col">Action</th>
                             </tr>

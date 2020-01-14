@@ -22,9 +22,10 @@ class ResidualController extends Controller
         $data['bill'] = [];
 
         foreach ($bills as $bill) {
-            if ( $bill->restaurant->sum('discount') || $bill->booking->sum('discount'))
+            if ( $bill->discount || $bill->restaurant->sum('discount') || $bill->booking->sum('discount'))
                 $data['bill'][] = $bill;
         }
+//        return $data;
         return view('admin.mis.hotel.discount.index', compact('data'));
     }
 
@@ -56,15 +57,15 @@ class ResidualController extends Controller
         foreach ($input['booking'] as $item) {
             $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
             $room_price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
-            $hotel_bill += $room_price * $days - $item['discount'] * $days;
+            $hotel_bill += $room_price * $days;
 
-            $booking['bill'][$item['room_id']] = $room_price * $days - $item['discount'] * $days;
-            $booking['discount'][$item['room_id']] = $item['discount'] * $days;
+            $booking['bill'][$item['room_id']] = $room_price * $days;
         }
 
         $vat = ($hotel_bill * 5) / 100;
-        $input['billing']['total_bill'] = $hotel_bill + $vat - $input['billing']['discount'];
+        $input['billing']['total_bill'] = $hotel_bill + $vat;
         $input['billing']['guest_id'] = $guest->id;
+        $input['billing']['reserved'] = 1;
 
         //Compute AIS
         $input['billing']['mis_voucher_id'] = 0;
@@ -74,12 +75,11 @@ class ResidualController extends Controller
         foreach ($input['booking'] as $item) {
             $item['guest_id'] = $guest->id;
             $item['bill'] = $booking['bill'][$item['room_id']];
-            $item['discount'] = $booking['discount'][$item['room_id']];
             $item['booking_status'] = 1;
             $billing->booking()->create($item);
         }
 
-        return redirect('/');
+        return redirect()->back();
     }
 
 

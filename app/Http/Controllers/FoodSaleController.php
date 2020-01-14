@@ -20,6 +20,7 @@ class FoodSaleController extends Controller
     {
 //        $sales = FoodSale::get()->groupBy('billing_id');
         $billing = Billing::where('reserved', 0)->orderBy('id', 'desc')->get();
+        $data = [];
 
         foreach ($billing as $item) {
             $food_bill = $item->restaurant->sum('bill');

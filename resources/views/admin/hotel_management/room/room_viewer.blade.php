@@ -245,7 +245,7 @@
                     $('#feature').val((data['view']['feature']));
                     // $('#venueReserved').attr("href", "/training/addvenueRes/"+id)
                     // $('#venueBooked').attr("href", "/training/add-booking/"+id)
-                    $('#venueReserved').attr("href", "/booking/create?room_id="+id+"&res="+1)
+                    $('#venueReserved').attr("href", "/reserve?room_id="+id)
                     $('#venueBooked').attr("href", "/booking/create?room_id="+id)
                 }
             })
