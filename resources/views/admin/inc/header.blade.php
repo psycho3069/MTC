@@ -11,7 +11,10 @@
 
             <p style="color: #99c2ff; font-size: 25px; font-family: 'Times New Roman', Times, serif; ">
               &nbsp;&nbsp;
-              <img src="{{ asset('img/mtclogo.png')}}" height="75px" width="75px">
+              <a href="{{ url('/') }}">
+                  <img src="{{ asset('img/mtclogo.png')}}" height="75px" width="75px">
+              </a>
+              
               &nbsp;<!-- <b>{{ config('app.name', 'Laravel') }}</b> -->
             </p>
 
