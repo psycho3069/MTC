@@ -226,4 +226,15 @@
         });
     });
 </script>
+<script>
+    $("input[id$=check_in_date]").on('click',function () {
+        var a = '';
+        var res = [];
+        if ($('input[id$=check_in_date]').val()) {
+            var d = $('input[id$=check_in_date]').val();
+            var res = d.split("-");
+            $('input[id$=check_in_date]').val(res[2]+'-'+res[1]+'-'+res[0]);
+        }
+    });
+</script>
 @endsection
