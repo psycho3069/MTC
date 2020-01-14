@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="col-md-8">
-        <div class="card">
+        <div class="card text-left">
             <div class="card-header">{{ $v_group->type->name }}</div>
             <div class="card-body">
                 <form action="{{ route('vouchers.update', $v_group->id) }}" method="POST">

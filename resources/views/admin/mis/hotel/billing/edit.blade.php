@@ -9,7 +9,7 @@
 
             <div class="row">
                 <div class="col-md-7">
-                    <div class="card">
+                    <div class="card text-left">
                         <div class="card-header"><samp>{{ $bill->guest->name }}'s Bill</samp></div>
                         <div class="card-body">
                             <samp>
@@ -135,13 +135,13 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-In*</label>
-                                            <input class="form-control date" id="start_date">
+                                            <input class="form-control date check_in_date" id="start_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-Out*</label>
-                                            <input class="form-control date" id="end_date">
+                                            <input class="form-control date check_out_date" id="end_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">

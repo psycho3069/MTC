@@ -176,7 +176,7 @@ class BillingController extends Controller
         $input = $request->except('_token', '_method');
         $bill = Billing::find($id);
 
-//        return $input;
+//        return $input['billing'];
 
         $old_bill = 0;
         $new_bill = 0;
@@ -231,6 +231,7 @@ class BillingController extends Controller
         if ( $amount['old'] != $amount['new'])
             $this->updateAIS( $bill, $amount, $data);
 
+        $bill->guest->update( $input['billing']);
         $bill->update( $input['billing']);
 
         return redirect('billing/'.$bill->id);

@@ -28,15 +28,11 @@
                                 <td><code>{{ $bill->guest->org_name ? $bill->guest->org_name : 'Not Found' }}</code></td>
                                 <td>{{ $bill->total_bill }}</td>
                                 <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            Reservation
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item font-color" href="{{ route('billing.show', $bill->id) }}">View</a>
-                                            <a class="dropdown-item font-color" href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item font-color" href="">Cancel</a>
+                                    <div class="dropdown">
+                                        <button class="btn btn-i" for="btnControl">Reservation</button>
+                                        <div class="dropdown-content">
+                                            <a href="{{ route('billing.show', $bill->id) }}">View</a>
+                                            <a href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
                                         </div>
                                     </div>
                                 </td>

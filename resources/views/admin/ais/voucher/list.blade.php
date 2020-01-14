@@ -67,17 +67,15 @@
                                 <td>{{ $item->user->name }}</td>
                                 <td>{{ $item->date->date }}</td>
                                 <td>
+
                                     <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="{{ route('vouchers.show', $item->id) }}">View</a>
-                                            <a class="dropdown-item" href="{{ route('vouchers.edit', $item->id) }}">Edit</a>
-                                            <div class="dropdown-divider"></div>
-                                            {{--                                <a class="dropdown-item" href="">Delete</a>--}}
+                                        <button class="btn btn-i" for="btnControl">Vouchers</button>
+                                        <div class="dropdown-content">
+                                            <a href="{{ route('vouchers.show', $item->id) }}">View</a>
+                                            <a href="{{ route('vouchers.edit', $item->id) }}">Edit</a>
                                         </div>
                                     </div>
+
                                 </td>
                             </tr>
                         @endforeach

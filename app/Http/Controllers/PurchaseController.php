@@ -117,7 +117,9 @@ class PurchaseController extends Controller
                 $purchase_group->date->misStock()->create( $joji);
         }
 
-        return redirect('purchase?type_id=').$purchase_group->type_id;
+//        return $purchase_group->type_id;
+
+        return redirect('purchase?type_id='.$purchase_group->type_id);
 
     }
 

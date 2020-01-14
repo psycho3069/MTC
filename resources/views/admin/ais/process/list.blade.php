@@ -64,15 +64,11 @@
                                 <td>{{ str_limit( $v_group->note, 40)  }}</td>
                                 <td>{{ $v_group->date->date }}</td>
                                 <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="{{ route('vouchers.show', $v_group->id) }}">View</a>
-                                            <a class="dropdown-item" href="{{ route('vouchers.edit', $v_group->id) }}">Edit</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Delete</a>
+                                    <div class="dropdown">
+                                        <button class="btn btn-i" for="btnControl">More</button>
+                                        <div class="dropdown-content">
+                                            <a href="{{ route('vouchers.show', $v_group->id) }}">View</a>
+                                            <a href="{{ route('vouchers.edit', $v_group->id) }}">Edit</a>
                                         </div>
                                     </div>
                                 </td>

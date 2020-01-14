@@ -30,15 +30,11 @@
                                 <td>{{ $item->purchases->sum('amount') }} tk.</td>
                                 <td>{{ $item->note ? $item->note : 'No notes' }}</td>
                                 <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            More
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item font-color" href="{{ route('purchase.show', $item->id) }}">View</a>
-                                            <a class="dropdown-item font-color" href="{{ route('purchase.edit', $item->id) }}">Edit</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item font-color" href="">Delete</a>
+                                    <div class="dropdown">
+                                        <button class="btn btn-i" for="btnControl">Purchases</button>
+                                        <div class="dropdown-content">
+                                            <a href="{{ route('purchase.show', $item->id) }}">View</a>
+                                            <a href="{{ route('purchase.edit', $item->id) }}">Edit</a>
                                         </div>
                                     </div>
                                 </td>

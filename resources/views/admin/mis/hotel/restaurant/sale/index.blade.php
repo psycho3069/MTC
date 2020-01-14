@@ -31,7 +31,6 @@
                                 <td class="text-center"><code>{{ $data[$bill->id]['bill'] }} tk.</code></td>
                                 <td class="text-center"><code>{{ $bill->checkout_status ? 'Yes' : 'No' }}</code></td>
                                 <td>
-
                                     <div class="dropdown">
                                         <button class="btn btn-i" for="btnControl">Bill</button>
                                         <div class="dropdown-content">
@@ -39,10 +38,8 @@
                                             <a href="{{ route('sales.edit', $bill->id) }}">Edit</a>
                                         </div>
                                     </div>
-                                    
                                 </td>
                             </tr>
-
                         @endforeach
                         </tbody>
                     </table>

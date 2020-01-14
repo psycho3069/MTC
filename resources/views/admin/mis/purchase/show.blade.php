@@ -19,7 +19,6 @@
                             <th>Cost</th>
                             <th>Supplier</th>
                             <th>Receiver</th>
-                            <td></td>
                         </tr>
                         </thead>
                         <tbody>
@@ -31,18 +30,6 @@
                                 <td>{{ $item->amount }} tk.</td>
                                 <td>{{ $item->supplier->name }}</td>
                                 <td>{{ $item->receiver->name }}</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            More
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item font-color" href="">Edit</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item font-color" href="">Delete</a>
-                                        </div>
-                                    </div>
-                                </td>
                             </tr>
                         @endforeach
                         </tbody>

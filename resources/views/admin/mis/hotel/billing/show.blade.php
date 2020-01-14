@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="row">
-                    <h4><code>Training Center</code></h4>
+                    <h4><code>Training Academy</code></h4>
 
                     <table class="table table-hover">
                         <thead>

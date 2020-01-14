@@ -29,7 +29,7 @@
                         @foreach( $billing as $bill )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d-m-Y', strtotime( $bill->created_at)) }}</td>
+                                <td class="no-wrap">{{ date('d-m-Y', strtotime( $bill->created_at)) }}</td>
                                 <td><a href="{{ route('billing.show', $bill->id) }}">{{ $bill->guest->name }}</a></td>
                                 <td><code>{{ $bill->guest->org_name ? $bill->guest->org_name : 'Not Found' }}</code></td>
                                 <td>{{ $bill->total_bill }}</td>
@@ -48,7 +48,6 @@
                                     </div>
                                 </td>
                                 <td>
-
                                     <div class="dropdown">
                                         <button class="btn btn-i" for="btnControl">Payment</button>
                                         <div class="dropdown-content">
@@ -59,7 +58,6 @@
                                             @endif
                                         </div>
                                     </div>
-
                                 </td>
                             </tr>
 
