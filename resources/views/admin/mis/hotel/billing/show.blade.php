@@ -5,6 +5,7 @@
     <div class="container text-left">
         <div class="row">
             <div class="well col-xs-10 col-sm-10 col-md-8 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+                <button type="button" class="btn btn-i" onclick='window.location="{{ url('export', $bill->id) }}"'>Export PDF</button>
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <address>

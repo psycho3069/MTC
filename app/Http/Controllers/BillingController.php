@@ -9,6 +9,7 @@ use App\Guest;
 use App\Http\Traits\CustomTrait;
 use App\Room;
 use App\Venue;
+use PDF;
 use Illuminate\Http\Request;
 use NumberFormatter;
 
@@ -33,6 +34,12 @@ class BillingController extends Controller
             $data[$bill->id]['tax'] = $data[$bill->id]['booking'] * 5 / 100;
         }
         return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
+    }
+
+
+    public function test()
+    {
+        return view('admin.mis.hotel.billing.test');
     }
 
 
@@ -104,7 +111,39 @@ class BillingController extends Controller
     }
 
 
-    public function show($id)
+    public function export($id)
+    {
+        $bill = Billing::find($id);
+        $export = 1;
+        $all = $this->show($id, $export);
+        $bill = $all['bill']; $booking = $all['booking']; $restaurant = $all['restaurant']; $data = $all['data']; $info = $all['info'];
+
+
+        view()->share('bill',$bill);
+        view()->share('booking',$booking);
+        view()->share('restaurant',$restaurant);
+        view()->share('data',$data);
+        view()->share('info',$info);
+
+        $pdf = PDF::loadView('admin.mis.hotel.billing.export.pdf');
+
+
+//        return $pdf->download('invoice.pdf');
+        return view('admin.mis.hotel.billing.export.pdf', compact('bill', 'booking', 'restaurant', 'data', 'info'));
+//
+
+
+
+//        $pdf = PDF::loadView('admin.mis.hotel.billing.export.pdf', compact('bill', 'booking', 'restaurant', 'data', 'info'));
+
+
+//        return view('')
+
+
+        return $bill;
+    }
+
+    public function show($id, $export = null)
     {
 //        return $id;
         $bill = Billing::find( $id);
@@ -135,6 +174,11 @@ class BillingController extends Controller
 
         $x = new NumberFormatter('en', NumberFormatter::SPELLOUT);
         $data['words']['total_bill'] = $x->format( $bill->total_bill);
+
+        $all['bill'] = $bill; $all['booking'] = $booking; $all['restaurant'] = $restaurant; $all['data'] = $data; $all['info'] = $info;
+
+        if ( $export)
+            return $all;
 
         return view('admin.mis.hotel.billing.show', compact('bill', 'booking', 'restaurant', 'data', 'info'));
 //        return view('admin.mis.hotel.billing.dropdown', compact('bill', 'booking', 'restaurant', 'data', 'info'));
@@ -247,4 +291,8 @@ class BillingController extends Controller
     {
         //
     }
+
+
+
+
 }

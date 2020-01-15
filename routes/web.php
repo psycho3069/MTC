@@ -80,8 +80,6 @@ Route::get('reserve', ['as' => 'reserve.create' , 'uses' => 'ResidualController@
 Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@reserveStore']);
 
 
-
-
 Route::group(['middleware' => 'auth'], function (){
 
 
@@ -96,6 +94,7 @@ Route::group(['middleware' => 'auth'], function (){
 
     Route::post('sales/room', ['as' => 'sales.room', 'uses' => 'FoodSaleController@room']);
 
+    Route::get('export/{bill_id}', 'BillingController@export');
     Route::resource('billing', 'BillingController');
     Route::resource('booking', 'BookingController');
     Route::resource('restaurant/sales', 'FoodSaleController');

@@ -81,6 +81,7 @@ class CheckoutController extends Controller
     public function generatePDF($id)
     {
         $viewBill = Checkout::find($id);
+//        return $viewBill;
         $data = ['title' => 'MTC'];
         view()->share('viewBill',$viewBill);
         view()->share('data',$data);
