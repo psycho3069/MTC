@@ -32,7 +32,10 @@
                                 <td class="text-center"><code>{{ $bill->checkout_status ? 'Yes' : 'No' }}</code></td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">Bill</button>
+                                        <button class="btn btn-i" for="btnControl">
+                                            Bill
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                        </button>
                                         <div class="dropdown-content">
                                             <a href="{{ route('billing.show', $bill->id) }}">View</a>
                                             <a href="{{ route('sales.edit', $bill->id) }}">Edit</a>

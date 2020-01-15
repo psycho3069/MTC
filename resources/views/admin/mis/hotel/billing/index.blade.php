@@ -38,7 +38,10 @@
                                 <td><b>{!! $bill->checkout_status ? '<span class="badge badge-success">YES</span>' : '<span class="badge badge-danger">NO</span>' !!}</b></td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">Bill</button>
+                                        <button class="btn btn-i">
+                                            Bill
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                        </button>
                                         <div class="dropdown-content">
                                             <a href="{{ route('billing.show', $bill->id) }}">View</a>
                                             <a href="{{ route('booking.show', $bill->id) }}">Booking</a>
@@ -49,7 +52,10 @@
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">Payment</button>
+                                        <button class="btn btn-i" for="btnControl">
+                                            Payment
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                        </button>
                                         <div class="dropdown-content">
                                             <a href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
                                             <a href="{{ route('payment.index', $bill->id) }}">All Payments</a>

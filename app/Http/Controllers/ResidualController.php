@@ -46,6 +46,7 @@ class ResidualController extends Controller
     public function reserveSTore(Request $request)
     {
         $input = $request->except('_token');
+        $input['billing']['code'] = $this->code();
 
         $hotel_bill = 0;
         $guest = Guest::where( 'contact_no', $request->guest['contact_no'])->get()->first();
@@ -83,6 +84,24 @@ class ResidualController extends Controller
         }
 
         return redirect()->back();
+    }
+
+
+
+
+    public function code()
+    {
+        $bill = Billing::whereDate('created_at', date('Y-m-d'))->get()->last();
+        $preds = 'aspada_'.date('d_m_y');
+        $slice_num = 0;
+        if ( $bill )
+            $slice_num = substr( $bill->code, -3);
+        $slice_num += 1;
+        $last_pad = str_pad( $slice_num, 3, '0', STR_PAD_LEFT);
+        $code = $preds.'_'.$last_pad;
+
+        return $code;
+
     }
 
 

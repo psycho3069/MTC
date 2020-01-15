@@ -38,9 +38,15 @@
                                 </td>
                                 <td>{{ $stock_head->description ? $stock_head->description : 'Not Found'}}</td>
                                 <td width="18%" align="right">
-                                    <a href="{{ route('stock.create', ['stock_head_id' => $stock_head->id] ) }}" class="btn btn-sm btn-info">Add Item</a>
-                                    <a href="" class="btn btn-sm btn-info">Edit</a>
-                                    <a href="" class="btn btn-sm btn-danger" id="delete">Delete</a>
+                                    <a href="{{ route('stock.create', ['stock_head_id' => $stock_head->id] ) }}" class="btn btn-sm btn-i" title="Add Item">
+                                        <i class="fa fa-plus-square" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="" class="btn btn-sm btn-primary" title="Edit">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="" class="btn btn-sm btn-danger" title="Delete">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach

@@ -75,7 +75,7 @@
                                 @foreach( $v_group as $key => $item )
                                     <tr>
                                         <td>{{ $i++ }}</td>
-                                        <td>{{ $info[$x]['date'] }}</td>
+                                        <td>{{ date('d-m-Y', strtotime( $info[$x]['date'])) }}</td>
                                         <td>{{ $info[$x]['code'] }}</td>
                                         <td>{{ $record[$x][$key]['thead'] }}</td>
                                         <td>{{ $info[$x]['note'] }}</td>

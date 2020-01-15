@@ -24,7 +24,7 @@
 
                         </p>
                         <p>
-                            <code>Receipt #: 34522677W</code>
+                            <code>Receipt #: {{ $bill->code }}</code>
                         </p>
                     </div>
                 </div>

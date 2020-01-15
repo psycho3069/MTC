@@ -85,8 +85,8 @@
                             </tr>
                             @foreach( $data['vouchers'] as $voucher )
                                 <tr>
-                                    <td>{{ $voucher->date->date }}</td>
-                                    <td>{{ $voucher->code }}</td>
+                                    <td>{{ date('d-m-Y', strtotime( $voucher->date->date)) }}</td>
+                                    <td>{{ $voucher->voucherGroup->code }}</td>
                                     <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->debitAccount->name : $voucher->creditAccount->name }}</td>
                                     <td> {{ $voucher->note }}</td>
                                     <td class="float-right">{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>

@@ -179,7 +179,7 @@
 
             $('#add-button').click(function () {
                 var total = $('#total').text()
-                var bill = $('#bill').text()
+                var bill = $('#bill').val()
                 // var room = $('#room').val()
                 var menu = $('#menu').val()
                 var quantity = $('#quantity').val()

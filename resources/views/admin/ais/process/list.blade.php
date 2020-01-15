@@ -51,8 +51,8 @@
                             <th scope="col">Amount</th>
                             <th scope="col">Note</th>
                             <th scope="col">Date</th>
-                            <th scope="col">Action</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -62,18 +62,21 @@
                                 <td>{{ $v_group->code }}</td>
                                 <td>{{ $v_group->vouchers->sum('amount') }}</td>
                                 <td>{{ str_limit( $v_group->note, 40)  }}</td>
-                                <td>{{ $v_group->date->date }}</td>
+                                <td>{{ date('d-m-Y', strtotime($v_group->date->date)) }}</td>
+                                <td>
+                                    {!! $v_group->date->status ? '<span class="badge badge-success">Success</span>' : '<span class="badge badge-warning">Pending</span>' !!}
+                                </td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">More</button>
+                                        <button class="btn btn-i" for="btnControl">
+                                            More
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                        </button>
                                         <div class="dropdown-content">
                                             <a href="{{ route('vouchers.show', $v_group->id) }}">View</a>
                                             <a href="{{ route('vouchers.edit', $v_group->id) }}">Edit</a>
                                         </div>
                                     </div>
-                                </td>
-                                <td>
-                                    {!! $v_group->date->status ? '<span class="badge badge-success">Success</span>' : '<span class="badge badge-warning">Pending</span>' !!}
                                 </td>
                             </tr>
                         @endforeach

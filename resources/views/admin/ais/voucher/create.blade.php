@@ -7,7 +7,7 @@
             color: #ff0000;
         }
     </style>
-    <div class="col-md-6">
+    <div class="col-md-8">
         <samp>
             <div class="card text-left">
                 <div class="card-header">

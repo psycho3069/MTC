@@ -29,7 +29,10 @@
                                 <td>{{ $bill->total_bill }}</td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">Reservation</button>
+                                        <button class="btn btn-i" for="btnControl">
+                                            More
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                        </button>
                                         <div class="dropdown-content">
                                             <a href="{{ route('billing.show', $bill->id) }}">View</a>
                                             <a href="{{ route('payment.create', $bill->id) }}">Make Payment</a>

@@ -6,7 +6,7 @@
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    <b>Booking</b>
+                    <b>Reserve</b>
                 </div>
                 <div class="card-body">
                     <div class="row">

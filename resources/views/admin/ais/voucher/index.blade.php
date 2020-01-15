@@ -9,7 +9,7 @@
         color: #fff;
     }
 </style>
-    <div class="col-md-7">
+    <div class="col-md-9">
 
         <samp>
             <div class="card text-left">
@@ -74,10 +74,13 @@
                                 <td>{{ $item->vouchers->sum('amount') }}</td>
                                 <td>{{ str_limit($item->note, 18) }}</td>
                                 <td>{{ $item->user->name }}</td>
-                                <td>{{ $item->date->date }}</td>
+                                <td>{{ date('d-m-Y', strtotime($item->date->date)) }}</td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">Vouchers</button>
+                                        <button class="btn btn-i" for="btnControl">
+                                            Vouchers
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                        </button>
                                         <div class="dropdown-content">
                                             <a href="{{ route('vouchers.show', $item->id) }}">View</a>
                                             <a href="{{ route('vouchers.edit', $item->id) }}">Edit</a>

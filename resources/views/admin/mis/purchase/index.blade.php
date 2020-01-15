@@ -31,7 +31,10 @@
                                 <td>{{ $item->note ? $item->note : 'No notes' }}</td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">Purchases</button>
+                                        <button class="btn btn-i" for="btnControl">
+                                            Purchases
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                        </button>
                                         <div class="dropdown-content">
                                             <a href="{{ route('purchase.show', $item->id) }}">View</a>
                                             <a href="{{ route('purchase.edit', $item->id) }}">Edit</a>

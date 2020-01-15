@@ -24,6 +24,7 @@ class CreateBillingsTable extends Migration
             $table->double('total_paid', 14,2)->default(0);
             $table->double('discount',14,2)->unsigned()->default(0);
             $table->text('note')->nullable();
+            $table->text('code')->nullable();
             $table->timestamps();
         });
     }
