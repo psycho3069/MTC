@@ -12,6 +12,7 @@
             <div class="card text-left">
                 <div class="card-header">
                     <b><code>Sale Food</code></b>
+                    <b class="pull-right total">Total: <span id="total"></span></b>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -30,7 +31,7 @@
                             <div class="form-group">
                                 <label>Menu Type</label>
                                 <select class="form-control" id="menu_type">
-                                    {{--                                <option></option>--}}
+                                    <option></option>
                                     @foreach( $data['menu_type'] as $item )
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
@@ -41,12 +42,6 @@
                             <div class="form-group">
                                 <label>Menu</label>
                                 <select class="form-control" id="menu">
-                                    {{--                                <option></option>--}}
-                                    @foreach( $data['menu_type'] as $type )
-                                        @foreach( $type->menu as $item )
-                                            <option value="{{ $item->id }}">{{ $item->name.'-'.$item->price.' tk' }}</option>
-                                        @endforeach
-                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -85,6 +80,7 @@
                                 <th scope="col">Guest Name</th>
                                 <th scope="col">Item</th>
                                 <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
                                 <th scope="col">Discount</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -109,6 +105,62 @@
 @endsection
 
 @section('script')
+
+    <script>
+        $(document).ready(function () {
+            var _token = $('input[name="_token"]').val(); var all_menu = [];
+
+            $('#menu_type').on('change', function () {
+                var menu_type = $('#menu_type').val();
+                getMenu( menu_type)
+                $('#total').empty()
+            })
+
+
+            $('#menu').on('change', function () {
+                getPrice()
+            })
+
+
+
+            $('#quantity').on('change keyup', function () {
+                getPrice()
+            })
+
+
+
+            function getPrice() {
+                var menu_id = $('#menu').val(); var price = 0; var total = 0;
+                $.each(all_menu, function (key, val) {
+                    if ( key == menu_id)
+                        price = val['price']
+                })
+                total = price * $('#quantity').val()
+                $('#total').html(total+' tk.')
+            }
+
+            function getMenu(menu_type){
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("food.menu") }}',
+                    data: {_token: _token, menu_type: menu_type},
+                    success: function (data) {
+                        var menu = $('#menu');
+                        menu.empty()
+                        $.each(data['menu'], function (key, val) {
+                            // console.log(val)
+                            menu.append('<option value="'+key+'">'+val['name']+'- '+val['price']+'tk.'+'</option>')
+                        })
+                        all_menu = data['menu']
+                    }
+                })
+            }
+
+
+        })
+    </script>
+
+
     <script>
         $(document).ready(function () {
             var i = 0;
@@ -126,7 +178,8 @@
 
 
             $('#add-button').click(function () {
-                var bill = $('#bill').val()
+                var total = $('#total').text()
+                var bill = $('#bill').text()
                 // var room = $('#room').val()
                 var menu = $('#menu').val()
                 var quantity = $('#quantity').val()
@@ -142,6 +195,7 @@
                         // '<td><input type="hidden" name="input['+i+'][booking_id]" value="'+room+'">'+$('#room :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][menu_id]" value="'+menu+'">'+$('#menu :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity+'</td>' +
+                        '<td>'+total+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][discount]" value="'+discount+'">'+discount+'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'

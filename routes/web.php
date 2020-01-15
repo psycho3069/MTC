@@ -93,6 +93,8 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('supplier', 'SupplierController');
 
     Route::post('sales/room', ['as' => 'sales.room', 'uses' => 'FoodSaleController@room']);
+    Route::post('restaurant/menu', ['as' => 'food.menu', 'uses' => 'FoodSaleController@menu']);
+
 
     Route::get('export/{bill_id}', 'BillingController@export');
     Route::resource('billing', 'BillingController');

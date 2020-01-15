@@ -46,6 +46,20 @@ class FoodSaleController extends Controller
 
     }
 
+
+    public function menu(Request $request)
+    {
+//        return $request->all();
+        $menu_type = MenuType::find( $request->menu_type);
+        foreach ($menu_type->menu as $item) {
+            $data['menu'][$item->id]['name'] = $item->name;
+            $data['menu'][$item->id]['price'] = $item->price;
+        }
+
+        return $data;
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *
