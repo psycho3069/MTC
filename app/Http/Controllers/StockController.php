@@ -77,6 +77,14 @@ class StockController extends Controller
      */
     public function store(Request $request)
     {
+
+//        return $request->all();
+        $request->validate([
+            'name' => 'required',
+        ],[
+             'name.required' => 'Please Enter Category Name',
+            ]);
+
         $input = $request->all();
 
         if ($request->stock_head_id){

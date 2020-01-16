@@ -45,6 +45,13 @@ class ResidualController extends Controller
 
     public function reserveSTore(Request $request)
     {
+
+        $request->validate([
+            'guest.name' => 'required',
+            'guest.contact_no' => 'required',
+            'booking' => 'required',
+        ]);
+
         $input = $request->except('_token');
         $input['billing']['code'] = $this->code();
 
@@ -83,7 +90,9 @@ class ResidualController extends Controller
             $billing->booking()->create($item);
         }
 
-        return redirect()->back();
+        $request->session()->flash('success', 'Room has been reserved successfully');
+
+        return redirect('billing/'.$billing->id );
     }
 
 
@@ -103,8 +112,6 @@ class ResidualController extends Controller
         return $code;
 
     }
-
-
 
 
 

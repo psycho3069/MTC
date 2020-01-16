@@ -13,31 +13,33 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Guest Name*</label>
-                            <input type="text" class="form-control" id="name">
+                            <input type="text" class="form-control" id="name" value="{{ old('guest.name') }}">
+                            <p class="text-danger">{{ $errors->has('guest.name') ? 'Please Enter Guest Name' : '' }}</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Contact No*</label>
-                            <input type="text" class="form-control" id="contact_no">
+                            <input type="text" class="form-control" id="contact_no" value="{{ old('guest.contact_no') }}">
+                            <p class="text-danger">{{ $errors->has('guest.contact_no') ? 'Please Enter Guest Contact' : '' }}</p>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Address</label>
-                            <input type="text" class="form-control" id="address">
+                            <input type="text" class="form-control" id="address" value="{{ old('guest.address') }}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Organization</label>
-                            <input type="text" class="form-control" id="org_name">
+                            <input type="text" class="form-control" id="org_name" value="{{ old('guest.org_name') }}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Designation</label>
-                            <input type="text" class="form-control" id="designation">
+                            <input type="text" class="form-control" id="designation" value="{{ old('guest.designation') }}">
                         </div>
                     </div>
                 </div>
@@ -60,7 +62,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Select Category</label>
+                            <label>Room Category</label>
                             <select class="form-control" id="category">
                                 <option value="0">All</option>
                                 <option value="1" {{ $data['selected'] <50 ? 'selected' : '' }}>Room</option>
@@ -70,7 +72,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Select a Room</label>
+                            <label>Room</label>
                             <select class="form-control" id="room_id">
                                 <option></option>
                                 @foreach( $data['room'] as $item )
@@ -128,29 +130,29 @@
                     </table>
 
 
-                    <input type="hidden" name="guest[name]" required>
-                    <input type="hidden" name="guest[contact_no]" required>
-                    <input type="hidden" name="guest[address]">
-                    <input type="hidden" name="guest[org_name]">
-                    <input type="hidden" name="guest[designation]">
+                    <input type="hidden" name="guest[name]" value="{{ old('guest.name') }}">
+                    <input type="hidden" name="guest[contact_no]" value="{{ old('guest.contact_no') }}">
+                    <input type="hidden" name="guest[address]" value="{{ old('guest.address') }}">
+                    <input type="hidden" name="guest[org_name]" value="{{ old('guest.org_name') }}">
+                    <input type="hidden" name="guest[designation]" value="{{ old('guest.designation') }}">
 
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label> Advance Amount <small>(tk.)</small></label>
-                                <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="0">
+                                <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="{{ old('billing.advance_paid') ? old('billing.advance_paid') : 0 }}">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Gross Discount <small>(tk.)</small></label>
-                                <input type="number" name="billing[discount]" value="0" min="0" class="form-control">
+                                <input type="number" class="form-control" name="billing[discount]" min="0" value="{{ old('billing.discount') ? old('billing.discount') : 0 }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Note</label>
-                                <textarea class="form-control" name="billing[note]" cols="3" rows="2"></textarea>
+                                <textarea class="form-control" name="billing[note]" cols="3" rows="2" value="{{ old('billing.note') }}"></textarea>
                             </div>
                         </div>
                     </div>

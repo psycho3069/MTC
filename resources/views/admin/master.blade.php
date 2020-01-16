@@ -40,10 +40,20 @@
    <body>
     <div id="app">
 
-      @include('admin.inc.header')
-      @if(Auth::user())
-          @include('admin.inc.navbar')
-      @endif
+        @include('admin.inc.header')
+
+        @if(Auth::user())
+            @include('admin.inc.navbar')
+        @endif
+
+
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-center">
+                @include('admin.inc.notification')
+            </div>
+        </div>
+
+
 
         <main class="py-4">
             @yield('rooms')

@@ -217,6 +217,7 @@ class BillingController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $input = $request->except('_token', '_method');
         $bill = Billing::find($id);
 
@@ -277,6 +278,8 @@ class BillingController extends Controller
 
         $bill->guest->update( $input['billing']);
         $bill->update( $input['billing']);
+
+        $request->session()->flash('update', 'Booking has been Updated');
 
         return redirect('billing/'.$bill->id);
     }

@@ -12,6 +12,7 @@ use App\Venue;
 use App\Visitor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
 {
@@ -90,8 +91,16 @@ class BookingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+
     public function store(Request $request)
     {
+        $request->validate([
+            'guest.name' => 'required',
+            'guest.contact_no' => 'required',
+            'booking' => 'required',
+        ]);
+
 
         $input = $request->except('_token');
         $input['billing']['code'] = $this->code();
@@ -139,6 +148,8 @@ class BookingController extends Controller
             $item['booking_status'] = 2;
             $billing->booking()->create($item);
         }
+
+        $request->session()->flash('success', 'Room has been booked successfully');
 
         if ( $request->check)
             return redirect('restaurant/sales/create?bill_id='.$billing->id );

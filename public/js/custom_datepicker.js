@@ -21,8 +21,11 @@ $(document).ready(function () {
         }
     });
 
-    var check_in = flatpickr("#start_date", {minDate: new Date()});
-    var check_out = flatpickr("#end_date", {minDate: new Date()});
+    // var check_in = flatpickr("#start_date", {minDate: new Date()});
+    // var check_out = flatpickr("#end_date", {minDate: new Date()});
+
+    var check_in = flatpickr("#start_date");
+    var check_out = flatpickr("#end_date");
 
     check_in.set("onChange", function (d) {
         check_out.set("minDate", d.fp_incr(1)); //increment by one day

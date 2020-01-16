@@ -13,31 +13,33 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Guest Name*</label>
-                                <input type="text" class="form-control" id="name">
+                                <input type="text" class="form-control" id="name" value="{{ old('guest.name') }}">
+                                <p class="text-danger">{{ $errors->has('guest.name') ? 'Please Enter Guest Name' : '' }}</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Contact No*</label>
-                                <input type="text" class="form-control" id="contact_no">
+                                <input type="text" class="form-control" id="contact_no" value="{{ old('guest.contact_no') }}">
+                                <p class="text-danger">{{ $errors->has('guest.contact_no') ? 'Please Enter Guest Contact' : '' }}</p>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Address</label>
-                                <input type="text" class="form-control" id="address">
+                                <input type="text" class="form-control" id="address" value="{{ old('guest.address') }}">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Organization</label>
-                                <input type="text" class="form-control" id="org_name">
+                                <input type="text" class="form-control" id="org_name" value="{{ old('guest.org_name') }}">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Designation</label>
-                                <input type="text" class="form-control" id="designation">
+                                <input type="text" class="form-control" id="designation" value="{{ old('guest.designation') }}">
                             </div>
                         </div>
                     </div>
@@ -119,11 +121,11 @@
                         </table>
 
 
-                        <input type="hidden" name="guest[name]" required>
-                        <input type="hidden" name="guest[contact_no]" required>
-                        <input type="hidden" name="guest[address]">
-                        <input type="hidden" name="guest[org_name]">
-                        <input type="hidden" name="guest[designation]">
+                        <input type="hidden" name="guest[name]" value="{{ old('guest.name') }}">
+                        <input type="hidden" name="guest[contact_no]" value="{{ old('guest.contact_no') }}">
+                        <input type="hidden" name="guest[address]" value="{{ old('guest.address') }}">
+                        <input type="hidden" name="guest[org_name]" value="{{ old('guest.org_name') }}">
+                        <input type="hidden" name="guest[designation]" value="{{ old('guest.designation') }}">
 
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>
