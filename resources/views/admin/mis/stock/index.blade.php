@@ -6,7 +6,7 @@
             <div class="card text-left">
                 <div class="card-header">
                     <strong>{{ $type_id != 3 ? 'Inventory' : 'Grocery' }} List</strong>
-                    <a href="{{ route('stock.create', ['type_id' => $type_id]) }}" class="btn btn-info float-right">Add Category </a>
+                    <a href="{{ route('stock.create', ['type_id' => $type_id]) }}" class="btn btn-iii float-right">Add Category </a>
                 </div>
 
                 <div class="card-body">
@@ -41,7 +41,7 @@
                                     <a href="{{ route('stock.create', ['stock_head_id' => $stock_head->id] ) }}" class="btn btn-sm btn-i" title="Add Item">
                                         <i class="fa fa-plus-square" aria-hidden="true"></i>
                                     </a>
-                                    <a href="" class="btn btn-sm btn-primary" title="Edit">
+                                    <a href="{{ route('stock.edit', $stock_head->id) }}" class="btn btn-sm btn-primary" title="Edit">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
                                     <a href="" class="btn btn-sm btn-danger" title="Delete">

@@ -8,7 +8,7 @@
             <div class="card text-left">
                 <div class="card-header">
                     Food Sales
-                    <button type="button" class="btn btn-info float-right" onclick='window.location="{{ route('sales.create') }}"'>Add Sales</button>
+                    <button type="button" class="btn btn-iii float-right" onclick='window.location="{{ route('sales.create') }}"'>Add Sales</button>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-hover table-info">

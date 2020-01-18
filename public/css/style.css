@@ -102,6 +102,17 @@ strong {
     margin-top: 45%;
 }
 
+.btn-i {
+    color: #fff;
+    background-color: #174eb8;
+    border-color: #343a40;
+}
+
+.btn-i.focus, .btn-i:focus, .btn-i:hover {
+    color: #ffffffd9 !important;
+    background: #2154cee6;
+}
+
 
 .btn-ii {
     color: #f0f8ffed;
@@ -115,16 +126,22 @@ strong {
 }
 
 
-.btn-i {
+.btn-iii {
     color: #fff;
-    background-color: #174eb8;
-    border-color: #343a40;
+    background-color: tomato;
+    border-color: #ec755f;
 }
 
-.btn-i.focus, .btn-i:focus, .btn-i:hover {
-    color: #ffffffd9 !important;
-    background: #2154cee6;
+.btn-iii.focus, .btn-iii:focus, .btn-iii:hover {
+    color: #e6e1e1 !important;
+    background-color: #db5038;
+    border-color: #d54126;
+
 }
+
+
+
+
 
 
 .ml-book {

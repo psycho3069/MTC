@@ -1,6 +1,10 @@
 
 $(document).ready(function () {
 
+
+
+
+
     $("#start_date").on('click',function () {
         var a = '';
         var res = [];
@@ -51,4 +55,5 @@ $(document).ready(function () {
             }
         }
     });
+
 });

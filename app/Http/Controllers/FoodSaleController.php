@@ -81,7 +81,7 @@ class FoodSaleController extends Controller
 //            return $item;
         }
 
-        $request->session()->flash('create', 'Food has been sold and added to the bill');
+        $request->session()->flash('create', 'Food has been sold And added to the bill');
 
         return redirect('billing/'.$food_bill->billing_id);
     }

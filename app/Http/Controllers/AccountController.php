@@ -60,6 +60,14 @@ class AccountController extends Controller
     {
 //        return $request->all();
 
+        $request->validate([
+            'name' => 'required',
+            'code' => 'required',
+        ],[
+            'name.required' => 'Please Enter A Name',
+            'code.required' => 'Please Enter A Code',
+        ]);
+
         $type = $request->type;
         $input = $request->all();
         $input['ac_head_id'] = $request->parent;
@@ -100,6 +108,8 @@ class AccountController extends Controller
                 $thead->currentBalance()->create();
             }
         }
+
+        $request->session()->flash('create', 'Operation Successful');
 
 
         return redirect('accounts');
@@ -149,9 +159,13 @@ class AccountController extends Controller
     public function destroy($id)
     {
         $thead = TransactionHead::find($id);
+
+        if ( $thead->currentBalance->sum('debit') || $thead->currentBalance->sum('credit'))
+            return redirect()->back()->with('delete', 'Operation can\'t be done.');
+
         $thead->currentBalance()->delete();
         $thead->delete();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Operation Successful');
     }
 
 

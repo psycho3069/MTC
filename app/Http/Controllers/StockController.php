@@ -122,6 +122,9 @@ class StockController extends Controller
      */
     public function edit($id)
     {
+//        return $stock_head->stock;
+        $stock_head = StockHead::find( $id);
+        return view('admin.mis.stock.edit', compact('stock_head'));
 
     }
 
@@ -134,7 +137,28 @@ class StockController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'input.*.name' => 'required',
+            'input.*.unit' => 'required',
+        ],[
+            'name.required' => 'Please Enter Category Name',
+            'input.*.name.required' => 'Please Enter Item Name',
+            'input.*.unit.required' => 'Please Select A Unit',
+        ]);
+//        return $request->all();
+        $input = $request->input;
+        $stock_head = StockHead::find( $id);
+
+//        return $stock_head->stock->find(1);
+
+        foreach ( $input as $key => $item) {
+            $stock_head->stock->find( $key)->update( $item);
+        }
+        $stock_head->update( $request->except('_token', 'input'));
+        return redirect()->back()->with('update', 'Updated successfully');
+
+
     }
 
     /**

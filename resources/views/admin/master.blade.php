@@ -49,7 +49,7 @@
 
         <div class="row">
             <div class="col-md-8 text-center" style="margin-left: 16%;">
-                @include('admin.inc.notification')
+                <code>@include('admin.inc.notification')</code>
             </div>
         </div>
 
@@ -106,14 +106,7 @@
     </script>
     <!-- datepicker -->
     <script src="{{asset('js/bootstrap-datepicker.js')}}"></script>
-    <script type="text/javascript">
-      $(function()
-        {
-          $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd'
-          });
-        });
-    </script>
+
     <script type="text/javascript">
       $(document).ready(function () {
         $('.navbar-dark .dmenu').hover(function () {
