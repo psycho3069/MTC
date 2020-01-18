@@ -149,7 +149,7 @@ class BookingController extends Controller
             $billing->booking()->create($item);
         }
 
-        $request->session()->flash('success', 'Room has been booked successfully');
+        $request->session()->flash('create', 'Room has been booked successfully');
 
         if ( $request->check)
             return redirect('restaurant/sales/create?bill_id='.$billing->id );

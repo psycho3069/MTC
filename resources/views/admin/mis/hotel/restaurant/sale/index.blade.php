@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-7">
+    <div class="col-md-8">
         <br><br><br>
         <samp>
             <div class="card text-left">

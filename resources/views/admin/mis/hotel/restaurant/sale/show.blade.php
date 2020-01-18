@@ -4,7 +4,7 @@
 @section('content')
     <div class="container text-left">
         <div class="row">
-            <div class="well col-xs-10 col-sm-10 col-md-8 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+            <div class="well col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1">
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <address>
@@ -87,15 +87,6 @@
                         </tr>
                         </tbody>
                     </table>
-
-
-
-{{--                    @if( !$bill->checkout_status)--}}
-{{--                        <button type="button" class="btn btn-info btn-lg btn-block" onclick='window.location="{{ route('payment.create', [$bill->id, 'co' => 1]) }}"'>--}}
-{{--                            Checkout   --}}
-{{--                        </button>--}}
-{{--                    @endif--}}
-
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@
 @section('content')
     <div class="container text-left">
         <div class="row">
-            <div class="well col-xs-10 col-sm-10 col-md-8 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+            <div class="well col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1">
                 <button type="button" class="btn btn-i" onclick='window.location="{{ url('export', $bill->id) }}"'>Export PDF</button>
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6">
@@ -49,47 +49,47 @@
                         </thead>
 
                         <tbody>
-                            @if( isset( $data['venue']))
-                                @foreach( $data['venue'] as $item )
-                                    <tr>
-                                        <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->created_at)) }}</code></td>
-                                        <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
-                                        <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
-                                        <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
-                                        <td class="bill-top col-md-1 text-center"><samp>{{ $item->discount }}</samp></td>
-                                        <td class="bill-top col-md-1 text-right"><samp>{{ $item->bill }}</samp></td>
-                                    </tr>
-                                @endforeach
-
+                        @if( isset( $data['venue']))
+                            @foreach( $data['venue'] as $item )
                                 <tr>
-                                    <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
-                                    <td class="bill-down"></td>
-                                    <td class="bill-down">
-                                        <strong class="float-right"><code>Sub Total:</code></strong>
-                                        <strong class="float-right"><code>Vat(5%):</code></strong>
-                                    </td>
-                                    <td class="bill-down">
-                                        <strong class="float-right"><samp>{{ $info['venue']['total'] }}</samp></strong>
-                                        <strong class="float-right"><samp>+{{ $info['venue']['vat'] }}</samp></strong>
-                                    </td>
+                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->created_at)) }}</code></td>
+                                    <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
+                                    <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
+                                    <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
+                                    <td class="bill-top col-md-1 text-center"><samp>{{ $item->discount }}</samp></td>
+                                    <td class="bill-top col-md-1 text-right"><samp>{{ $item->bill }}</samp></td>
                                 </tr>
-                                <tr>
-                                    <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
-                                    <td class="bill-sub text-right"><b><code>Venue bill:</code></b></td>
-                                    <td class="bill-sub text-right"><b><samp>{{ $info['venue']['total'] + $info['venue']['vat'] }}</samp></b></td>
-                                </tr>
+                            @endforeach
 
-                            @else
-                                <tr>
-                                    <td class="bill-top col-md-5"><code>Null</code></td>
-                                    <td class="bill-top col-md-3"> <samp>Null</samp> </td>
-                                    <td class="bill-top col-md-1" style="white-space: nowrap"><samp>Null </samp></td>
-                                    <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
-                                    <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
-                                    <td class="bill-top col-md-1 text-right"><samp>Null</samp></td>
-                                </tr>
+                            <tr>
+                                <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
+                                <td class="bill-down"></td>
+                                <td class="bill-down">
+                                    <strong class="float-right"><code>Sub Total:</code></strong>
+                                    <strong class="float-right"><code>Vat(5%):</code></strong>
+                                </td>
+                                <td class="bill-down">
+                                    <strong class="float-right"><samp>{{ $info['venue']['total'] }}</samp></strong>
+                                    <strong class="float-right"><samp>+{{ $info['venue']['vat'] }}</samp></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
+                                <td class="bill-sub text-right"><b><code>Venue bill:</code></b></td>
+                                <td class="bill-sub text-right"><b><samp>{{ $info['venue']['total'] + $info['venue']['vat'] }}</samp></b></td>
+                            </tr>
 
-                            @endif
+                        @else
+                            <tr>
+                                <td class="bill-top col-md-5"><code>Null</code></td>
+                                <td class="bill-top col-md-3"> <samp>Null</samp> </td>
+                                <td class="bill-top col-md-1" style="white-space: nowrap"><samp>Null </samp></td>
+                                <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
+                                <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
+                                <td class="bill-top col-md-1 text-right"><samp>Null</samp></td>
+                            </tr>
+
+                        @endif
                         </tbody>
                     </table>
 
@@ -110,45 +110,45 @@
                         </thead>
 
                         <tbody>
-                            @if( isset($data['room']))
-                                @foreach( $data['room'] as $item )
-                                    <tr>
-                                        <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->created_at)) }}</code></td>
-                                        <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
-                                        <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
-                                        <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
-                                        <td class="bill-top col-md-1 text-center"><samp>{{ $item->discount }}</samp></td>
-                                        <td class="bill-top col-md-1 text-right"><samp>{{ $item->bill }}</samp></td>
-                                    </tr>
-                                @endforeach
+                        @if( isset($data['room']))
+                            @foreach( $data['room'] as $item )
+                                <tr>
+                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->created_at)) }}</code></td>
+                                    <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
+                                    <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
+                                    <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
+                                    <td class="bill-top col-md-1 text-center"><samp>{{ $item->discount }}</samp></td>
+                                    <td class="bill-top col-md-1 text-right"><samp>{{ $item->bill }}</samp></td>
+                                </tr>
+                            @endforeach
 
-                                <tr>
-                                    <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
-                                    <td class="bill-down"></td>
-                                    <td class="bill-down">
-                                        <strong class="float-right"><code>Sub Total:</code></strong>
-                                        <strong class="float-right"><code>Vat(5%):</code></strong>
-                                    </td>
-                                    <td class="bill-down">
-                                        <strong class="float-right"><samp>{{ $info['room']['total'] }}</samp></strong>
-                                        <strong class="float-right"><samp>+{{ $info['room']['vat'] }}</samp></strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
-                                    <td class="bill-sub text-right"><b><code>Room bill:</code></b></td>
-                                    <td class="bill-sub text-right"><b><samp>{{ $info['room']['total'] + $info['room']['vat'] }}</samp></b></td>
-                                </tr>
-                            @else
-                                <tr>
-                                    <td class="bill-top col-md-5"><code>Null</code></td>
-                                    <td class="bill-top col-md-3"> <samp>Null</samp> </td>
-                                    <td class="bill-top col-md-1" style="white-space: nowrap"><samp>Null </samp></td>
-                                    <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
-                                    <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
-                                    <td class="bill-top col-md-1 text-right"><samp>Null</samp></td>
-                                </tr>
-                            @endif
+                            <tr>
+                                <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
+                                <td class="bill-down"></td>
+                                <td class="bill-down">
+                                    <strong class="float-right"><code>Sub Total:</code></strong>
+                                    <strong class="float-right"><code>Vat(5%):</code></strong>
+                                </td>
+                                <td class="bill-down">
+                                    <strong class="float-right"><samp>{{ $info['room']['total'] }}</samp></strong>
+                                    <strong class="float-right"><samp>+{{ $info['room']['vat'] }}</samp></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
+                                <td class="bill-sub text-right"><b><code>Room bill:</code></b></td>
+                                <td class="bill-sub text-right"><b><samp>{{ $info['room']['total'] + $info['room']['vat'] }}</samp></b></td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td class="bill-top col-md-5"><code>Null</code></td>
+                                <td class="bill-top col-md-3"> <samp>Null</samp> </td>
+                                <td class="bill-top col-md-1" style="white-space: nowrap"><samp>Null </samp></td>
+                                <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
+                                <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
+                                <td class="bill-top col-md-1 text-right"><samp>Null</samp></td>
+                            </tr>
+                        @endif
                         </tbody>
 
                     </table>
@@ -259,6 +259,9 @@
             </div>
         </div>
     </div>
+
+
+
 @endsection
 
 
@@ -268,8 +271,11 @@
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 @endsection
 
+
 <style>
     body {
         margin-top: 20px;
     }
 </style>
+
+

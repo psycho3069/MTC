@@ -90,7 +90,7 @@ class ResidualController extends Controller
             $billing->booking()->create($item);
         }
 
-        $request->session()->flash('success', 'Room has been reserved successfully');
+        $request->session()->flash('create', 'Room has been reserved successfully');
 
         return redirect('billing/'.$billing->id );
     }

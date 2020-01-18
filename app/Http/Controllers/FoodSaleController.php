@@ -81,6 +81,8 @@ class FoodSaleController extends Controller
 //            return $item;
         }
 
+        $request->session()->flash('create', 'Food has been sold and added to the bill');
+
         return redirect('billing/'.$food_bill->billing_id);
     }
 
@@ -160,6 +162,9 @@ class FoodSaleController extends Controller
         $vat = $new_bill * 10 / 100;
         $new_bill += $vat;
         $bill->update([ 'total_bill' => $bill->total_bill + $new_bill ]);
+
+
+        $request->session()->flash('update', 'Sale has been updated');
 
         return redirect('restaurant/sales/'.$bill_id);
     }

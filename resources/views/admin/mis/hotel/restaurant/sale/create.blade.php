@@ -7,6 +7,8 @@
             color: #ff0000;
         }
     </style>
+
+
     <div class="col-md-8">
         <samp>
             <div class="card text-left">
@@ -131,6 +133,7 @@
 
             function getPrice() {
                 var menu_id = $('#menu').val(); var price = 0; var total = 0;
+                // alert(menu_id)
                 $.each(all_menu, function (key, val) {
                     if ( key == menu_id)
                         price = val['price']
@@ -152,6 +155,7 @@
                             menu.append('<option value="'+key+'">'+val['name']+'- '+val['price']+'tk.'+'</option>')
                         })
                         all_menu = data['menu']
+                        getPrice()
                     }
                 })
             }
