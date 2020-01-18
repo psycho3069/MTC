@@ -15,7 +15,9 @@ class BalanceController extends Controller
      */
     public function index()
     {
-        $theads = TransactionHead::all();
+        $theads = TransactionHead::get()->sortBy('ac_head_id');
+//        return $theads->sum('');
+
         return view('admin.ais.account.balance.index', compact( 'theads'));
     }
 
@@ -56,6 +58,9 @@ class BalanceController extends Controller
                     'amount' => $thead->amount,
                 ]);
             }
+
+            $request->session()->flash('update', '<b>Opening Balance</b> has been successfully updated');
+
 
             return redirect('accounts/balance');
         } else

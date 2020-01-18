@@ -7,11 +7,11 @@
             color: #ff0000;
         }
     </style>
-    <div class="col-md-7">
+    <div class="col-md-8">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    Purchase {{ $type_id != 3 ? 'Inventory' : 'Grocery' }} Item
+                    <b>Purchase {{ $type_id != 3 ? 'Inventory' : 'Grocery' }} Item</b>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -83,10 +83,10 @@
 
     <br><br>
 
-    <div class="col-md-7">
+    <div class="col-md-8">
         <samp>
             <div class="card text-left">
-                <div class="card-header">Purchased List</div>
+                <div class="card-header"><b>Purchased List</b></div>
                 <div class="card-body purchase-list">
                     <form method="POST" action="{{ route('purchase.store') }}" >
                         {{ csrf_field() }}

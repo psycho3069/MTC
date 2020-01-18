@@ -2,59 +2,74 @@
 
 
 @section('content')
-    <div class="col-md-6">
+    <div class="col-md-8">
 
-        <form method="POST" action="{{ route('balance.store') }}">
-            {{ csrf_field() }}
-            <table class="table table-bordered table-hover table-primary opening-balance" id="myTable">
-                <thead>
-                <tr>
-                    <th scope="col">Account Type</th>
-                    <th scope="col">Parent</th>
-                    <th scope="col">Account Head & Code</th>
-                    <th scope="col">Debit</th>
-                    <th scope="col">Credit</th>
-                    <th scope="col">Balance</th>
-                </tr>
-                </thead>
+        <samp>
+            <form method="POST" action="{{ route('balance.store') }}">
+                <div class="card">
+                    <div class="card-header">
+                        <b>Opening Balance</b>
+                    </div>
 
-                <tbody>
-                    @foreach( $theads as $thead )
-                        <tr>
-                            <td>{{ $thead->accountHead->name }}</td>
-                            <td>
-                                {!!
-                                     $thead->transactionable->ac_head_child_ii_id  ? $thead->transactionable->parent->parent->name.'&rarr;'.$thead->transactionable->parent->name.'&rarr;'.$thead->transactionable->name :
-                                    ( $thead->transactionable->ac_head_child_i_id ? $thead->transactionable->parent->name.'&rarr;'.$thead->transactionable->name : $thead->transactionable->name )
-                                !!}
-                            </td>
-                            <td>{!! $thead->name.' ['.$thead->code.']' !!}</td>
-                            <td>
-                                <input type="number" class="inputbox debit" data-type="{{ $thead->ac_head_id }}" name="debit[{{ $thead->id }}]" value="{{ old('debit[$thead->id]') ? old('debit[$thead->id]') : $thead->debit }}">
-                            </td>
-                            <td>
-                                <input type="number" class="inputbox credit" data-type="{{ $thead->ac_head_id }}" name="credit[{{ $thead->id }}]" value="{{ $thead->credit }}">
-                            </td>
-                            <td>
-                                <input type="number" class="inputbox amount" name="amount[{{ $thead->id }}]" value="{{ $thead->amount }}" disabled>
-                            </td>
-{{--                            <td></td>--}}
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    <div class="card-body">
+                        {{ csrf_field() }}
+                        <table class="table table-bordered table-hover table-primary opening-balance" id="myTable">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th scope="col">Account Type</th>
+                                <th scope="col">Parent</th>
+                                <th scope="col">Account Head & Code</th>
+                                <th scope="col">Debit</th>
+                                <th scope="col">Credit</th>
+                                <th scope="col">Balance</th>
+                            </tr>
+                            </thead>
 
-            <div class="row">
-                <div class="col-md-4 text-right"><label for="total" id="total" style="font-size: large">Total</label></div>
-                <div class="col-md-4 text-right"><input type="text" class="inputbox total" name="total-debit" id="total-debit" style="font-size: large" disabled><p class="alert-danger"></p></div>
-                <div class="col-md-4 "><input type="text" class="inputbox total" name="total-credit" id="total-credit" style="font-size: large" disabled><p class="alert-danger"></p></div>
-            </div>
-            <div class="offset-md-5">
-                <p class="alert-danger error text-center"></p>
-            </div>
-            <button type="submit" id="submit" class="btn btn-light">Submit</button>
-            <button type="button" id="reset" class="btn btn-danger">Reset</button>
-        </form>
+                            <tbody>
+                            @foreach( $theads as $thead )
+                                <tr>
+                                    <th><sub>{{ $loop->iteration }}</sub></th>
+                                    <td><b>{{ $thead->accountHead->name }}</b></td>
+                                    <td>
+                                        {!!
+                                             $thead->transactionable->ac_head_child_ii_id  ? $thead->transactionable->parent->parent->name.'&rarr;'.$thead->transactionable->parent->name.'&rarr;'.$thead->transactionable->name :
+                                            ( $thead->transactionable->ac_head_child_i_id ? $thead->transactionable->parent->name.'&rarr;'.$thead->transactionable->name : $thead->transactionable->name )
+                                        !!}
+                                    </td>
+                                    <td>{!! $thead->name.' ['.$thead->code.']' !!}</td>
+                                    <td>
+                                        <input type="number" class="inputbox debit" data-type="{{ $thead->ac_head_id }}" name="debit[{{ $thead->id }}]" value="{{ old('debit[$thead->id]') ? old('debit[$thead->id]') : $thead->debit }}">
+                                    </td>
+                                    <td>
+                                        <input type="number" class="inputbox credit" data-type="{{ $thead->ac_head_id }}" name="credit[{{ $thead->id }}]" value="{{ $thead->credit }}">
+                                    </td>
+                                    <td>
+                                        <input type="number" class="inputbox amount" name="amount[{{ $thead->id }}]" value="{{ $thead->amount }}" disabled>
+                                    </td>
+                                    {{--                            <td></td>--}}
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+
+                        <div class="row">
+                            <div class="col-md-4 text-right"><label for="total" id="total" style="font-size: large">Total</label></div>
+                            <div class="col-md-4 text-right"><input type="text" class="inputbox total" name="total-debit" value="{{ $theads->sum('debit') }}" id="total-debit" style="font-size: large" disabled><p class="alert-danger"></p></div>
+                            <div class="col-md-4 "><input type="text" class="inputbox total" name="total-credit" id="total-credit" value="{{ $theads->sum('credit') }}" style="font-size: large" disabled><p class="alert-danger"></p></div>
+                        </div>
+                        <div class="offset-md-5">
+                            <p class="alert-danger error text-center"></p>
+                            <p class="alert-success success text-center"></p>
+                        </div>
+                    </div>
+                    <div class="card-footer text-left">
+                        <button type="submit" id="submit" class="btn btn-light">Submit</button>
+                        <button type="button" id="reset" class="btn btn-danger">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </samp>
 
     </div>
 
@@ -68,7 +83,7 @@
             var dr_amount = 0
             // total()
 
-            $('input').on('change', function() {
+            $('input').on('change keyup', function() {
                 var amount = $(this).parent().siblings().find('input.amount').val()
                 if(($(this).val()==''))
                     $(this).val(0)
@@ -91,9 +106,13 @@
 
 
             $('#submit').click(function (e) {
+                total()
                 if ( dr_amount != cr_amount ){
                     e.preventDefault();
                     $('p.error').html(' Debit and credit isn\'t equal');
+                } else {
+                    $('p.error').empty();
+                    $('p.success').html('Please wait! Your form is being submitted');
                 }
             })
 
@@ -128,20 +147,4 @@
     </script>
 @endsection
 
-{{--@section('datatable')--}}
-
-{{--    <!-- datatable -->--}}
-{{--    --}}{{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
-{{--    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>--}}
-{{--    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>--}}
-{{--    <script>--}}
-{{--        $(document).ready(function() {--}}
-{{--            $('.table').DataTable({--}}
-{{--                "paging": true,--}}
-{{--                "ordering":  true,--}}
-{{--            });--}}
-{{--        } );--}}
-{{--    </script>--}}
-
-{{--@endsection--}}
 

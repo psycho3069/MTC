@@ -68,6 +68,9 @@ class StockDeliverController extends Controller
 
         }
 
+
+        $request->session()->flash('create', 'Items has been Delivered successfully');
+
         return redirect('stocks/deliver');
 
     }

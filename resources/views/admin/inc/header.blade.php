@@ -6,7 +6,7 @@
 
           <p id="demo" style="color: white;"></p>
 
-              <p style="color: whitesmoke;">Software date : <b>{{ \App\Configuration::find(1)->software_start_date }}</b></p>
+              <p style="color: whitesmoke;">Software date : <b>{{ date('d-m-Y', strtotime(\App\Configuration::find(1)->software_start_date)) }}</b></p>
 
 
             <p style="color: #99c2ff; font-size: 25px; font-family: 'Times New Roman', Times, serif; ">
@@ -14,7 +14,7 @@
               <a href="{{ url('/') }}">
                   <img src="{{ asset('img/mtclogo.png')}}" height="75px" width="75px">
               </a>
-              
+
               &nbsp;<!-- <b>{{ config('app.name', 'Laravel') }}</b> -->
             </p>
 

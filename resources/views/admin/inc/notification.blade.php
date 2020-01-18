@@ -1,7 +1,7 @@
 @if( session('create'))
     <div class="alert alert-success alert-block">
         <button type="button" class="close" data-dismiss="alert">×</button>
-        {{ session('create') }}
+        {!! session('create') !!}
     </div>
 @endif
 
@@ -11,6 +11,6 @@
 @if( session('update'))
     <div class="alert alert-success alert-block">
         <button type="button" class="close" data-dismiss="alert">×</button>
-        {{ session('update') }}
+        {!! session('update') !!}
     </div>
 @endif

@@ -48,6 +48,8 @@ class StockController extends Controller
             $stock->currentStock()->where( 'date_id', 0)->first()->update([ 'quantity_dr' => $stock->quantity]);
         }
 
+        $request->session()->flash('update', 'Opening balance has been updated');
+
         return redirect('stock/opening/'.$stock->stockHead->type_id);
     }
 
@@ -90,11 +92,13 @@ class StockController extends Controller
         if ($request->stock_head_id){
             $stock = Stock::create($input);
             $stock->currentStock()->create(['date_id' => 0 ]);
+            $request->session()->flash('create', '<b>'.$stock->name.'</b> has been added to the <b>'.$stock->stockHead->name.'</b> category list');
         }
         else {
             $input['type_id'] = $request->type_id;
             $input['category'] = $request->type_id ==3 ? 'restaurant' : 'inventory';
-            StockHead::create($input);
+            $item = StockHead::create($input);
+            $request->session()->flash('create', '<b>'.$item->name.'</b> has been added to the category list');
         }
         return redirect()->back();
     }

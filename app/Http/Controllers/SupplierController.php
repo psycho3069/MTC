@@ -38,8 +38,16 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'contact_no' => 'required',
+        ],[
+            'name.required' => 'Please Enter Supplier Name',
+            'contact_no.required' => 'Please Enter Supplier Contact',
+        ]);
         $input = $request->all();
-        Supplier::create( $input);
+        $item = Supplier::create( $input);
+        $request->session()->flash('create', '<b>'.$item->name.'</b> has been added to the supplier list');
         return redirect('supplier');
         //
     }

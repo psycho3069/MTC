@@ -116,8 +116,9 @@ class PurchaseController extends Controller
             else
                 $purchase_group->date->misStock()->create( $joji);
         }
-
 //        return $purchase_group->type_id;
+
+        $request->session()->flash('create', 'Items has been purchased.');
 
         return redirect('purchase?type_id='.$purchase_group->type_id);
 
@@ -180,6 +181,8 @@ class PurchaseController extends Controller
         }
 
         $p_group->update([ 'note' => $request->note]);
+
+        $request->session()->flash('update', 'Purchase has been updated successfully');
 
         return redirect('purchase?type_id='.$p_group->type_id);
 

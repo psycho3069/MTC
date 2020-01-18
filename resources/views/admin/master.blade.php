@@ -47,9 +47,8 @@
         @endif
 
 
-
         <div class="row">
-            <div class="col-md-8 offset-md-2 text-center">
+            <div class="col-md-8 text-center" style="margin-left: 16%;">
                 @include('admin.inc.notification')
             </div>
         </div>

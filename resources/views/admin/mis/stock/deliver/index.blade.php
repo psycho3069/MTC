@@ -4,13 +4,13 @@
 @section('content')
     <div class="col-md-8">
         <br><br><br>
-        <div class="card text-left">
-            <div class="card-header">
-                Delivery List
-                <button type="button" class="btn btn-i btn-sm pull-right" onclick='window.location="{{ route('deliver.create') }}"'>New Delivery</button>
-            </div>
-            <div class="card-body">
-                <samp>
+        <samp>
+            <div class="card text-left">
+                <div class="card-header">
+                    <b>Delivery List</b>
+                    <button type="button" class="btn btn-i btn-sm pull-right" onclick='window.location="{{ route('deliver.create') }}"'>New Delivery</button>
+                </div>
+                <div class="card-body">
                     <table class="table table-bordered table-hover table-info">
                         <thead>
                         <tr>
@@ -45,9 +45,9 @@
                         @endforeach
                         </tbody>
                     </table>
-                </samp>
+                </div>
             </div>
-        </div>
+        </samp>
 
     </div>
 
