@@ -128,9 +128,9 @@ class BillingController extends Controller
         $pdf = PDF::loadView('admin.mis.hotel.billing.export.pdf');
 
 
-       // return $pdf->download('invoice.pdf');
+        return $pdf->download('invoice.pdf');
         return view('admin.mis.hotel.billing.export.pdf', compact('bill', 'booking', 'restaurant', 'data', 'info'));
-//
+
 
 
 
