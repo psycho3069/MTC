@@ -29,7 +29,7 @@
                         @foreach( $billing as $bill )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="no-wrap">{{ date('d-m-Y', strtotime( $bill->created_at)) }}</td>
+                                <td class="no-wrap">{{ date('d-m-Y', strtotime( $bill->mis_voucher->date->date)) }}</td>
                                 <td><a href="{{ route('billing.show', $bill->id) }}">{{ $bill->guest->name }}</a></td>
                                 <td><code>{{ $bill->guest->org_name ? $bill->guest->org_name : 'Not Found' }}</code></td>
                                 <td>{{ $bill->total_bill }}</td>

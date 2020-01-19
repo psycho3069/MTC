@@ -32,7 +32,29 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
     code {
         color: black !important;
     }
+
+    page {
+        size: 7in 9.25in;
+        margin: 27mm 16mm 27mm 16mm;
+    }
+
+
+    .receipt {
+        margin-bottom: 7%;
+    }
+
+
+    .no-wrap {
+        white-space: nowrap;
+    }
+
+
+
+
+
+
 </style>
+
 
 
 <div class="container text-left">
@@ -50,7 +72,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                         <code>Phone: +8801708559698</code>
                     </address>
                 </div>
-                <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                <div>
                     <p>
                         <code>Date: {{ date('jS F, Y') }}</code>
 
@@ -61,12 +83,14 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                 </div>
             </div>
 
-            <div class="text-center receipt">
-                <h3><code>Receipt</code></h3>
+            <br><br>
+            <div class="text-center">
+                <h2><b><code>Receipt</code></b></h2>
             </div>
+            <br><br>
 
             <div class="row">
-                <h4><code>Training Academy</code></h4>
+                <h4><b><code>Venue</code></b></h4>
 
                 <table class="table table-hover">
                     <thead>
@@ -76,7 +100,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                         <th class="th-down"><code>Total Days</code></th>
                         <th class="th-down text-center"><code>Price</code></th>
                         <th class="th-down text-center"><code>Discount</code></th>
-                        <th class="th-down text-center"><code>Total</code></th>
+                        <th class="th-down text-left"><code>Total</code></th>
                     </tr>
                     </thead>
 
@@ -89,7 +113,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                                 <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
                                 <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
                                 <td class="bill-top col-md-1 text-center"><samp>{{ $item->discount }}</samp></td>
-                                <td class="bill-top col-md-1 text-right"><samp>{{ $item->bill }}</samp></td>
+                                <td class="bill-top col-md-1"><samp>{{ $item->bill }}</samp></td>
                             </tr>
                         @endforeach
 
@@ -101,14 +125,14 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                                 <strong class="float-right"><code>Vat(5%):</code></strong>
                             </td>
                             <td class="bill-down">
-                                <strong class="float-right"><samp>{{ $info['venue']['total'] }}</samp></strong>
+                                <strong class="float-right"><samp>{{ $info['venue']['total'] }}</samp></strong> <br>
                                 <strong class="float-right"><samp>+{{ $info['venue']['vat'] }}</samp></strong>
                             </td>
                         </tr>
                         <tr>
                             <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
                             <td class="bill-sub text-right"><b><code>Venue bill:</code></b></td>
-                            <td class="bill-sub text-right"><b><samp>{{ $info['venue']['total'] + $info['venue']['vat'] }}</samp></b></td>
+                            <td class="bill-sub"><b><samp>{{ $info['venue']['total'] + $info['venue']['vat'] }}</samp></b></td>
                         </tr>
 
                     @else
@@ -118,7 +142,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                             <td class="bill-top col-md-1" style="white-space: nowrap"><samp>Null </samp></td>
                             <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
                             <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
-                            <td class="bill-top col-md-1 text-right"><samp>Null</samp></td>
+                            <td class="bill-top col-md-1"><samp>Null</samp></td>
                         </tr>
 
                     @endif
@@ -127,7 +151,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
 
 
 
-                <h4><code>Room</code></h4>
+                <h4><b><code>Room</code></b></h4>
 
                 <table class="table table-hover">
                     <thead>
@@ -137,7 +161,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                         <th class="th-down"><code>Total Days</code></th>
                         <th class="th-down text-center"><code>Price</code></th>
                         <th class="th-down text-center"><code>Discount</code></th>
-                        <th class="th-down text-center"><code>Total</code></th>
+                        <th class="th-down"><code>Total</code></th>
                     </tr>
                     </thead>
 
@@ -150,7 +174,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                                 <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
                                 <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
                                 <td class="bill-top col-md-1 text-center"><samp>{{ $item->discount }}</samp></td>
-                                <td class="bill-top col-md-1 text-right"><samp>{{ $item->bill }}</samp></td>
+                                <td class="bill-top col-md-1"><samp>{{ $item->bill }}</samp></td>
                             </tr>
                         @endforeach
 
@@ -178,7 +202,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                             <td class="bill-top col-md-1" style="white-space: nowrap"><samp>Null </samp></td>
                             <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
                             <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
-                            <td class="bill-top col-md-1 text-right"><samp>Null</samp></td>
+                            <td class="bill-top col-md-1"><samp>Null</samp></td>
                         </tr>
                     @endif
                     </tbody>
@@ -187,7 +211,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
 
 
 
-                <h4><code>Restaurant</code></h4>
+                <h4><b><code>Restaurant</code></b></h4>
 
 
 
@@ -199,7 +223,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                         <th class="th-down"><code>Price</code></th>
                         <th class="th-down text-center"><code>Quantity</code></th>
                         <th class="th-down text-center"><code>Discount</code></th>
-                        <th class="th-down text-center"><code>Total</code></th>
+                        <th class="th-down"><code>Total</code></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -210,7 +234,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                             <td class="bill-top col-md-1 no-wrap"><samp>{{ $food->menu->price.' tk.' }} </samp></td>
                             <td class="bill-top col-md-1 text-center"><samp>{{ $food->quantity }}</samp></td>
                             <td class="bill-top col-md-1 text-center"><samp>{{ $food->discount }}</samp></td>
-                            <td class="bill-top col-md-1 text-right"><samp>{{ $food->bill }}</samp></td>
+                            <td class="bill-top col-md-1"><samp>{{ $food->bill }}</samp></td>
                         </tr>
                     @endforeach
 
@@ -221,7 +245,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                             <td class="bill-top col-md-1" style="white-space: nowrap"><samp>Null </samp></td>
                             <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
                             <td class="bill-top col-md-1 text-center"><samp>Null</samp></td>
-                            <td class="bill-top col-md-1 text-right"><samp>Null</samp></td>
+                            <td class="bill-top col-md-1"><samp>Null</samp></td>
                         </tr>
                     @endif
 
@@ -242,7 +266,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                     <tr>
                         <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
                         <td class="bill-sub text-right"><b><code>Food bill:</code></b></td>
-                        <td class="bill-sub text-right"><b><samp>{{ $restaurant['total'] }}</samp></b></td>
+                        <td class="bill-sub"><b><samp>{{ $restaurant['total'] }}</samp></b></td>
                     </tr>
 
                     <tr>
@@ -256,8 +280,8 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                             <b><code>Discount:</code></b>
                             <b><code>Total paid:</code></b>
                         </td>
-                        <td class="bill-down text-right">
-                            <b><samp>{{ $bill->total_bill + $bill->discount }}</samp></b>
+                        <td class="bill-down">
+                            <b><samp>{{ $bill->total_bill + $bill->discount }}</samp></b><br>
                             <b><samp>{{ -$bill->discount }}</samp></b><br>
                             <b><samp>-{{ $bill->total_paid }}</samp></b>
                         </td>
@@ -272,7 +296,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                         <td class="bill-down text-right">
                             <b><code>Due:</code></b>
                         </td>
-                        <td class="bill-down text-right">
+                        <td class="bill-down">
                             <b><samp>{{ $bill->total_bill - $bill->total_paid }}</samp></b>
                         </td>
                     </tr>
