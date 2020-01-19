@@ -9,10 +9,9 @@
                     <form class="" action="{{ route('stock.store') }}" method="POST" enctype="multipart/form-data" style="padding: 0 30px 0 30px;">
                         {{ csrf_field() }}
 
+                        <input type="hidden" name="type_id" value="{{ $type_id }}">
                         @if( isset($stock_head_id))
                             <input type="hidden" name="stock_head_id" value="{{ $stock_head_id }}">
-                        @elseif( isset($type_id))
-                            <input type="hidden" name="type_id" value="{{ $type_id }}">
                         @endif
 
                         <div class="form-group row">

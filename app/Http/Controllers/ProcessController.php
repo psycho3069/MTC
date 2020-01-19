@@ -163,7 +163,7 @@ class ProcessController extends Controller
         $x->save();
         $day_end->create([ 'date' => $x->software_start_date]);
 
-        return redirect('process/list');
+        return redirect('process/list')->with('success', 'Operation Successful!');
     }
 
 

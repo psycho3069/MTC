@@ -28,4 +28,14 @@ class Stock extends Model
 
 
 
+    public function purchase()
+    {
+        return $this->hasMany('App\Purchase');
+    }
+
+
+
+
+
+
 }

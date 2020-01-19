@@ -45,7 +45,7 @@
                                             <label>Unit</label>
                                             <select class="form-control" name="input[{{$item->id}}][unit]">
                                                 <option value="kg" {{ $item->unit == 'kg' ? 'selected' : '' }}>Kg</option>
-                                                <option value="liter" {{ $item->liter == 'liter' ? 'selected' : '' }}>Liter</option>
+                                                <option value="liter" {{ $item->unit == 'liter' ? 'selected' : '' }}>Liter</option>
                                                 <option value="piece" {{ $item->unit == 'piece' ? 'selected' : '' }}>Piece</option>
                                             </select>
                                         </div>

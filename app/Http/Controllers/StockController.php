@@ -80,7 +80,6 @@ class StockController extends Controller
     public function store(Request $request)
     {
 
-//        return $request->all();
         $request->validate([
             'name' => 'required',
         ],[
@@ -100,7 +99,7 @@ class StockController extends Controller
             $item = StockHead::create($input);
             $request->session()->flash('create', '<b>'.$item->name.'</b> has been added to the category list');
         }
-        return redirect()->back();
+        return redirect('stock?type_id='.$request->type_id);
     }
 
     /**
@@ -152,11 +151,13 @@ class StockController extends Controller
 
 //        return $stock_head->stock->find(1);
 
-        foreach ( $input as $key => $item) {
-            $stock_head->stock->find( $key)->update( $item);
-        }
+        if( $request->input)
+            foreach ( $input as $key => $item) {
+                $stock_head->stock->find( $key)->update( $item);
+            }
+
         $stock_head->update( $request->except('_token', 'input'));
-        return redirect()->back()->with('update', 'Updated successfully');
+        return redirect('stock')->with('update', 'Updated successfully');
 
 
     }
@@ -167,8 +168,53 @@ class StockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+//        return $request->all();
+
+        $i = 0; $operation = false;
+
+        if ( !$request->type){
+            $stock_head = StockHead::find($id);
+            $cat = '<b>'.$stock_head->name.'</b>';
+
+            if ( $stock_head->stock->isNotEmpty() ){
+                foreach ( $stock_head->stock as $item) {
+                    if ( $item->purchase->isEmpty() && $item->deliver->isEmpty()){
+                        $item->currentStock()->where('date_id', 0)->delete();
+                        $item->delete(); $i++;
+                    }
+                 $operation = count($stock_head->stock) == $i ? true : false;
+                }
+            }
+
+            if ( $stock_head->stock->isEmpty())
+                $operation = true;
+
+            if ( $operation)
+                $stock_head->delete();
+
+            $operation ? $request->session()->flash('success', $cat. ' has been removed from category list') : $request->session()->flash('warning', 'Not all Items in category '.$cat.' is Empty');
+
+        }
+
+        if ( $request->type){
+            $item = Stock::find($id);
+            if( $item->purchase->isEmpty() && $item->deliver->isEmpty()){
+                $item->currentStock()->where('date_id', 0)->delete();
+                $item->delete();
+                $operation = true;
+            }
+
+            $operation ? $request->session()->flash('success', '<b>'.$item->name.'</b> has been deleted successfully') : $request->session()->flash('failed', '<b>'.$item->name.'</b> is not Empty.');
+        }
+
+
+        return 101;
+
+
     }
+
+
+
 }

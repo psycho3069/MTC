@@ -120,9 +120,10 @@
 {{--    <script src="{{asset('js')}}/treeview.js"></script>--}}
 
     @yield('footer_scripts')
+    @yield('script')
     <!-- treeview end -->
 </body>
 </html>
-@yield('script')
+
 @yield('customscript')
 

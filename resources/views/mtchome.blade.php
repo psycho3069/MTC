@@ -165,7 +165,7 @@
                             <div class="tp-loop-wrap" style="">
                                 <div class="tp-mask-wrap " style="">
                                     <h1 style="color: #fff; font-size: 45px; text-shadow: 2px 7px 10px #000000">
-                                        Aspada Training Center
+                                        Aspada Training Academy
                                     </h1>
                                 </div>
                             </div>
