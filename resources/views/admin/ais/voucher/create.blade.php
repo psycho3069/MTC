@@ -34,7 +34,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="credit_head_id">Credit Account</label>
-                                <select class="form-control" id="credit-head" name="credit_head_id">
+                                <select class="form-control voucher" id="credit-head" name="credit_head_id">
                                     @foreach( $account['credit'] as $credit )
                                         <option value="{{ $credit->id }}">{{ $credit->name }} [ {{ $credit->code }} ]</option>
                                     @endforeach
@@ -44,7 +44,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="debit_head_id">Debit Account</label>
-                                <select class="form-control" id="debit-head" name="debit_head_id">
+                                <select class="form-control voucher" id="debit-head" name="debit_head_id">
                                     @foreach( $account['debit'] as $debit )
                                         <option value="{{ $debit->id }}">{{ $debit->name }} [ {{ $debit->code }} ]</option>
                                     @endforeach
@@ -118,7 +118,17 @@
 @endsection
 
 
+
 @section('script')
+
+    <script>
+        $(document).ready(function() {
+            $('.voucher').select2({
+                placeholder: 'Select an option'
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function () {
             var i = 0;
@@ -169,4 +179,8 @@
 
 
     </script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
 @endsection
