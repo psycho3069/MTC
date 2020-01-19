@@ -193,7 +193,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                         <tr>
                             <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
                             <td class="bill-sub text-right"><b><code>Room bill:</code></b></td>
-                            <td class="bill-sub text-right"><b><samp>{{ $info['room']['total'] + $info['room']['vat'] }}</samp></b></td>
+                            <td class="bill-sub"><b><samp>{{ $info['room']['total'] + $info['room']['vat'] }}</samp></b></td>
                         </tr>
                     @else
                         <tr>
