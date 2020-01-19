@@ -29,9 +29,15 @@ class FrontendController extends Controller
         $venuereservations=DB::table('v2_venue_reservations')->get();
         $venuebookings=DB::table('v3_venue_bookings')->get();
 
-        $booking = Booking::where('end_date','>=', date('Y-m-d'))->get();
+        $booking = Booking::where('end_date','>=', $this->configDate())->get();
 
         return view('admin.hotel_management.room.room_viewer', compact('venues','venuereservations','venuebookings', 'booking'));
+    }
+
+    public function configDate()
+    {
+        $date = Configuration::find(1)->software_start_date;
+        return date('Y-m-d', strtotime($date));
     }
 
 
@@ -50,7 +56,7 @@ class FrontendController extends Controller
         $venues = DB::table('v1_venues')->get();
 
         $floor1 = [ 3, 4, 5, 6, 7, 51, 54 ];
-        $booking = Booking::where('end_date','>=', date('Y-m-d'))->get()->whereIn('room_id', $floor1);
+        $booking = Booking::where('end_date','>=', $this->configDate())->get()->whereIn('room_id', $floor1);
 //        return $booking;
         return view('admin.hotel_management.room.floor1', compact('reservation', 'booking', 'rooms', 'room_category', 'venues', 'venuereservation', 'venuebooking', 'booked'));
     }
@@ -71,7 +77,7 @@ class FrontendController extends Controller
 
 
         $floor2 = [ 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ];
-        $booking = Booking::where('end_date','>=', date('Y-m-d'))->get()->whereIn('room_id', $floor2);
+        $booking = Booking::where('end_date','>=', $this->configDate())->get()->whereIn('room_id', $floor2);
         return view('admin.hotel_management.room.floor2', compact('reservation', 'booking', 'rooms', 'room_category', 'booked'));
     }
 
@@ -86,7 +92,7 @@ class FrontendController extends Controller
 //        return count($room);
 
         $floor3 = [ 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 ];
-        $booking = Booking::where('end_date','>=', date('Y-m-d'))->get()->whereIn('room_id', $floor3);
+        $booking = Booking::where('end_date','>=', $this->configDate())->get()->whereIn('room_id', $floor3);
 
         $room_category = DB::table('h5_room_categories')->get();
         return view('admin.hotel_management.room.floor3', compact('reservation', 'booking', 'rooms', 'room_category'));
@@ -107,7 +113,7 @@ class FrontendController extends Controller
 //        return count($room);
 
         $floor3 = [ 40, 41, 42, 43, 44, 45, 53 ];
-        $booking = Booking::where('end_date','>=', date('Y-m-d'))->get()->whereIn('room_id', $floor3);
+        $booking = Booking::where('end_date','>=', $this->configDate())->get()->whereIn('room_id', $floor3);
 
         return view('admin.hotel_management.room.floor4', compact('reservation', 'booking', 'rooms', 'room_category', 'venues', 'venuereservation', 'venuebooking'));
     }
