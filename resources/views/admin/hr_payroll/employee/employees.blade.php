@@ -51,26 +51,26 @@
                     <tr>
                         <td width="5%">{{ ++$key }}</td>
                         <td>{{$employee->name}}</td>
-                        <td width="25%">{{$employee->date_of_birth}}</td>
+                        <td width="25%">{{ date('d-m-y', strtotime($employee->date_of_birth)) }}</td>
                         <td>{{$employee->phone}}</td>
                         <td>{{$employee->address}}</td>
                         <td>{{$employee->blood_group}}</td>
                         <td>
-                            @foreach($department_info as $department) 
+                            @foreach($department_info as $department)
                                 @if($department->id == $employee->department_id)
                                     {{$department->name}}
                                 @endif
                             @endforeach
                         </td>
                         <td>
-                            @foreach($employee_designation_info as $employee_designation) 
+                            @foreach($employee_designation_info as $employee_designation)
                                 @if($employee_designation->id == $employee->designation_id)
                                     {{$employee_designation->name}}
                                 @endif
                             @endforeach
                         </td>
                         <td>
-                        	@foreach($salary_grade_info as $salary_grade) 
+                        	@foreach($salary_grade_info as $salary_grade)
                                 @if($salary_grade->id == $employee->salary_grade_id)
                                     {{$salary_grade->name}}
                                 @endif
@@ -94,7 +94,7 @@
 @endsection
 
 @section('datatable')
-    
+
 <!-- datatable -->
 {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
