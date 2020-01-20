@@ -89,11 +89,10 @@
           <div class="dropdown-menu sm-menu">
               <a class="dropdown-item" href="{{ route('sales.index') }}">Sales</a>
               <a class="dropdown-item" href="{{ route('sales.create') }}">Sale Food</a>
-              <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item/meal_items')}}">Meal Items</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item_type/meal_item_types')}}">Meal Types</a>
-              <a class="dropdown-item" href="{{URL::to('/restaurant/menu/menus')}}">Menus</a>
+              <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item/meal_items')}}">Meals</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu_type/menu_types')}}">Menu Types</a>
-              <a class="dropdown-item" href="{{ route('menu.index') }}">Menu</a>
+              <a class="dropdown-item" href="{{ route('menu.index') }}">Menus</a>
           </div>
       </li>
 

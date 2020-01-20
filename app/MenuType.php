@@ -11,7 +11,7 @@ class MenuType extends Model
 
     public function menu()
     {
-        return $this->hasMany('App\Menu', 'menu_type_id');
+        return $this->hasMany('App\FoodMenu', 'menu_type_id');
     }
 
 

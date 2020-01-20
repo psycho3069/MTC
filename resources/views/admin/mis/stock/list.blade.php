@@ -21,10 +21,11 @@
                         </tr>
                         </thead>
                         <tbody>
+                        @php( $i = 0)
                         @foreach( $categories as $category )
                             @foreach( $category->stock as $item )
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ ++$i }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->stockHead->name }}</td>
                                     <td>{{ $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr').' '.$item->unit }}</td>

@@ -99,7 +99,8 @@ class StockController extends Controller
             $item = StockHead::create($input);
             $request->session()->flash('create', '<b>'.$item->name.'</b> has been added to the category list');
         }
-        return redirect('stock?type_id='.$request->type_id);
+//        return redirect('stock?type_id='.$request->type_id);
+        return redirect()->back();
     }
 
     /**
