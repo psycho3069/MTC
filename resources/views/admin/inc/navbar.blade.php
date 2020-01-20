@@ -93,6 +93,7 @@
               <a class="dropdown-item" href="{{URL::to('/restaurant/meal_item_type/meal_item_types')}}">Meal Types</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu/menus')}}">Menus</a>
               <a class="dropdown-item" href="{{URL::to('/restaurant/menu_type/menu_types')}}">Menu Types</a>
+              <a class="dropdown-item" href="{{ route('menu.index') }}">Menu</a>
           </div>
       </li>
 

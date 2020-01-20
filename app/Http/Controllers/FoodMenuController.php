@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\FoodMenu;
+use App\MealItem;
 use App\MenuType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,7 +17,9 @@ class FoodMenuController extends Controller
      */
     public function index()
     {
-        //
+        $menus = FoodMenu::all()->sortByDesc('id');
+//        return $menus->find(1)->menuItems->first()->mealItem;
+        return view('admin.mis.hotel.restaurant.food.menu.index', compact('menus'));
     }
 
     /**
@@ -25,9 +29,10 @@ class FoodMenuController extends Controller
      */
     public function create()
     {
-        $types = MenuType::all();
+        $data['menu_types'] = MenuType::all();
+        $data['menu_items'] = MealItem::all();
 
-        return view('admin.mis.hotel.restaurant.food.menu.create', compact('types'));
+        return view('admin.mis.hotel.restaurant.food.menu.create', compact('data'));
 
     }
 
@@ -39,7 +44,19 @@ class FoodMenuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+        ],[
+            'name.required' => 'Please Enter A Name',
+        ]);
+        $input = $request->input;
+        $menu = FoodMenu::create( $request->except('_token', 'input'));
+
+        foreach ( $input as $item) {
+            $menu->items()->create( $item);
+        }
+
+        return redirect('food/menu')->with('success', '<b>'.$menu->name.'</b> has been added successfully');
     }
 
     /**

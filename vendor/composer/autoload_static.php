@@ -589,6 +589,7 @@ class ComposerStaticInite306fed4854648cafb929486eda1218f
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Requests\\BookingRequest' => __DIR__ . '/../..' . '/app/Http/Requests/BookingRequest.php',
         'App\\Http\\Traits\\CustomTrait' => __DIR__ . '/../..' . '/app/Http/Traits/CustomTrait.php',
+        'App\\MealItem' => __DIR__ . '/../..' . '/app/MealItem.php',
         'App\\Menu' => __DIR__ . '/../..' . '/app/Menu.php',
         'App\\MenuType' => __DIR__ . '/../..' . '/app/MenuType.php',
         'App\\MisAccountHead' => __DIR__ . '/../..' . '/app/MisAccountHead.php',

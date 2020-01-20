@@ -7,44 +7,48 @@
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    <b><code>Food Sales</code></b>
-                    <button type="button" class="btn btn-ii float-right" onclick='window.location="{{ route('sales.create') }}"'>Add Sales</button>
+                    <b><code>Menu Items</code></b>
+                    <button type="button" class="btn btn-ii float-right" onclick='window.location="{{ route('menu.create') }}"'>Add Menu</button>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-hover table-info">
                         <thead>
                         <tr>
                             <th></th>
-                            <th>Date</th>
-                            <th>Guest Name</th>
-                            <th>Total Bill</th>
-                            <th>Checkout</th>
+                            <th>Menu</th>
+                            <th>Items</th>
+                            <th>Price</th>
                             <th class="">Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach( $billing as $bill )
+                        @foreach( $menus as $item )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d-m-Y', strtotime( $bill->mis_voucher->date->date)) }}</td>
-                                <td><a href="{{ route('sales.show', $bill->id) }}">{{ $bill->guest->name }}</a></td>
-                                <td class="text-center"><code>{{ $data[$bill->id]['bill'] }} tk.</code></td>
-                                <td class="text-center"><code>{{ $bill->checkout_status ? 'Yes' : 'No' }}</code></td>
+                                <td>{{ $item->name }}</td>
+                                <td>
+                                    @foreach( $item->items as $meal )
+                                        {{ $meal->meal->name }},
+                                    @endforeach
+                                </td>
+                                <td>{{ $item->price }}</td>
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-i" for="btnControl">
-                                            Bill
+                                            Menu
                                             <i class="fa fa-caret-down" aria-hidden="true"></i>
                                         </button>
                                         <div class="dropdown-content">
-                                            <a href="{{ route('billing.show', $bill->id) }}">View</a>
-                                            <a href="{{ route('sales.edit', $bill->id) }}">Edit</a>
+                                            <a href="">View</a>
+                                            <a href="">Edit</a>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                         @endforeach
+
                         </tbody>
+
                     </table>
                 </div>
             </div>

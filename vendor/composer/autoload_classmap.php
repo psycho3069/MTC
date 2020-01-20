@@ -71,6 +71,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Http\\Requests\\BookingRequest' => $baseDir . '/app/Http/Requests/BookingRequest.php',
     'App\\Http\\Traits\\CustomTrait' => $baseDir . '/app/Http/Traits/CustomTrait.php',
+    'App\\MealItem' => $baseDir . '/app/MealItem.php',
     'App\\Menu' => $baseDir . '/app/Menu.php',
     'App\\MenuType' => $baseDir . '/app/MenuType.php',
     'App\\MisAccountHead' => $baseDir . '/app/MisAccountHead.php',

@@ -13,7 +13,7 @@ class CreateR10FoodMenuItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('r9_food_menu_items', function (Blueprint $table) {
+        Schema::create('r10_food_menu_items', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('food_menu_id')->unsigned()->index();
             $table->integer('meal_item_id')->unsigned()->index();
@@ -29,6 +29,6 @@ class CreateR10FoodMenuItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('r9_food_menu_items');
+        Schema::dropIfExists('r10_food_menu_items');
     }
 }
