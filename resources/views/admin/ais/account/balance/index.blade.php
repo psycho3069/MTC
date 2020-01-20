@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-8">
+    <div class="col-9 ">
 
         <samp>
             <form method="POST" action="{{ route('balance.store') }}">

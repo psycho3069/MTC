@@ -157,7 +157,7 @@ class StockController extends Controller
             }
 
         $stock_head->update( $request->except('_token', 'input'));
-        return redirect('stock')->with('update', 'Updated successfully');
+        return redirect('stock?type_id='.$stock_head->type_id)->with('update', 'Updated successfully');
 
 
     }

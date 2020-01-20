@@ -110,9 +110,11 @@
                 <div class="form-group row">
                       <label for="date_of_birth" class="col-md-4 col-form-label text-md-left">Date of Birth: <span class="required">*</span></label>
                       <div class="col-md-6">
-                      <input type="text" class="form-control datepicker" id="date_of_birth" name="date_of_birth" autocomplete="off" required>
+                      <input type="date" class="form-control" name="date_of_birth" autocomplete="off" required>
                     </div>
                 </div>
+
+
 
                 <div class="form-group row">
                     <label for="phone" class="col-md-4 col-form-label text-md-left">Phone No: <span class="required">*</span></label>
@@ -210,3 +212,5 @@
     </div>
 </div>
 @endsection
+
+

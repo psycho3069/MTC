@@ -92,15 +92,20 @@ Route::group(['middleware' => 'auth'], function (){
     Route::post('visitor', ['as' => 'visitor.store', 'uses' => 'BookingController@storeVisitor']);
     Route::resource('supplier', 'SupplierController');
 
-    Route::post('sales/room', ['as' => 'sales.room', 'uses' => 'FoodSaleController@room']);
-    Route::post('restaurant/menu', ['as' => 'food.menu', 'uses' => 'FoodSaleController@menu']);
 
-
-    Route::get('export/{bill_id}', 'BillingController@export');
     Route::resource('billing', 'BillingController');
     Route::resource('booking', 'BookingController');
-    Route::resource('restaurant/sales', 'FoodSaleController');
     Route::resource('{bill_id}/payment', 'PaymentController');
+    Route::get('export/{bill_id}', 'BillingController@export');
+
+
+    Route::post('sales/room', ['as' => 'sales.room', 'uses' => 'FoodSaleController@room']);
+    Route::post('restaurant/menu', ['as' => 'food.menu', 'uses' => 'FoodSaleController@menu']);
+    Route::resource('restaurant/sales', 'FoodSaleController');
+    Route::resource('food/menu', 'FoodMenuController');
+
+
+
 
     Route::post('accounts/balance/check', ['as' => 'balance.check', 'uses' => 'BalanceController@check']);
     Route::resource('accounts/balance', 'BalanceController');
