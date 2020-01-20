@@ -2,13 +2,13 @@
 
 
 @section('content')
-    <div class="col-md-8">
+    <div class="col-md-10">
         <br><br><br>
         <div class="card text-left">
-            <div class="card-header"><code>Reservation List</code></div>
+            <div class="card-header"><b><code>Reservation List</code></b></div>
             <div class="card-body">
                 <samp>
-                    <table class="table table-bordered table-hover table-info">
+                    <table class="table table-bordered table-hover table-primary">
                         <thead>
                         <tr>
                             <th></th>

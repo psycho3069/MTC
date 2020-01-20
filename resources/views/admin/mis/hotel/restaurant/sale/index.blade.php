@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-8">
+    <div class="col-md-9">
         <br><br><br>
         <samp>
             <div class="card text-left">
@@ -11,7 +11,7 @@
                     <button type="button" class="btn btn-ii float-right" onclick='window.location="{{ route('sales.create') }}"'>Add Sales</button>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-hover table-info">
+                    <table class="table table-bordered table-hover table-primary">
                         <thead>
                         <tr>
                             <th></th>
