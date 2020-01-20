@@ -78,7 +78,11 @@ class FoodMenuController extends Controller
      */
     public function edit($id)
     {
-        //
+        $menu = FoodMenu::find( $id);
+        $data['menu_types'] = MenuType::all();
+        $data['menu_items'] = MealItem::all();
+
+        return view('admin.mis.hotel.restaurant.food.menu.edit', compact('menu', 'data'));
     }
 
     /**
@@ -90,7 +94,23 @@ class FoodMenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+        ],[
+            'name.required' => 'Please Enter A Name',
+        ]);
+//        return $request->all();
+        $input = $request->input;
+        $menu = FoodMenu::find( $id);
+
+        foreach ($input as $key => $item) {
+            $menu->items->find($key)->update( $item);
+        }
+
+        $menu->update( $request->only('name', 'price'));
+
+        return redirect('food/menu')->with('update', '<b>'.$menu->name.'</b> has been successfully updated');
+
     }
 
     /**
@@ -99,8 +119,18 @@ class FoodMenuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+//        return $request->all();
+        $menu = FoodMenu::find( $id);
+        if ( $menu->sales->isEmpty()){
+            if ( $menu->items->isNotEmpty())
+                $menu->items()->delete();
+            $menu->delete();
+            $request->session()->flash('success', '<b>'.$menu->name.'</b> has been deleted.');
+        }else
+            $request->session()->flash('failed', '<b>'.$menu->name.'</b> has dependency. Operation unsuccessful');
+
+        return 22;
     }
 }

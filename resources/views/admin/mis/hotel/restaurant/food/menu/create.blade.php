@@ -185,9 +185,9 @@
 
             $(document).on('click', '.remove', function(){
                 var button_id = $(this).attr('id')
-                var price = $('#price'+i).text().split('tk.')[0]
+                var price = $('#price'+button_id).text().split('tk.')[0]
                 price = parseFloat(price).toFixed(2)
-                total -=price
+                total -= price
                 $('#total').text(total+' tk.')
                 $('input[name="price"]').val(total)
                 $('#row'+button_id).remove()
@@ -196,4 +196,5 @@
 
         })
     </script>
+
 @endsection

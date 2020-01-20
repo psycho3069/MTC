@@ -14,4 +14,10 @@ class FoodMenu extends Model
     {
         return $this->hasMany('App\FoodMenuItem', 'food_menu_id');
     }
+
+
+    public function sales()
+    {
+        return $this->hasMany('App\FoodSale', 'menu_id');
+    }
 }

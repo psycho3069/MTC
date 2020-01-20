@@ -79,7 +79,6 @@
                     success:function (data) {
                         // console.log(data)
                         window.location.href = "{{ route('stock.index') }}"
-
                     }
 
                 })
@@ -87,8 +86,6 @@
             }
 
         }
-
-
 
     </script>
 @endsection
