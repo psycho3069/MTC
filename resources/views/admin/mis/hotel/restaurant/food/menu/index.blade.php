@@ -9,16 +9,15 @@
             <div class="card text-left">
                 <div class="card-header">
                     <b><code>Menu Items</code></b>
-                    <button type="button" class="btn btn-ii float-right" onclick='window.location="{{ route('menu.create') }}"'>Add Menu</button>
+                    <button type="button" class="btn btn-iii float-right" onclick='window.location="{{ route('menu.create') }}"'>Add Menu</button>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-hover table-primary">
+                    <table class="table table-bordered table-hover table-primary" style="table-layout: auto">
                         <thead>
                         <tr>
                             <th></th>
                             <th>Menu</th>
-                            <th>Items</th>
-                            <th>Price</th>
+                            <th class="text-center" width="17%">Price</th>
                             <th class="">Action</th>
                         </tr>
                         </thead>
@@ -26,13 +25,23 @@
                         @foreach( $menus as $item )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->name }}</td>
-                                <td width="30%">
-                                    @foreach( $item->items as $meal )
-                                        {{ $meal->meal->name }},
-                                    @endforeach
+                                <td>
+                                    <b><code>{{ $item->name }}</code></b>
+                                    <ul>
+                                        @foreach( $item->items as $meal )
+                                            <li>
+                                                <span>
+                                                    {{ $meal->meal->name.' ('.$meal->quantity.')' }}
+                                                    <a href="" class="delete" id="{{ $meal->id }}" onclick="destroy(this.id, 1); return false;">
+                                                        <i title="Delete" class="fa fa-trash-o delete" aria-hidden="true"></i>
+                                                    </a>
+                                                </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 </td>
-                                <td>{{ $item->price }}</td>
+
+                                <td class="text-center">{{ $item->price }}</td>
                                 <td>
                                     <a href="" class="btn btn-sm btn-i" title="Add Item">
                                         <i class="fa fa-plus-square" aria-hidden="true"></i>

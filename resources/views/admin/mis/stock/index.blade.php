@@ -31,7 +31,9 @@
                                             <li>
                                                 <span>
                                                     {{ $item->name }} ({{ $item->currentStock ? $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr').' '.$item->unit : 0 }})
-                                                    <a href="" class="delete" id="{{ $item->id }}" onclick="destroy(this.id, 1); return false;"><i title="Delete" class="fa fa-trash-o delete" aria-hidden="true"></i></a>
+                                                    <a href="" class="delete" id="{{ $item->id }}" onclick="destroy(this.id, 1); return false;">
+                                                        <i title="Delete" class="fa fa-trash-o delete" aria-hidden="true"></i>
+                                                    </a>
                                                 </span>
                                             </li>
                                         @endforeach

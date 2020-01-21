@@ -69,7 +69,7 @@
                                     <strong class="float-right"><code>Vat(5%):</code></strong>
                                 </td>
                                 <td class="bill-down">
-                                    <strong class="float-right"><samp>{{ $info['venue']['total'] }}</samp></strong>
+                                    <strong class="float-right"><samp>{{ $info['venue']['total'] }}</samp></strong><br>
                                     <strong class="float-right"><samp>+{{ $info['venue']['vat'] }}</samp></strong>
                                 </td>
                             </tr>
@@ -130,7 +130,7 @@
                                     <strong class="float-right"><code>Vat(5%):</code></strong>
                                 </td>
                                 <td class="bill-down">
-                                    <strong class="float-right"><samp>{{ $info['room']['total'] }}</samp></strong>
+                                    <strong class="float-right"><samp>{{ $info['room']['total'] }}</samp></strong><br>
                                     <strong class="float-right"><samp>+{{ $info['room']['vat'] }}</samp></strong>
                                 </td>
                             </tr>
@@ -225,7 +225,7 @@
                                 <b><code>Total paid:</code></b>
                             </td>
                             <td class="bill-down text-right">
-                                <b><samp>{{ $bill->total_bill + $bill->discount }}</samp></b>
+                                <b><samp>{{ $bill->total_bill + $bill->discount }}</samp></b><br>
                                 <b><samp>{{ -$bill->discount }}</samp></b><br>
                                 <b><samp>-{{ $bill->total_paid }}</samp></b>
                             </td>
