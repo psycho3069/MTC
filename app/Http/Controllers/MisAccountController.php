@@ -56,7 +56,7 @@ class MisAccountController extends Controller
     {
 
         $input = $request->data;
-        Configuration::find(1)->update(['software_start_date' => $request->software_start_date]);
+//        Configuration::find(1)->update(['software_start_date' => $request->software_start_date]);
 
         $accounts = MisAccountHead::all();
         foreach ( $input as $key => $item) {
