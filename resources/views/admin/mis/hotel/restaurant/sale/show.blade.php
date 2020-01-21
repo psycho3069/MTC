@@ -33,7 +33,7 @@
                         <h3><code>Receipt</code></h3>
                     </div>
 
-                    <table class="table table-hover">
+                    <table class="table table-hover" style="table-layout: auto !important;">
                         <thead>
                         <tr>
                             <th class="th-down"><code>Date</code></th>
@@ -75,7 +75,7 @@
                                 <strong class="float-right"><code>Vat(10%):</code></strong>
                             </td>
                             <td class="bill-down">
-                                <strong class="float-right"><samp>{{ $bill->restaurant->sum('bill') }}</samp></strong>
+                                <strong class="float-right"><samp>{{ $bill->restaurant->sum('bill') }}</samp></strong><br>
                                 <strong class="float-right"><samp>+{{ $data['vat'] }}</samp></strong>
                             </td>
                         </tr>

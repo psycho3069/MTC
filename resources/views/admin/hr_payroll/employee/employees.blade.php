@@ -28,7 +28,7 @@
                     @endphp
                 </p>
 
-                <table id="employee" class="table table-bordered table-hover" width="100%">
+                <table id="employee" class="table table-bordered table-hover table-fixed" width="100%">
                     <thead>
                     <tr>
                         <th>#</th>

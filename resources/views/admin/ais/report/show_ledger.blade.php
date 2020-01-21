@@ -62,7 +62,7 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary">
+                    <table class="table table-bordered table-hover table-primary table-fixed">
                         <thead>
                         <tr>
                             <th class="">Date</th>
