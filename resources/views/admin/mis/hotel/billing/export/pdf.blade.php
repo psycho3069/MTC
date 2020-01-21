@@ -108,7 +108,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                     @if( isset( $data['venue']))
                         @foreach( $data['venue'] as $item )
                             <tr>
-                                <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->created_at)) }}</code></td>
+                                <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $item->start_date )) }}</code></td>
                                 <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
                                 <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
                                 <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
@@ -169,7 +169,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                     @if( isset($data['room']))
                         @foreach( $data['room'] as $item )
                             <tr>
-                                <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->created_at)) }}</code></td>
+                                <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->start_date)) }}</code></td>
                                 <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
                                 <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
                                 <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
@@ -186,7 +186,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                                 <strong class="float-right"><code>Vat(5%):</code></strong>
                             </td>
                             <td class="bill-down">
-                                <strong class="float-right"><samp>{{ $info['room']['total'] }}</samp></strong>
+                                <strong class="float-right"><samp>{{ $info['room']['total'] }}</samp></strong><br>
                                 <strong class="float-right"><samp>+{{ $info['room']['vat'] }}</samp></strong>
                             </td>
                         </tr>
@@ -228,14 +228,16 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                     </thead>
                     <tbody>
                     @foreach( $bill->restaurant as $food )
-                        <tr>
-                            <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($food->created_at)) }}</code></td>
-                            <td class="bill-top col-md-2"> <samp>{{ $food->menu->name  }}</samp> </td>
-                            <td class="bill-top col-md-1 no-wrap"><samp>{{ $food->menu->price.' tk.' }} </samp></td>
-                            <td class="bill-top col-md-1 text-center"><samp>{{ $food->quantity }}</samp></td>
-                            <td class="bill-top col-md-1 text-center"><samp>{{ $food->discount }}</samp></td>
-                            <td class="bill-top col-md-1"><samp>{{ $food->bill }}</samp></td>
-                        </tr>
+                        @if( $food->bill )
+                            <tr>
+                                <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $bill->mis_voucher->date->date)) }}</code></td>
+                                <td class="bill-top col-md-2"> <samp>{{ $food->menu->name  }}</samp> </td>
+                                <td class="bill-top col-md-1 no-wrap"><samp>{{ $food->menu->price.' tk.' }} </samp></td>
+                                <td class="bill-top col-md-1 text-center"><samp>{{ $food->quantity }}</samp></td>
+                                <td class="bill-top col-md-1 text-center"><samp>{{ $food->discount }}</samp></td>
+                                <td class="bill-top col-md-1"><samp>{{ $food->bill }}</samp></td>
+                            </tr>
+                        @endif
                     @endforeach
 
                     @if( $bill->restaurant->isEmpty())

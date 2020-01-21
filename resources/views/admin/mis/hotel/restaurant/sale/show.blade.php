@@ -46,14 +46,16 @@
                         </thead>
                         <tbody>
                         @foreach( $bill->restaurant as $food )
-                            <tr>
-                                <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $bill->mis_voucher->date->date)) }}</code></td>
-                                <td class="bill-top col-md-2"> <samp>{{ $food->menu->name  }}</samp> </td>
-                                <td class="bill-top col-md-1" style="white-space: nowrap"><samp>{{ $food->menu->price.' tk.' }} </samp></td>
-                                <td class="bill-top col-md-1 text-center"><samp>{{ $food->quantity }}</samp></td>
-                                <td class="bill-top col-md-1 text-center"><samp>{{ $food->discount }}</samp></td>
-                                <td class="bill-top col-md-1 text-right"><samp>{{ $food->bill }}</samp></td>
-                            </tr>
+                            @if( $food->bill )
+                                <tr>
+                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $bill->mis_voucher->date->date)) }}</code></td>
+                                    <td class="bill-top col-md-2"> <samp>{{ $food->menu->name  }}</samp> </td>
+                                    <td class="bill-top col-md-1" style="white-space: nowrap"><samp>{{ $food->menu->price.' tk.' }} </samp></td>
+                                    <td class="bill-top col-md-1 text-center"><samp>{{ $food->quantity }}</samp></td>
+                                    <td class="bill-top col-md-1 text-center"><samp>{{ $food->discount }}</samp></td>
+                                    <td class="bill-top col-md-1 text-right"><samp>{{ $food->bill }}</samp></td>
+                                </tr>
+                            @endif
                         @endforeach
 
                         @if( $bill->restaurant->isEmpty())
