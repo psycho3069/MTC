@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Billing;
+use App\FoodMenu;
 use App\FoodSale;
 use App\Menu;
 use App\MenuType;
@@ -72,7 +73,7 @@ class FoodSaleController extends Controller
 
         foreach ( $input as $item ) {
             $item['discount'] = $item['quantity'] * $item['discount'];
-            $item['bill'] = (Menu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
+            $item['bill'] = (FoodMenu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
             $food_bill = FoodSale::create( $item);
             $vat = ($food_bill->bill * 10) / 100;
 
@@ -154,7 +155,7 @@ class FoodSaleController extends Controller
             foreach ($input['new_food'] as $item) {
 //            return $item;
                 $item['discount'] = $item['discount'] * $item['quantity'];
-                $item['bill'] = ( Menu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
+                $item['bill'] = ( FoodMenu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
                 $new_bill += $item['bill'];
                 $bill->restaurant()->create($item);
             }
