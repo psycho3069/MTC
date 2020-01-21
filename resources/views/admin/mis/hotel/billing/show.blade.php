@@ -52,7 +52,7 @@
                         @if( isset( $data['venue']))
                             @foreach( $data['venue'] as $item )
                                 <tr>
-                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->created_at)) }}</code></td>
+                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $item->start_date )) }}</code></td>
                                     <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
                                     <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
                                     <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
@@ -113,7 +113,7 @@
                         @if( isset($data['room']))
                             @foreach( $data['room'] as $item )
                                 <tr>
-                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($item->created_at)) }}</code></td>
+                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $item->start_date)) }}</code></td>
                                     <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
                                     <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
                                     <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
@@ -173,7 +173,7 @@
                         <tbody>
                         @foreach( $bill->restaurant as $food )
                             <tr>
-                                <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime($food->created_at)) }}</code></td>
+                                <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $bill->mis_voucher->date->date)) }}</code></td>
                                 <td class="bill-top col-md-2"> <samp>{{ $food->menu->name  }}</samp> </td>
                                 <td class="bill-top col-md-1 no-wrap"><samp>{{ $food->menu->price.' tk.' }} </samp></td>
                                 <td class="bill-top col-md-1 text-center"><samp>{{ $food->quantity }}</samp></td>
