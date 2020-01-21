@@ -173,3 +173,15 @@ strong {
 }
 
 
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+
+
+table thead tr th:first-child {
+    width: 10%;
+
+}
+

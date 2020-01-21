@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\FoodMenu;
+use App\FoodMenuItem;
 use App\MealItem;
 use App\MenuType;
 use Illuminate\Http\Request;
@@ -123,13 +124,23 @@ class FoodMenuController extends Controller
     {
 //        return $request->all();
         $menu = FoodMenu::find( $id);
-        if ( $menu->sales->isEmpty()){
-            if ( $menu->items->isNotEmpty())
-                $menu->items()->delete();
-            $menu->delete();
-            $request->session()->flash('success', '<b>'.$menu->name.'</b> has been deleted.');
-        }else
-            $request->session()->flash('failed', '<b>'.$menu->name.'</b> has dependency. Operation unsuccessful');
+
+        if ( !$request->type)
+            if ( $menu->sales->isEmpty()){
+                if ( $menu->items->isNotEmpty())
+                    $menu->items()->delete();
+                $menu->delete();
+                $request->session()->flash('success', '<b>'.$menu->name.'</b> has been deleted.');
+            }else
+                $request->session()->flash('failed', '<b>'.$menu->name.'</b> has dependency. Operation unsuccessful');
+
+
+        if ( $request->type){
+            $item = FoodMenuItem::find($id);
+            $item->delete();
+            $request->session()->flash('success', '<b>'.$item->meal->name.'</b> has been deleted successfully');
+        }
+
 
         return 22;
     }
