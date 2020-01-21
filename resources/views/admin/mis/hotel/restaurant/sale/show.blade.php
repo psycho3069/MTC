@@ -46,7 +46,7 @@
                         </thead>
                         <tbody>
                         @foreach( $bill->restaurant as $food )
-                            @if( $food->bill )
+                            @if( $food->bill != 0 )
                                 <tr>
                                     <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $bill->mis_voucher->date->date)) }}</code></td>
                                     <td class="bill-top col-md-2"> <samp>{{ $food->menu->name  }}</samp> </td>
