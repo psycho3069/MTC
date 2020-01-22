@@ -6,7 +6,7 @@
             <div class="card text-left">
                 {{--                <div class="card-header"> <strong>All {{ ucfirst($categories->first()->category) }} Item</strong></div>--}}
                 <div class="card-header">
-                    <b>{{ date('d M, Y', strtotime($p_group->created_at)) }} Purchase</b>
+                    <b>{{ date('d M, Y', strtotime( $p_group->date->date )) }} Purchase</b>
                 </div>
 
                 <div class="card-body">

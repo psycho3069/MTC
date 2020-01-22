@@ -90,7 +90,7 @@
                 <div class="card-body purchase-list">
                     <form method="POST" action="{{ route('purchase.store') }}" >
                         {{ csrf_field() }}
-                        <input type="hidden" name="mis_ac_head_id" value="{{ $stock_head->first()->type->id }}">
+                        <input type="hidden" name="mis_ac_head_id" value="{{ $stock_head->isNotEmpty() ? $stock_head->first()->type->id : 0 }}">
 
                         <table class="table table-info">
                             <thead>
