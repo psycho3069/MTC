@@ -27,9 +27,8 @@ class MisAccountController extends Controller
     {
         $type = MisAccountHead::orderBy('id')->get();
         $theads = TransactionHead::where('code','!=', 353)->get();
-        $configuration = Configuration::find(1);
-//        return $type;
-        return view('admin.mis.index', compact('type', 'theads', 'configuration'));
+        $conf = Configuration::all();
+        return view('admin.mis.index', compact('type', 'theads', 'conf'));
 
     }
 
@@ -54,15 +53,18 @@ class MisAccountController extends Controller
 
     public function store(Request $request)
     {
+//        return $request->all();
 
         $input = $request->data;
-//        Configuration::find(1)->update(['software_start_date' => $request->software_start_date]);
+        foreach ($request->conf as $key => $val) {
+            Configuration::where( 'name', $key)->update([ 'value' => $val]);
+        }
 
         $accounts = MisAccountHead::all();
         foreach ( $input as $key => $item) {
             $accounts->find($key)->update( $item);
         }
-        return redirect()->back();
+        return redirect()->back()->with('update', 'Configuration updated successfully');
     }
 
 

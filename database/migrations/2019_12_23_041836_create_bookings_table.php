@@ -21,7 +21,8 @@ class CreateBookingsTable extends Migration
             $table->tinyInteger('booking_status')->unsigned()->default(2);
             $table->tinyInteger('no_of_visitors')->unsigned()->default(0);
             $table->double('bill',14,2)->default(0);
-            $table->tinyInteger('vat')->unsigned()->default(5);
+            $table->tinyInteger('vat')->unsigned()->default(0);
+            $table->tinyInteger('service_charge')->unsigned()->default(0);
             $table->date('start_date');
             $table->date('end_date');
             $table->double('discount',12,2)->unsigned()->default(0);

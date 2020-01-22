@@ -69,6 +69,15 @@
                     <form method="POST" action="{{ route('sales.store') }}">
                         {{ csrf_field() }}
 
+                        <span class="float-left">
+                            <label>Vat</label>
+                            <input type="checkbox" name="vat" value="1" checked>
+                        </span>
+                        <span style="margin-left: 6%;">
+                            <label>Service Charge</label>
+                            <input type="checkbox" name="service_charge" value="1">
+                        </span>
+
                         <table class="table table-striped">
                             <thead>
                             <tr>

@@ -73,12 +73,14 @@
                             <td class="bill-down"></td><td class="bill-down"></td>
                             <td class="bill-down"></td><td class="bill-down"></td>
                             <td class="bill-down">
-                                <strong class="float-right"><code>Sub Total:</code></strong>
-                                <strong class="float-right"><code>Vat(10%):</code></strong>
+                                <strong class="float-right"><code>Sub Total:</code></strong><br>
+                                <strong class="float-right"><code>Vat({{ $data['vat']['%'] }}%):</code></strong><br>
+                                <strong class="float-right"><code>Service Charge({{ $data['service']['%'] }}%):</code></strong><br>
                             </td>
                             <td class="bill-down">
                                 <strong class="float-right"><samp>{{ $bill->restaurant->sum('bill') }}</samp></strong><br>
-                                <strong class="float-right"><samp>+{{ $data['vat'] }}</samp></strong>
+                                <strong class="float-right"><samp>+{{ $data['vat']['total'] }}</samp></strong><br>
+                                <strong class="float-right"><samp>+{{ $data['service']['total'] }}</samp></strong>
                             </td>
                         </tr>
 

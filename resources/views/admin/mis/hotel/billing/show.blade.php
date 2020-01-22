@@ -66,7 +66,7 @@
                                 <td class="bill-down"></td>
                                 <td class="bill-down">
                                     <strong class="float-right"><code>Sub Total:</code></strong>
-                                    <strong class="float-right"><code>Vat(5%):</code></strong>
+                                    <strong class="float-right"><code>Vat({{ $bill->booking[0]->vat }}%):</code></strong>
                                 </td>
                                 <td class="bill-down">
                                     <strong class="float-right"><samp>{{ $info['venue']['total'] }}</samp></strong><br>
@@ -127,7 +127,7 @@
                                 <td class="bill-down"></td>
                                 <td class="bill-down">
                                     <strong class="float-right"><code>Sub Total:</code></strong>
-                                    <strong class="float-right"><code>Vat(5%):</code></strong>
+                                    <strong class="float-right"><code>Vat({{ $bill->booking[0]->vat }}%):</code></strong>
                                 </td>
                                 <td class="bill-down">
                                     <strong class="float-right"><samp>{{ $info['room']['total'] }}</samp></strong><br>
@@ -199,13 +199,14 @@
                             <td class="bill-down"></td><td class="bill-down"></td>
                             <td class="bill-down"></td><td class="bill-down"></td>
                             <td class="bill-down">
-                                <strong class="float-right"><code>Sub Total:</code></strong>
-                                <strong class="float-right"><code>Vat(10%):</code></strong>
+                                <strong class="float-right"><code>Sub Total:</code></strong><br>
+                                <strong class="float-right"><code>Vat({{ $restaurant['vat']['%'] }}%):</code></strong><br>
+                                <strong class="float-right"><code>Service Charge({{ $restaurant['service']['%'] }}%):</code></strong>
                             </td>
                             <td class="bill-down">
-                                <strong class="float-right"><samp>{{ $bill->restaurant->sum('bill') }}</samp></strong>
-                                <br>
-                                <strong class="float-right"><samp>+{{ $restaurant['vat'] }}</samp></strong>
+                                <strong class="float-right"><samp>{{ $bill->restaurant->sum('bill') }}</samp></strong><br>
+                                <strong class="float-right"><samp>+{{ $restaurant['vat']['total'] }}</samp></strong><br>
+                                <strong class="float-right"><samp>+{{ $restaurant['service']['total'] }}</samp></strong>
                             </td>
                         </tr>
 

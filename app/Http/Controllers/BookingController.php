@@ -75,8 +75,8 @@ class BookingController extends Controller
      */
     public function create(Request $request)
     {
-//        return $request->all();
-        $booked = Booking::where('end_date','>=', date('Y-m-d'))->get()->pluck('room_id');
+        $date = Configuration::find( 1)->software_start_date;
+        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->get()->pluck('room_id');
 //        return $booked;
         $data['room'] = Room::get()->except($booked->toArray());
         $data['venue'] = Venue::get()->except($booked->toArray());
@@ -100,7 +100,7 @@ class BookingController extends Controller
             'guest.contact_no' => 'required',
             'booking' => 'required',
         ]);
-
+        $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
 
         $input = $request->except('_token');
         $input['billing']['code'] = $this->code();
@@ -122,8 +122,9 @@ class BookingController extends Controller
             $booking['discount'][$item['room_id']] = $item['discount'] * $days;
         }
 
-        $vat = ($hotel_bill * 5) / 100;
-        $input['billing']['total_bill'] = $hotel_bill + $vat - $input['billing']['discount'];
+//        return $hotel_bill;
+        $hotel_vat = $hotel_bill * $vat / 100;
+        $input['billing']['total_bill'] = $hotel_bill + $hotel_vat - $input['billing']['discount'];
         $input['billing']['total_paid'] = $input['billing']['advance_paid'];
         $input['billing']['guest_id'] = $guest->id;
 
@@ -146,6 +147,7 @@ class BookingController extends Controller
             $item['bill'] = $booking['bill'][$item['room_id']];
             $item['discount'] = $booking['discount'][$item['room_id']];
             $item['booking_status'] = 2;
+            $item['vat'] = $vat;
             $billing->booking()->create($item);
         }
 

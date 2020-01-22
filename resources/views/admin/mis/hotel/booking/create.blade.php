@@ -109,7 +109,11 @@
                 <form method="POST" action="{{ route('booking.store') }}">
                     {{ csrf_field() }}
                     <span class="float-left">
-                        <label>With Restaurant</label>
+                        <label>Vat</label>
+                        <input type="checkbox" name="vat" value="1">
+                    </span>
+                    <span style="margin-left: 6%;">
+                        <label>Restaurant</label>
                         <input type="checkbox" name="check" value="1" checked>
                     </span>
 

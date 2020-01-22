@@ -150,8 +150,8 @@
               Process
           </a>
           <div class="dropdown-menu sm-menu">
-              <a href="{{ route('process.list') }}" class="dropdown-item">AIS Day End</a>
-              <a href="{{ route('process.index') }}" class="dropdown-item">AIS Day End List</a>
+              <a href="{{ route('process.list') }}" class="dropdown-item">Day End</a>
+              <a href="{{ route('process.index') }}" class="dropdown-item">Day End List</a>
           </div>
       </li>
     <li class="nav-item dropdown dmenu">

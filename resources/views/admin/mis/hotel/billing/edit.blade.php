@@ -10,7 +10,15 @@
             <div class="row">
                 <div class="col-md-7">
                     <div class="card text-left">
-                        <div class="card-header"><samp>{{ $bill->guest->name }}'s Bill</samp></div>
+                        <div class="card-header">
+                            <samp>
+                                {{ $bill->guest->name }}'s Bill
+                                <span class="float-right">
+                                    <label>Vat</label>
+                                    <input type="checkbox" name="vat" value="1" {{ $bill->booking[0]->vat !=0 ? 'checked' : '' }}>
+                                </span>
+                            </samp>
+                        </div>
                         <div class="card-body">
                             <samp>
                                 <div class="row">

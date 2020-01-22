@@ -8,7 +8,7 @@ class FoodSale extends Model
 {
     protected $table = 'r11_food_sales';
 
-    protected $fillable = [ 'billing_id', 'booking_id', 'quantity', 'bill', 'discount', 'menu_id', 'vat', ];
+    protected $fillable = [ 'billing_id', 'booking_id', 'quantity', 'bill', 'discount', 'menu_id', 'vat', 'service_charge' ];
 
 
     public function billing()

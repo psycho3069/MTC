@@ -93,10 +93,12 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('supplier', 'SupplierController');
 
 
+    Route::get('export/{bill_id}', 'BillingController@export');
     Route::resource('billing', 'BillingController');
     Route::resource('booking', 'BookingController');
+
+    Route::post('{bill_id}/payment/checkout', ['as' => 'payment.checkout', 'uses' => 'PaymentController@checkout']);
     Route::resource('{bill_id}/payment', 'PaymentController');
-    Route::get('export/{bill_id}', 'BillingController@export');
 
 
     Route::post('sales/room', ['as' => 'sales.room', 'uses' => 'FoodSaleController@room']);

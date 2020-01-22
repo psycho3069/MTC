@@ -149,7 +149,7 @@ class BillingController extends Controller
         $bill = Billing::find( $id);
 
         foreach ($bill->booking as $item ) {
-
+            $vat = $item->vat;
             if ( $item->room_id < 50)
                 $data['room'][$item->id] = $item;
 
@@ -161,16 +161,21 @@ class BillingController extends Controller
             $booking[$item->id]['unit_price'] = ( $item->room_id < 50 ? $item->room->price : $item->venue->price);
         }
 
+
         $info['venue']['total'] = isset($data['venue']) ? collect( $data['venue'])->sum('bill') : 0;
         $info['room']['total'] = isset($data['room']) ? collect( $data['room'])->sum('bill') : 0;
 
-        $info['venue']['vat'] = $info['venue']['total'] * 5 / 100;
-        $info['room']['vat'] = $info['room']['total'] * 5 / 100;
+        $info['venue']['vat'] = $info['venue']['total'] * $vat / 100;
+        $info['room']['vat'] = $info['room']['total'] * $vat / 100;
 
-        $booking['vat'] = $bill->booking->sum('bill') * 5 / 100;
+        $booking['vat'] = $bill->booking->sum('bill') * $vat / 100;
         $booking['total'] = $bill->booking->sum('bill') + $booking['vat'];
-        $restaurant['vat'] = $bill->restaurant->sum('bill') * 10 / 100;
-        $restaurant['total'] = $bill->restaurant->sum('bill') + $restaurant['vat'];
+
+        $restaurant['vat']['%'] = $bill->restaurant->isNotEmpty() ? $bill->restaurant[0]->vat : 0;
+        $restaurant['service']['%'] = $bill->restaurant->isNotEmpty() ? $bill->restaurant[0]->service_charge : 0;
+        $restaurant['vat']['total'] = ( $bill->restaurant->sum('bill') * $restaurant['vat']['%']) / 100;
+        $restaurant['service']['total'] = ( $bill->restaurant->sum('bill') * $restaurant['service']['%']) / 100;
+        $restaurant['total'] = $bill->restaurant->sum('bill') + $restaurant['vat']['total'] + $restaurant['service']['total'];
 
         $x = new NumberFormatter('en', NumberFormatter::SPELLOUT);
         $data['words']['total_bill'] = $x->format( $bill->total_bill);
@@ -179,6 +184,9 @@ class BillingController extends Controller
 
         if ( $export)
             return $all;
+
+
+//        return $bill->booking[0];
 
         return view('admin.mis.hotel.billing.show', compact('bill', 'booking', 'restaurant', 'data', 'info'));
 //        return view('admin.mis.hotel.billing.dropdown', compact('bill', 'booking', 'restaurant', 'data', 'info'));
@@ -221,25 +229,25 @@ class BillingController extends Controller
         $input = $request->except('_token', '_method');
         $bill = Billing::find($id);
 
-//        return $input['billing'];
 
-        $old_bill = 0;
-        $new_bill = 0;
+        $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
+
+        $old_bill = 0; $new_bill = 0;
+
         foreach ($input['booking'] as $key => $item) {
-//            return $item;
-            $book = $bill->booking->find($key);
+            $room = $bill->booking->find($key);
             $days = ( strtotime( $item['end_date']) - strtotime( $item['start_date'])) / (60*60*24);
-            $price = $book->room_id < 50 ? $book->room->price : $book->venue->price;
+            $price = $room->room_id < 50 ? $room->room->price : $room->venue->price;
             $item['discount'] = $item['discount'] * $days;
             $item['bill'] = $price * $days - $item['discount'];
 
             $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
             $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
+            $old_vat = $room->vat;
 
-            $old_bill += $book->bill;
+            $old_bill += $room->bill;
             $new_bill += $item['bill'];
-//            return $item;
-            $book->update( $item);
+            $room->update( $item);
         }
 
 //        return $new_bill;
@@ -252,13 +260,16 @@ class BillingController extends Controller
                 $item['guest_id'] = $bill->guest_id;
                 $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
                 $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
+                $item['vat'] = $vat;
                 $bill->booking()->create( $item);
 
                 $new_bill += $item['bill'];
             }
 
-        $old_bill += ($old_bill * 5) / 100;
-        $new_bill += ($new_bill * 5) / 100;
+//        return $bill->booking;
+
+        $old_bill += ( $old_bill * $old_vat) / 100;
+        $new_bill += ( $new_bill * $vat) / 100;
 
 //        return $new_bill;
 
@@ -278,6 +289,7 @@ class BillingController extends Controller
 
         $bill->guest->update( $input['billing']);
         $bill->update( $input['billing']);
+        $bill->booking()->update([ 'vat' => $vat]);
 
         $request->session()->flash('update', 'Booking has been Updated');
 

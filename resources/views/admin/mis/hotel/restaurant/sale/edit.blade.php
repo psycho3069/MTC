@@ -10,7 +10,23 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header"><samp>{{ $bill->guest->name }}'s Food Bill</samp></div>
+                        <div class="card-header">
+                            <samp>
+                                <b>{{ $bill->guest->name }}'s Food Bill</b>
+
+                                <small>
+                                    <span class="float-right">
+                                        <label>Service Charge</label>
+                                        <input type="checkbox" name="service_charge" value="1" {{ $bill->restaurant[0]->service_charge !=0 ? 'checked' : '' }}>
+                                    </span>
+
+                                    <span class="float-right" style="margin-right: 3%;">
+                                        <label>Vat</label>
+                                        <input type="checkbox" name="vat" value="1" {{ $bill->restaurant[0]->vat !=0 ? 'checked' : '' }}>
+                                    </span>
+                                </small>
+                            </samp>
+                        </div>
                         <div class="card-body">
                             <samp>
                                 @foreach( $bill->restaurant as $food )

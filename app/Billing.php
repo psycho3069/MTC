@@ -8,7 +8,7 @@ class Billing extends Model
 {
     protected $fillable = [
         'guest_id', 'mis_voucher_id', 'checkout_status', 'code',
-        'total_bill', 'advance_paid', 'total_paid', 'discount', 'note', 'reserved',
+        'total_bill', 'advance_paid', 'total_paid', 'discount', 'note', 'reserved', 'service_charge'
         ];
 
 

@@ -16,7 +16,7 @@
                             <div class="col-md-5">
                                 <div class="form-group">
                                     <label>Select a date</label>
-                                    <input type="date" name="software_start_date" class="form-control" value="{{ $configuration->software_start_date }}" disabled>
+                                    <input type="date" name="software_start_date" class="form-control" value="{{ $conf->firstWhere('name', 'software_date')->date }}" disabled>
                                 </div>
                             </div>
                         </div>
@@ -24,12 +24,28 @@
 
                         <div class="row">
                             <div class="col-md-3">
-                                <p class="config-label"><b>Vat</b></p>
+                                <p class="config-label"><b>Vat</b><small>( in %)</small></p>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-group">
-                                    <label>Food</label>
-                                    <input type="number" name="vat_food" class="form-control" value="{{ $configuration->software_start_date }}" disabled>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Food</label>
+                                            <input type="number" name="conf[vat_food]" class="form-control" min="0" value="{{ $conf->firstWhere('name', 'vat_food')->value }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Charge</label>
+                                            <input type="number" name="conf[vat_service]" class="form-control" min="0" value="{{ $conf->firstWhere('name', 'vat_service')->value }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Others</label>
+                                            <input type="number" name="conf[vat_others]" class="form-control" min="0" value="{{ $conf->firstWhere('name', 'vat_others')->value }}">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

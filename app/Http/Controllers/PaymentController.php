@@ -33,11 +33,75 @@ class PaymentController extends Controller
         $bill = Billing::find($bill_id);
         if ( $request->co)
             return view('admin.mis.hotel.billing.payment.checkout', compact('bill'));
+//            return view('admin.mis.hotel.billing.payment.test', compact('bill'));
 
         return view('admin.mis.hotel.billing.payment.create', compact('bill'));
 
 
     }
+
+
+    public function checkout(Request $request, $bill_id)
+    {
+        $discount = $request->discount;
+        $bill = Billing::find( $bill_id);
+
+        if ( $bill->checkout_status != true){
+
+            $room['amount'] = $bill->booking->where('room_id', '<', 50)->sum('bill');
+            $venue['amount'] = $bill->booking->where('room_id', '>=', 50)->sum('bill');
+            $food['amount'] = $bill->restaurant->sum('bill');
+
+            if ( $room['amount'] != 0){
+                $room['amount'] += $room['amount'] * 5 / 100;
+                $room['mis_ac_head_id'] = 1;
+                $room['type'] = 'hotel_rv';
+                $note = 'Hotel Room Payment';
+                $this->ais( $room, $bill, $note);
+            }
+
+            if ( $venue['amount'] != 0){
+                $venue['amount'] += $venue['amount'] * 5 / 100;
+                $venue['mis_ac_head_id'] = 2;
+                $venue['type'] = 'venue_rv';
+                $note = 'Venue Payment';
+                $this->ais( $venue, $bill, $note);
+            }
+
+            if ( $food['amount'] != 0){
+                $food['amount'] += $food['amount'] * 10 / 100;
+                $food['mis_ac_head_id'] = 4;
+                $food['type'] = 'restaurant_rv';
+                $note = 'Restaurant Payment';
+                $this->ais( $food, $bill, $note);
+            }
+
+            $bill->booking()->update(['booking_status' => 2]);
+            $bill->total_paid = $bill->total_bill;
+            $bill->reserved = 0;
+            $bill->checkout_status = 1;
+            $bill->save();
+            return redirect('billing/'.$bill->id)->with('success', '<b>'.$bill->guest->name.'</b> has been successfully Checked-Out');
+        }
+        else
+            return redirect('billing/'.$bill->id)->with('danger', '<b>'.$bill->guest->name.'</b> has been already Checked-Out');
+
+    }
+
+
+    public function ais($data, $bill, $note)
+    {
+        $date = Configuration::find(1)->software_start_date;
+        $voucher = $this->computeAIS( $data, $date);
+        $input['mis_voucher_id'] = $voucher->id;
+
+        $input['amount'] = $data['amount'];
+        $input['note'] = $note;
+        $bill->payments()->create( $input);
+    }
+
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -65,9 +129,6 @@ class PaymentController extends Controller
         $bill->reserved = 0;
         $bill->total_paid += $input['amount'];
         $bill->save();
-
-
-
 
 
         $data['mis_ac_head_id'] = 1;

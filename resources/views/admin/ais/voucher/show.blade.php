@@ -13,11 +13,11 @@
                     <table class="table table-info">
                         <thead>
                         <tr>
-                            <th scope="col">Debit Account</th>
-                            <th scope="col">Credit Account</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Note</th>
+                            <th>Debit Account</th>
+                            <th>Credit Account</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Note</th>
                         </tr>
                         </thead>
                         <tbody>

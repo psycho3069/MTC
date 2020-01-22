@@ -20,7 +20,8 @@ class CreateR11FoodSalesTable extends Migration
             $table->tinyInteger('quantity')->unsigned()->default(0);
             $table->double('bill',12,2)->default(0);
             $table->double('discount',14,2)->default(0);
-            $table->tinyInteger('vat')->unsigned()->default(15);
+            $table->tinyInteger('vat')->unsigned()->default(0);
+            $table->tinyInteger('service_charge')->unsigned()->default(0);
             $table->timestamps();
         });
     }
