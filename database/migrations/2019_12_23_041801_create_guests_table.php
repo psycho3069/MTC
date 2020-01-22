@@ -20,7 +20,7 @@ class CreateGuestsTable extends Migration
             $table->string('designation')->nullable();
             $table->string('contact_no');
             $table->text('address')->nullable();
-            $table->integer('appearance')->unsigned()->default(1);
+            $table->smallInteger('appearance')->unsigned()->default(0);
             $table->timestamps();
         });
     }

@@ -52,11 +52,11 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-info table-fixed">
+                    <table class="table table-bordered table-hover table-primary table-fixed">
                         <thead>
                         <tr>
-                            <th></th>
-                            <th class="">Code</th>
+                            <th width="6%"></th>
+                            <th>Code</th>
                             <th class="">Type</th>
                             <th class="">Amount</th>
                             <th class="">Narration/Cheque Details</th>

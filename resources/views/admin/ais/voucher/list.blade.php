@@ -43,7 +43,7 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-info">
+                    <table class="table table-bordered table-hover table-primary">
                         <thead>
                         <tr>
                             <th></th>

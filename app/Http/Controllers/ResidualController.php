@@ -49,7 +49,7 @@ class ResidualController extends Controller
         $request->validate([
             'guest.name' => 'required',
             'guest.contact_no' => 'required',
-            'booking' => 'required',
+            'booking.*.*' => 'required',
         ]);
 
         $input = $request->except('_token');

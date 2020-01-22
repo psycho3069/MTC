@@ -9,6 +9,7 @@
                     <b>Reserve</b>
                 </div>
                 <div class="card-body">
+                    <p class="text-danger">{!! $errors->has('booking.*') ? 'Reservation info is not correct! <b>Operation Unsuccessful.</b>' : '' !!}</p>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">

@@ -9,6 +9,7 @@
                 <b>Booking</b>
             </div>
             <div class="card-body">
+                <p class="text-danger">{!! $errors->has('booking.*') ? 'Booking info is not correct! <b>Operation Unsuccessful.</b>' : '' !!}</p>
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
@@ -212,6 +213,13 @@
 
 
             $(':submit').click(function (e) {
+                var check = guest();
+
+                if( check == false ){
+                    e.preventDefault()
+                    alert('Please Enter Guest Info Properly!')
+                }
+
                 if( i < 1 ){
                     e.preventDefault()
                     alert('Please add at least one booking')
@@ -219,11 +227,6 @@
             })
 
             $('#add-button').click(function () {
-                var name = $('#name').val()
-                var contact_no = $('#contact_no').val()
-                var address = $('#address').val()
-                var org_name = $('#org_name').val()
-                var designation = $('#designation').val()
 
                 var discount = $('#discount').val()
                 var start_date = $('#start_date').val()
@@ -231,12 +234,7 @@
                 var visitors = $('#visitors').val()
                 var room_id = $('#room_id').val()
 
-                // console.log(
-                //     start_date + end_date + name + contact_no
-                // );
-
-
-                if( !start_date || !end_date || !name || !contact_no || !room_id )
+                if( !start_date || !end_date || !room_id )
                     alert('Please Enter All Required Fields')
                 else {
 
@@ -252,20 +250,30 @@
                         '</tr>'
                     )
 
-
-
-                    $('input[name="guest[name]"]').val(name)
-                    $('input[name="guest[contact_no]"]').val(contact_no)
-                    $('input[name="guest[address]"]').val(address)
-                    $('input[name="guest[org_name]"]').val(org_name)
-                    $('input[name="guest[designation]"]').val(designation)
-
                     $('#room_id').find('option[value="'+room_id+'"]').attr('disabled', true)
-
 
                 }
 
             })
+
+
+            function guest(){
+                var name = $('#name').val()
+                var contact_no = $('#contact_no').val()
+                var address = $('#address').val()
+                var org_name = $('#org_name').val()
+                var designation = $('#designation').val()
+
+                $('input[name="guest[name]"]').val(name)
+                $('input[name="guest[contact_no]"]').val(contact_no)
+                $('input[name="guest[address]"]').val(address)
+                $('input[name="guest[org_name]"]').val(org_name)
+                $('input[name="guest[designation]"]').val(designation)
+
+                if( !name || !contact_no)
+                    return false;
+                return true;
+            }
 
 
             $(document).on('click', '.remove', function(){

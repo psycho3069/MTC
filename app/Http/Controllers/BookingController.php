@@ -95,21 +95,21 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
+//        return $request->all();
         $request->validate([
             'guest.name' => 'required',
             'guest.contact_no' => 'required',
-            'booking' => 'required',
+            'booking.*.*' => 'required',
         ]);
+
         $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
 
         $input = $request->except('_token');
         $input['billing']['code'] = $this->code();
 
         $hotel_bill = 0;
-        $guest = Guest::where( 'contact_no', $request->guest['contact_no'])->get()->first();
-
-        if ( !$guest)
-            $guest = Guest::create($input['guest']);
+        $guest = Guest::create($input['guest']);
+        $guest = Guest::where( 'contact_no', $guest->contact_no)->get()->last();
         $guest->update([ 'appearance' => $guest->appearance + 1 ]);
 
         //total bill

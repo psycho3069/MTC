@@ -10,7 +10,7 @@
                     <button type="button" class="btn btn-i" onclick='window.location="{{ URL::previous() }}"'>Back</button>
                 </div>
                 <div class="card-body">
-                    <table class="table table-info">
+                    <table class="table table-primary">
                         <thead>
                         <tr>
                             <th>Debit Account</th>

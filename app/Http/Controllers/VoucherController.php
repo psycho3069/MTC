@@ -42,7 +42,7 @@ class VoucherController extends Controller
     {
         $input = $request->all();
         $data['types'] = VoucherType::all();
-        $dates =Date::whereBetween('date',[$input['start_date'], $input['end_date']])->orderBy('id')->get();
+        $dates =Date::whereBetween('date', [$input['start_date'], $input['end_date']])->orderBy('id')->get();
 
         $data['v_group'] = VoucherGroup::whereIn('date_id', $dates->pluck('id'))->orderBy('date_id', 'desc')->get();
         if ($request->category == 1)
