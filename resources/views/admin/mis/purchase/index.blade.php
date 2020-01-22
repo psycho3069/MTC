@@ -26,13 +26,13 @@
                         @foreach( $p_groups as $item )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d M, y', strtotime($item->created_at)) }}</td>
+                                <td>{{ date('d-m-Y', strtotime( $item->date->date)) }}</td>
                                 <td>{{ $item->purchases->sum('amount') }} tk.</td>
                                 <td>{{ $item->note ? $item->note : 'No notes' }}</td>
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-i" for="btnControl">
-                                            Purchases
+                                            More
                                             <i class="fa fa-caret-down" aria-hidden="true"></i>
                                         </button>
                                         <div class="dropdown-content">

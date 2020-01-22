@@ -64,7 +64,6 @@ class PurchaseController extends Controller
 //        return $request->all();
         $result = StockHead::find($request->stock_head_id);
         foreach ($result->stock as $item) {
-//            return $item;
             $data['stock'][$item->id] = $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr');
         }
         $data['item'] = $result->stock->pluck('name', 'id');
@@ -83,7 +82,6 @@ class PurchaseController extends Controller
 //        return $request->all();
 
         $input = collect($request->input);
-//        return $voucher;
         if ( $request->mis_ac_head_id == 3)
             $data['type'] = 'restaurant_pv';
         if ( $request->mis_ac_head_id == 5)
