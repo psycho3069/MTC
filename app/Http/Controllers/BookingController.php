@@ -108,9 +108,10 @@ class BookingController extends Controller
         $input['billing']['code'] = $this->code();
 
         $hotel_bill = 0;
+        $check_guest = Guest::where( 'contact_no', $input['guest']['contact_no'])->get()->last();
         $guest = Guest::create($input['guest']);
-        $guest = Guest::where( 'contact_no', $guest->contact_no)->get()->last();
-        $guest->update([ 'appearance' => $guest->appearance + 1 ]);
+        if ( $check_guest)
+            $guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
 
         //total bill
         foreach ($input['booking'] as $item) {

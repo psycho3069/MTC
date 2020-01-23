@@ -144,8 +144,6 @@ class FoodSaleController extends Controller
     {
         $bill = Billing::find($bill_id);
         $menu_type = MenuType::all();
-
-//        return $bill->restaurant->pluck('id');
         return view('admin.mis.hotel.restaurant.sale.edit', compact('bill', 'menu_type'));
     }
 

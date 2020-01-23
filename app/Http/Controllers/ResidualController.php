@@ -56,10 +56,11 @@ class ResidualController extends Controller
         $input['billing']['code'] = $this->code();
 
         $hotel_bill = 0;
-        $guest = Guest::where( 'contact_no', $request->guest['contact_no'])->get()->first();
-        if ( !$guest)
-            $guest = Guest::create($input['guest']);
-        $guest->update([ 'appearance' => $guest->appearance + 1 ]);
+
+        $check_guest = Guest::where( 'contact_no', $input['guest']['contact_no'])->get()->last();
+        $guest = Guest::create($input['guest']);
+        if ( $check_guest)
+            $guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
 
         //total bill
         foreach ($input['booking'] as $item) {

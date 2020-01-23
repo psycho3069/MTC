@@ -17,12 +17,12 @@
                                 <small>
                                     <span class="float-right">
                                         <label>Service Charge</label>
-                                        <input type="checkbox" name="service_charge" value="1" {{ $bill->restaurant[0]->service_charge !=0 ? 'checked' : '' }}>
+                                        <input type="checkbox" name="service_charge" value="1" {{ $bill->restaurant->isNotEmpty() ? ( $bill->restaurant[0]->service_charge !=0   ? 'checked' : '' ) : '' }}>
                                     </span>
 
                                     <span class="float-right" style="margin-right: 3%;">
                                         <label>Vat</label>
-                                        <input type="checkbox" name="vat" value="1" {{ $bill->restaurant[0]->vat !=0 ? 'checked' : '' }}>
+                                        <input type="checkbox" name="vat" value="1" {{ $bill->restaurant->isNotEmpty() ? ( $bill->restaurant[0]->vat !=0   ? 'checked' : '' ) : 'checked' }}>
                                     </span>
                                 </small>
                             </samp>
