@@ -33,7 +33,6 @@ class BookingController extends Controller
     public function addVisitor($booking_id)
     {
         $booking = Booking::find($booking_id);
-
         return view('admin.mis.hotel.booking.visitor.add', compact('booking'));
     }
 

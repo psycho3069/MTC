@@ -12,6 +12,7 @@ use App\VoucherGroup;
 use App\VoucherType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use NumberFormatter;
 
 class VoucherController extends Controller
 {
@@ -24,7 +25,7 @@ class VoucherController extends Controller
     public function index()
     {
         $data['types'] = VoucherType::all();
-        $data['v_group'] = VoucherGroup::orderBy('date_id', 'desc')->get();
+        $data['v_group'] = VoucherGroup::orderBy('id', 'desc')->get();
         return view('admin.ais.voucher.index', compact('data' ));
     }
 
@@ -145,8 +146,36 @@ class VoucherController extends Controller
     public function show($id)
     {
         $v_group = VoucherGroup::find($id);
-//        return $v_group->vouchers;
-        return view('admin.ais.voucher.show', compact('v_group'));
+        $vouchers = $v_group->vouchers;
+
+        foreach ( $vouchers as $item) {
+
+            if ( !isset( $data[$item->debit_head_id] ['debit']) ){
+                $data[$item->debit_head_id] ['debit'] = 0; $data[$item->debit_head_id] ['credit'] = 0;
+                $data[$item->debit_head_id] ['name'] = $item->debitAccount->name;
+                $data[$item->debit_head_id] ['code'] = $item->debitAccount->code;
+            }
+
+            if ( !isset( $data[$item->credit_head_id] ['debit']) ){
+                $data[$item->credit_head_id] ['debit'] = 0; $data[$item->credit_head_id] ['credit'] = 0;
+                $data[$item->credit_head_id] ['name'] = $item->creditAccount->name;
+                $data[$item->credit_head_id] ['code'] = $item->creditAccount->code;
+            }
+
+            $data[$item->debit_head_id] ['debit'] += $item->amount;
+            $data[$item->credit_head_id] ['credit'] += $item->amount;
+
+        }
+
+//        return $data;
+        $x =  new NumberFormatter( 'en', NumberFormatter::SPELLOUT);
+        $info['total']['amount'] = $vouchers->sum('amount');
+        $info['total']['words'] = $x->format($vouchers->sum('amount'));
+        $info['v_date'] = $v_group->date->date;
+        $info['v_type'] = $v_group->type->name;
+        $info['v_code'] = $v_group->code;
+
+        return view('admin.ais.voucher.show', compact( 'data', 'info'));
     }
 
     /**
