@@ -41,14 +41,14 @@
                             <div class="col-md-2">
                                 <label>Start Date</label>
                                 <div>
-                                    <input type="date" name="start_date" class="form-control" value="{{ $input['start_date'] }}">
+                                    <input type="date" class="form-control date" name="start_date" value="{{ $input['start_date'] }}">
                                 </div>
                             </div>
 
                             <div class="col-md-2">
                                 <label>End Date</label>
                                 <div>
-                                    <input type="date" name="end_date" value="{{ $input['end_date'] }}" class="form-control">
+                                    <input type="date" class="form-control date" name="end_date" value="{{ $input['end_date'] }}">
                                 </div>
                             </div>
 

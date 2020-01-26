@@ -1,6 +1,6 @@
 {{-- navbar --}}
 
-<nav class="navbar navbar-expand-sm navbar-dark" style="padding-right: 80px; box-shadow: inset 2px -4px 11px #92482b;">
+<nav class="navbar navbar-expand-sm navbar-dark" style="padding-right: 80px;">
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar4">
         <span class="navbar-toggler-icon"></span>

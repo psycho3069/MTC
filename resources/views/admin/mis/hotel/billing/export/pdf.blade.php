@@ -261,7 +261,7 @@ if(!jQuery)throw new Error("Bootstrap requires jQuery");+function(a){"use strict
                         <td class="bill-down">
                             <strong class="float-right"><samp>{{ $bill->restaurant->sum('bill') }}</samp></strong>
                             <br>
-                            <strong class="float-right"><samp>+{{ $restaurant['vat'] }}</samp></strong>
+                            <strong class="float-right"><samp>+{{ $restaurant['vat']['total'] }}</samp></strong>
                         </td>
                     </tr>
 

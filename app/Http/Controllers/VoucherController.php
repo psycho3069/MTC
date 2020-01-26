@@ -26,7 +26,9 @@ class VoucherController extends Controller
     {
         $data['types'] = VoucherType::all();
         $data['v_group'] = VoucherGroup::orderBy('id', 'desc')->get();
+
         return view('admin.ais.voucher.index', compact('data' ));
+//        return view('admin.ais.voucher.test', compact('data' ));
     }
 
     public function indexOld(Request $request)
@@ -42,6 +44,10 @@ class VoucherController extends Controller
     public function list(Request $request)
     {
         $input = $request->all();
+
+        $input['start_date'] = date('Y-m-d', strtotime( $request->start_date));
+        $input['end_date'] = date('Y-m-d', strtotime( $request->end_date));
+
         $data['types'] = VoucherType::all();
         $dates =Date::whereBetween('date', [$input['start_date'], $input['end_date']])->orderBy('id')->get();
 

@@ -108,10 +108,8 @@
                 </div>
 
                 <div class="form-group row">
-                      <label for="date_of_birth" class="col-md-4 col-form-label text-md-left">Date of Birth: <span class="required">*</span></label>
-                      <div class="col-md-6">
-                      <input type="date" class="form-control" name="date_of_birth" autocomplete="off" required>
-                    </div>
+                      <label class="col-md-4 col-form-label text-md-left">Date of Birth: <span class="required">*</span></label>
+                    <input type="date" class="form-control date emp-date" name="date_of_birth" value="{{ date('Y-m-d') }}">
                 </div>
 
 

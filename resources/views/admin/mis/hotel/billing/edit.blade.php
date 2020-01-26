@@ -73,24 +73,29 @@
 
                                 @foreach( $bill->booking as $book )
                                     {{ $loop->iteration }}.
+
+
+
+
+
                                     <div class="row">
-                                        <div class="col-md-5">
+                                        <div style="width: 44%;">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Check-In</label>
-                                                        <input type="date" class="form-control" name="booking[{{$book->id}}][start_date]" value="{{ $book->start_date }}">
+                                                        <input type="date" class="form-control date" name="booking[{{$book->id}}][start_date]" value="{{ $book->start_date }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Check-Out</label>
-                                                        <input type="date" class="form-control" name="booking[{{$book->id}}][end_date]" value="{{ $book->end_date }}">
+                                                        <input type="date" class="form-control date" name="booking[{{$book->id}}][end_date]" value="{{ $book->end_date }}">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div style="width: 20%; margin-left: 2.5%;">
                                             <div class="form-group">
                                                 <label>Room</label>
                                                 <input type="text" class="form-control" value="{{ $book->room_id < 50 ? $book->room->room_no.'-'.$book->room->roomCat->name : $book->venue->name }}" disabled>

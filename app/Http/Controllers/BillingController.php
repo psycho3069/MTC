@@ -125,6 +125,9 @@ class BillingController extends Controller
         view()->share('data',$data);
         view()->share('info',$info);
 
+
+//        return $all;
+
         $pdf = PDF::loadView('admin.mis.hotel.billing.export.pdf');
 
 

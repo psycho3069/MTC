@@ -26,7 +26,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td colspan="3">
-                                {{ $key ? $accounts->first()->date->date : 'Current Balance' }}
+                                {{ $key ? date( 'd-m-Y', strtotime( $accounts->first()->date->date)) : 'Current Balance' }}
                                 <ul class="list-group">
                                     @foreach( $accounts as $item )
                                         @if( $item->debit !=0 || $item->credit !=0)

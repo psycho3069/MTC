@@ -13,11 +13,11 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label>Start Date</label>
-                                <input type="date" name="start_date" class="form-control" value="{{ $input['start_date'] }}">
+                                <input type="date" class="form-control date" name="start_date" value="{{ $input['start_date'] }}">
                             </div>
                             <div class="col-md-3">
                                 <label>End Date</label>
-                                <input type="date" name="end_date" value="{{ date('Y-m-d') }}" class="form-control" value="{{ $input['end_date'] }}">
+                                <input type="date" class="form-control date" name="end_date" value="{{ $input['end_date'] }}">
                             </div>
                             <div class="col-md-2">
                                 <label>Type</label>
@@ -94,6 +94,10 @@
 
 @endsection
 
+
+
+
+
 @section('script')
     <script>
         $(document).ready(function () {
@@ -132,6 +136,7 @@
             })
         })
     </script>
+
 @endsection
 
 @section('datatable')

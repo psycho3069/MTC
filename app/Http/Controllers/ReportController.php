@@ -239,6 +239,7 @@ class ReportController extends Controller
     public function ledger($thead_id = null)
     {
 //        return $thead_id;
+        $data['start_date'] = Date::find(1)->date;
         $data['dates'] = Date::where('id', '>', 1)->get();
         $data['theads'] = TransactionHead::all();
 //        return $data['theads']->where('id', $thead_id);

@@ -44,13 +44,13 @@
                                 <div class="col-md-2">
                                     <label>Start Date</label>
                                     <div>
-                                        <input type="date" name="start_date" class="form-control">
+                                        <input type="date" class="form-control date" name="start_date" value="{{ $data['start_date'] }}">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <label>End Date</label>
                                     <div>
-                                        <input type="date" name="end_date" value="{{ date('Y-m-d') }}" class="form-control">
+                                        <input type="date" class="form-control date" name="end_date" value="{{ date('Y-m-d') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-1">

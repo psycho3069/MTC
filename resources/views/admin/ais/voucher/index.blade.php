@@ -4,13 +4,7 @@
 
 
 @section('content')
-<style>
-    a.dropdown-item {
-        color: #fff;
-    }
-</style>
     <div class="col-md-9">
-
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -19,11 +13,11 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label>Start Date</label>
-                                <input type="date" name="start_date" class="form-control">
+                                <input type="date" class="form-control date" name="start_date" value="{{ date('Y-m-d') }}" >
                             </div>
                             <div class="col-md-3">
                                 <label>End Date</label>
-                                <input type="date" name="end_date" value="{{ date('Y-m-d') }}" class="form-control">
+                                <input type="date" class="form-control date" name="end_date"  value="{{ date('Y-m-d') }}">
                             </div>
 
                             <div class="col-md-2">
@@ -102,7 +96,9 @@
 
 @endsection
 
+
 @section('script')
+
     <script>
         $('#category').on('change',function () {
             var x = $(this).val()
@@ -129,12 +125,14 @@
                 e.preventDefault()
                 alert('Please select a date')
             }
-            if ( Date.parse(start_date) > Date.parse(end_date)){
+            if ( Date.parse(start_date) >  Date.parse(end_date)){
                 e.preventDefault()
                 alert('Please select a valid date range')
             }
         })
     </script>
+
+
 @endsection
 
 

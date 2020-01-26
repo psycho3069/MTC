@@ -205,7 +205,7 @@ class StockController extends Controller
                 $operation = true;
             }
 
-            $operation ? $request->session()->flash('success', '<b>'.$item->name.'</b> has been deleted successfully') : $request->session()->flash('failed', '<b>'.$item->name.'</b> is not Empty.');
+            $operation ? $request->session()->flash('success', '<b>'.$item->name.'</b> has been deleted successfully') : $request->session()->flash('failed', '<b> Operation Unsuccessfull. '.$item->name.'</b> Has Dependencies.');
         }
 
 

@@ -52,13 +52,13 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Check-In*</label>
-                            <input class="form-control date check_in_date" id="start_date" aria-describedby="emailHelp">
+                            <input class="form-control date check_in_date" id="start_date">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Check-Out*</label>
-                            <input class="form-control date check_out_date" id="end_date" aria-describedby="emailHelp">
+                            <input class="form-control date check_out_date" id="end_date">
                         </div>
                     </div>
                     <div class="col-md-2">
