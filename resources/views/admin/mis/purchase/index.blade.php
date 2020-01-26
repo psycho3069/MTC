@@ -7,7 +7,7 @@
                 <div class="card-header">
                     {{ $type_id != 5 ? 'Grocerie\'s' : 'Inventorie\'s' }} Purchase List
                     <code>
-                        <button type="button" class="btn btn-sm btn-i" onclick='window.location="{{ route('purchase.create', ['type_id' => $type_id]) }}"'>New Purchase</button>
+                        <button type="button" class="btn btn-sm btn-i float-right" onclick='window.location="{{ route('purchase.create', ['type_id' => $type_id]) }}"'>New Purchase</button>
                     </code>
                 </div>
 
@@ -17,6 +17,7 @@
                         <tr>
                             <th></th>
                             <th>Date</th>
+                            <th width="30%">Items</th>
                             <th>Total cost</th>
                             <th>Note</th>
                             <th></th>
@@ -27,6 +28,11 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ date('d-m-Y', strtotime( $item->date->date)) }}</td>
+                                <td>
+                                    @foreach( $item->purchases as $purchase )
+                                        {{ $purchase->stock->name }},
+                                    @endforeach
+                                </td>
                                 <td>{{ $item->purchases->sum('amount') }} tk.</td>
                                 <td>{{ $item->note ? $item->note : 'No notes' }}</td>
                                 <td>
