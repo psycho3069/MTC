@@ -17,7 +17,7 @@ class CreateDeliveriesTable extends Migration
             $table->increments('id');
             $table->integer('stock_id')->unsigned()->index();
             $table->integer('date_id')->unsigned()->index();
-            $table->smallInteger('quantity')->default(0);
+            $table->double('quantity',10,3)->default(0);
             $table->timestamps();
         });
     }

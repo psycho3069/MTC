@@ -20,7 +20,6 @@
                             <div class="form-group">
                                 <label for="stock_head_id">Category</label>
                                 <select class="form-control" id="category" required>
-                                    <option value="" >Choose One</option>
                                     @foreach( $stock_head as $item )
                                         <option value="{{ $item->id }}">{{ $item->name }} </option>
                                     @endforeach
@@ -31,20 +30,19 @@
                             <div class="form-group">
                                 <label>Item</label>
                                 <select class="form-control" id="item" >
-                                    <option></option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>Stock</label>
+                                <label>Stock <span class="unit"></span></label>
                                 <input type="number" class="form-control" id="stock" value="0" disabled>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>Quantity</label>
-                                <input type="number" class="form-control" id="quantity" value="0" min="0">
+                                <label>Quantity <span class="unit"></span></label>
+                                <input type="text" class="form-control" id="quantity" value="0" min="0">
                             </div>
                         </div>
                     </div>
@@ -96,7 +94,11 @@
     <script>
         $(document).ready(function () {
             var i = 0;
-            var in_stock = []
+            var in_stock = []; var items = [];
+            var _token = $("input[name='_token']").val();
+            getItems()
+
+
 
             $(':submit').click(function (e) {
                 if( i < 1 ){
@@ -106,52 +108,67 @@
             })
 
             $('#category').on('change', function () {
-                // alert($(this).val())
+                getItems()
+
+            })
+
+
+
+
+
+            function getItems() {
+
                 $('#item').val(0); $('#stock').val(0); $('#quantity').val(0);
-
+                var stock_head_id = $('#category').val()
                 in_stock = []
-                var stock_head_id = $(this).val()
-                var _token = $("input[name='_token']").val();
-
 
                 $.ajax({
                     type:'POST',
                     url: '{{ route("purchase.item") }}',
-                    data: {_token:_token, stock_head_id:stock_head_id },
+                    data: { _token: _token, stock_head_id: stock_head_id },
                     success:function (data) {
                         // console.log(data)
                         var item = $('#item'); var stock = $('#stock');
                         item.empty(); stock.empty();
 
-                        item.append('<option value="">Choose an Item</option>')
+                        items = data['item']
                         $.each(data['item'], function (key, val) {
                             // console.log(data['stock'][key])
-                            in_stock[key] = data['stock'][key]
-                            item.append('<option value="'+key+'">'+val+'</option>')
+                            in_stock[key] = val['stock']
+                            item.append('<option value="'+key+'">'+val['name']+'</option>')
                         })
+
+                        getUnit()
                     }
                 })
-            })
+
+            }
+
+
+
+            function getUnit() {
+                var id = $('#item').val()
+                $('#quantity').val(0)
+                $('#stock').val(items[id]['stock'])
+                $('.unit').text('('+items[id]['unit']+')')
+            }
 
 
 
 
             $('#item').on('change', function () {
-                $('#quantity').val(0);
-
-                var x = in_stock[$(this).val()]
-                $('#stock').val(x)
-                $('#quantity').val(0)
+                getUnit()
             })
 
 
 
 
-            $('#quantity').on('change', function () {
-                var x = parseFloat(in_stock[$('#item').val()])
-                var y = parseFloat($(this).val())
-                $('#quantity').attr('max', x)
-                $('#stock').val(x-y)
+            $('#quantity').on('change keyup', function () {
+                var x = parseFloat(in_stock[$('#item').val()]).toFixed(3)
+                var y = parseFloat($(this).val()).toFixed(3)
+                var z = parseFloat((x-y)).toFixed(3)
+                $('#stock').val(z)
+                $('#quantity').attr('max', z)
             })
 
 
@@ -160,25 +177,28 @@
 
 
             $('#add-button').click(function () {
-                var item = $('#item').val()
-                var quantity = $('#quantity').val()
+                var item_id = parseInt($('#item').val())
+                // alert(item_id)
+                var quantity = parseFloat( $('#quantity').val() )
 
-                // console.log(note)
+                var msg1 = 'Please Select an Item';
+                var msg2 = 'Please Enter Some Quantity to Deliver'
 
-                if( !item || !quantity )
-                    alert('Please Enter all fields')
-                else {
+                !item_id ? alert(msg1) : ( !quantity ? alert(msg2) : '')
+
+                if( item_id && quantity )
+                 {
                     i++
                     $('#list-item').append(
                         '<tr id="row'+i+'">' +
                         '<td>'+i+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][stock_id]" value="'+item+'">'+$('#item :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity+'</td>' +
+                        '<td><input type="hidden" name="input['+i+'][stock_id]" value="'+item_id+'">'+$('#item :selected').text()+'</td>' +
+                        '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity +' '+ items[item_id]['unit'] +'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
                     )
 
-                    $('#quantity').val('')
+                    $('#quantity').val(0)
                 }
             })
 

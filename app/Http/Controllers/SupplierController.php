@@ -43,7 +43,7 @@ class SupplierController extends Controller
             'contact_no' => 'required',
         ],[
             'name.required' => 'Please Enter Supplier Name',
-            'contact_no.required' => 'Please Enter Supplier Contact',
+            'contact_no.required' => 'Please Enter Supplier Contact No.',
         ]);
         $input = $request->all();
         $item = Supplier::create( $input);
@@ -51,6 +51,25 @@ class SupplierController extends Controller
         return redirect('supplier');
         //
     }
+
+
+    public function add(Request $request)
+    {
+//        return $request->all();
+        $supplier = Supplier::where( 'name', 'LIKE', $request->name)->where( 'contact_no', 'LIKE', $request->contact_no)->first();
+        if ( !$supplier)
+            $supplier = Supplier::create( $request->all());
+
+        return $supplier;
+    }
+
+
+
+
+
+
+
+
 
     /**
      * Display the specified resource.

@@ -150,17 +150,16 @@ class VoucherController extends Controller
 
         foreach ( $vouchers as $item) {
 
-            if ( !isset( $data[$item->debit_head_id] ['debit']) ){
-                $data[$item->debit_head_id] ['debit'] = 0; $data[$item->debit_head_id] ['credit'] = 0;
-                $data[$item->debit_head_id] ['name'] = $item->debitAccount->name;
-                $data[$item->debit_head_id] ['code'] = $item->debitAccount->code;
-            }
+            if ( !isset( $data[$item->debit_head_id] ['debit']) )
+                $data[$item->debit_head_id] ['debit'] = 0;
 
-            if ( !isset( $data[$item->credit_head_id] ['debit']) ){
-                $data[$item->credit_head_id] ['debit'] = 0; $data[$item->credit_head_id] ['credit'] = 0;
-                $data[$item->credit_head_id] ['name'] = $item->creditAccount->name;
-                $data[$item->credit_head_id] ['code'] = $item->creditAccount->code;
-            }
+            if ( !isset( $data[$item->credit_head_id] ['debit']) )
+                $data[$item->credit_head_id] ['credit'] = 0;
+
+            $data[$item->debit_head_id] ['name'] = $item->debitAccount->name;
+            $data[$item->debit_head_id] ['code'] = $item->debitAccount->code;
+            $data[$item->credit_head_id] ['name'] = $item->creditAccount->name;
+            $data[$item->credit_head_id] ['code'] = $item->creditAccount->code;
 
             $data[$item->debit_head_id] ['debit'] += $item->amount;
             $data[$item->credit_head_id] ['credit'] += $item->amount;

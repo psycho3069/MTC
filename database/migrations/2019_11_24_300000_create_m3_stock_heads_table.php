@@ -19,7 +19,7 @@ class CreateM3StockHeadsTable extends Migration
             $table->integer('type_id')->unsigned()->index();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->double('amount',14,2)->default(0);
+            $table->double('amount',13,3)->default(0);
             $table->timestamps();
         });
     }

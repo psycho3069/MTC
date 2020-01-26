@@ -24,7 +24,7 @@
                         Date: {{ date('d-m-Y', strtotime( $info['v_date'])) }} <br>
                         Code: {{ $info['v_code'] }}
                     </code>
-                    
+
                     <table class="table top-auto table-bordered" style="margin-top: 2%;">
                         <thead>
                         <tr>
@@ -39,8 +39,8 @@
                             <tr>
                                 <td class="v_list">{{ $item['name'] }}</td>
                                 <td class="text-center v_list">{{ $item['code'] }}</td>
-                                <td class="text-right v_list">{{ $item['debit'] ? $item['debit'] : '-'  }}</td>
-                                <td class="text-right v_list">{{ $item['credit'] ? $item['credit'] : '-' }}</td>
+                                <td class="text-right v_list">{{ isset( $item['debit']) ? $item['debit'] : '-'  }}</td>
+                                <td class="text-right v_list">{{ isset( $item['credit']) ? $item['credit'] : '-' }}</td>
                             </tr>
                         @endforeach
                         <tr>

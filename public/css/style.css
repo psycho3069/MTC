@@ -178,6 +178,38 @@ strong {
     width: 100%;
 }
 
+.unit {
+    font-family: initial;
+    color: navy;
+}
+
+.list-sup-btn {
+    width: 14%;
+    height: 1%;
+    margin-top: 11%;
+    margin-left: 3%;
+    border: 1px solid #5151e0;
+}
+
+
+.list-supplier {
+    width: 60%;
+    margin-left: 4%;
+}
+
+.add-supplier {
+    width: 40%;
+    margin-left: 2%;
+    display: none;
+}
+
+
+.add-sup-btn {
+    margin-top: 66%;
+    margin-left: 10%;
+    display: none;
+}
+
 
 /*table thead tr th:first-child {*/
 /*    width: 10%;*/

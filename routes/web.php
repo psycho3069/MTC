@@ -83,6 +83,9 @@ Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@
 Route::group(['middleware' => 'auth'], function (){
 
 
+    Route::post('add/supplier', ['as' => 'add.supplier', 'uses' => 'SupplierController@add']);
+
+
     Route::get('discount', ['as' => 'discount.index', 'uses' => 'ResidualController@discount']);
 
     Route::post('year', ['as' => 'process.year', 'uses' => 'ProcessController@year']);

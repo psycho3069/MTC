@@ -17,6 +17,7 @@
                         <tr>
                             <th></th>
                             <th>Menu</th>
+                            <th>Date</th>
                             <th class="text-center" width="17%">Price</th>
                             <th class="">Action</th>
                         </tr>
@@ -41,7 +42,8 @@
                                     </ul>
                                 </td>
 
-                                <td class="text-center">{{ $item->price }}</td>
+                                <td >{{ date('d-m-Y', strtotime( $item->created_at)) }}</td>
+                                <td class="text-center">{{ $item->price }} tk.</td>
                                 <td>
                                     <a href="" class="btn btn-sm btn-i" title="Add Item">
                                         <i class="fa fa-plus-square" aria-hidden="true"></i>

@@ -43,7 +43,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Quantity</label>
-                                <input type="number" class="form-control" id="quantity" min="1" max="100" value="1">
+                                <input type="text" class="form-control" id="quantity" min="1" max="100" value="1">
                             </div>
                         </div>
                         <div class="col-md-2">

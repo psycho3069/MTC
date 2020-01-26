@@ -64,9 +64,12 @@ class PurchaseController extends Controller
 //        return $request->all();
         $result = StockHead::find($request->stock_head_id);
         foreach ($result->stock as $item) {
-            $data['stock'][$item->id] = $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr');
+//            $data['stock'][$item->id] = $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr');
+            $data['item'][$item->id]['stock'] = $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr');
+            $data['item'][$item->id]['name'] = $item->name;
+            $data['item'][$item->id]['unit'] = $item->unit;
         }
-        $data['item'] = $result->stock->pluck('name', 'id');
+//        $data['item'] = $result->stock->pluck('name', 'id');
 
         return $data;
     }
@@ -80,8 +83,19 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
 //        return $request->all();
+        $request->validate([
+            'input.*.*' => 'required',
+            'input.*.quantity' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
+            'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
+        ],[
+            'input.*.*.required' => 'Please Enter Valid Info',
+            'input.*.quantity.required' => 'Please Enter Quantity',
+            'input.*.quantity.regex' => 'Invalid Quantity',
+            'input.*.amount.required' => 'Please Enter Amount',
+            'input.*.amount.regex' => 'Invalid Amount',
+        ]);
 
-        $input = collect($request->input);
+        $input = collect( $request->input);
         if ( $request->mis_ac_head_id == 3)
             $data['type'] = 'restaurant_pv';
         if ( $request->mis_ac_head_id == 5)
