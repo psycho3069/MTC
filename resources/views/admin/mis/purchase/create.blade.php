@@ -150,56 +150,58 @@
 
             getItems()
 
-
-            function displayList( flag){
-                if( flag == 'hide'){
-                    $('.list-supplier').hide()
-                    $('.list-sup-btn').hide()
-
-                    $('.add-supplier').show()
-                    $('.add-sup-btn').show()
-                    $('#supplier').data('check', 'new')
-                }
-
-
-                if ( flag == 'show'){
-                    $('.list-supplier').show()
-                    $('.list-sup-btn').show()
-                    $('#supplier').data('check', 'list')
-
-                    $('.add-supplier').hide()
-                    $('.add-sup-btn').hide()
-                }
-            }
-
-            $('.list-sup-btn').click(function () {
-                displayList('hide')
-            })
-
-            $('.add-sup-btn').click(function () {
-                displayList('show')
-            })
-
             $(':submit').click(function (e) {
                 if( i < 1 ){
                     e.preventDefault()
                     alert('Please add at least one item')
                 }
-            })
+            });
 
 
             $('#item').on('change', function () {
                 getUnit()
-            })
+            });
 
-            function getUnit(){
-                var unit = items[$('#item').val()]['unit']
-                $('.unit').text('('+unit+')')
-            }
+
 
             $('#category').on('change', function () {
                 getItems()
-            })
+            });
+
+
+            $('.list-sup-btn').click(function () {
+                displayList('hide')
+            });
+
+            $('.add-sup-btn').click(function () {
+                displayList('show')
+            });
+
+
+
+            $('#add-button').click(function () {
+
+                var check = $('#supplier').data('check')
+
+                if ( check == 'new'){
+                    var name = $.trim( $('#sup_name').val());
+                    var contact_no = $.trim( $('#sup_contact').val())
+
+                    if( !name || !contact_no)
+                        alert( 'Please Enter Supplier Info')
+
+                    if ( name && contact_no){
+                        getSupplier( name, contact_no)
+                        $(document).ajaxStop(function () {
+                            appendItems()
+                        })
+                    }
+                }
+
+                if( check == 'list')
+                    appendItems()
+
+            });
 
 
 
@@ -223,67 +225,33 @@
             }
 
 
-
-
-            function getSupplier() {
-
-                var name = $.trim( $('#sup_name').val());
-                var contact_no = $.trim( $('#sup_contact').val())
-
-                if( !name || !contact_no)
-                    alert( 'Please Enter Supplier Info')
-
-                if ( name && contact_no){
-                    $.ajax({
-                        type: 'POST',
-                        url: "{{ route('add.supplier') }}",
-                        data: {_token: _token, name: name, contact_no: contact_no },
-                        success: function (data) {
-
-                            var check = $('#supplier').find('option[value="'+data["id"]+'"]')
-                            displayList('show')
-
-                            if( check.length > 0){
-                                // $('#supplier option[value="'+data["id"]+'"]').attr('selected', true)
-                                $('#supplier').val(data['id']).trigger('chosen:updated')
-                            }
-                            else{
-                                $('#supplier').append('<option value="'+data["id"]+'">'+data['name']+'</option>')
-                                $('#supplier').val(data['id']).trigger('chosen:updated')
-                            }
-
-                            $('#supplier').val(data['id']).attr('selected', 'selected')
-                        }
-                    })
-
-                }
-
-                // console.log('main ->'+ id)
-
-
-
+            function getUnit(){
+                var unit = items[$('#item').val()]['unit']
+                $('.unit').text('('+unit+')')
             }
 
 
-            $('#add-button').click(function () {
 
-                var check = $('#supplier').data('check')
+            function displayList( flag){
+                if( flag == 'hide'){
+                    $('.list-supplier').hide()
+                    $('.list-sup-btn').hide()
 
-
-
-                if ( check == 'new'){
-                    getSupplier()
-                    $(document).ajaxStop(function () {
-                        appendItems()
-                    })
+                    $('.add-supplier').show()
+                    $('.add-sup-btn').show()
+                    $('#supplier').data('check', 'new')
                 }
 
-                if( check == 'list')
-                    appendItems()
 
-            })
+                if ( flag == 'show'){
+                    $('.list-supplier').show()
+                    $('.list-sup-btn').show()
+                    $('#supplier').data('check', 'list')
 
-
+                    $('.add-supplier').hide()
+                    $('.add-sup-btn').hide()
+                }
+            }
 
 
             function appendItems(){
@@ -325,6 +293,37 @@
                         '</tr>'
                     )
                 }
+            }
+
+
+            function getSupplier(name, contact_no) {
+
+                if ( name && contact_no){
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('add.supplier') }}",
+                        data: {_token: _token, name: name, contact_no: contact_no },
+                        success: function (data) {
+
+                            var check = $('#supplier').find('option[value="'+data["id"]+'"]')
+                            displayList('show')
+
+                            if( check.length > 0){
+                                // $('#supplier option[value="'+data["id"]+'"]').attr('selected', true)
+                                $('#supplier').val(data['id']).trigger('chosen:updated')
+                            }
+                            else{
+                                $('#supplier').append('<option value="'+data["id"]+'">'+data['name']+'</option>')
+                                $('#supplier').val(data['id']).trigger('chosen:updated')
+                            }
+
+                            $('#supplier').val(data['id']).attr('selected', 'selected')
+                        }
+                    })
+
+                }
+
+                // console.log('main ->'+ id)
             }
 
 
