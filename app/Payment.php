@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    protected $fillable = [ 'billing_id', 'amount', 'note', 'mis_voucher_id', ];
+    protected $fillable = [ 'billing_id', 'amount', 'note', 'mis_voucher_id', 'payment_type', ];
 
 
     public function mis_voucher()

@@ -4,7 +4,7 @@
 @section('content')
     <div class="col-md-4">
         <samp>
-            <form action="{{ route('payment.store', $bill->id) }}" method="POST">
+            <form action="{{ route('payment.bill', $bill->id) }}" method="POST">
                 <div class="card">
                     <div class="card-header"><b>Payment</b></div>
                     <div class="card-body text-left">
@@ -13,16 +13,17 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label>Payment Type</label>
+                                    <select class="form-control" name="payment_type" id="type">
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label>Total Bill</label>
                                     <input type="text" class="form-control" id="total_bill" value="{{ $bill->total_bill }}" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label>Total Paid</label>
-                                    <input type="text" class="form-control" id="total_paid" value="{{ $bill->total_paid }}" disabled>
-                                </div>
-                                <div class="form-group">
                                     <label>Payment Amount</label>
-                                    <input type="number" class="form-control" name="amount" value="0" min="0" max="{{ $bill->total_bill - $bill->total_paid }}" required>
+                                    <input type="number" class="form-control" id="amount" name="amount" value="0" min="0">
                                 </div>
                             </div>
 
@@ -37,16 +38,20 @@
                                         </select>
                                     </div>
                                 @endif
-                                <div class="form-group">
-                                    <label>Due</label>
-                                    <input type="number" class="form-control" id="due" value="{{ $bill->total_bill - $bill->total_paid }}" disabled>
-                                </div>
 
                                 <div class="form-group">
-                                    <label>Note</label>
-                                    <input type="text" class="form-control" name="note">
+                                    <label>Total Paid</label>
+                                    <input type="text" class="form-control" id="total_paid" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Due</label>
+                                    <input type="number" class="form-control" id="due" disabled>
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Note</label>
+                            <textarea class="form-control" name="note" cols="3" rows="1"></textarea>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -57,5 +62,64 @@
         </samp>
     </div>
 
+@endsection
+
+
+
+@section('script')
+    <script>
+        $(document).ready(function () {
+
+            var charge = @json($charge);
+            console.log(charge)
+
+            // $('#type').append('<option value="all">All</option>')
+
+
+
+            if( charge['room']['total'] > 0)
+                $('#type').append('<option value="room">Room</option>')
+
+            if( charge['venue']['total'] > 0)
+                $('#type').append('<option value="venue">Venue</option>')
+
+            if( charge['food']['total'] > 0)
+                $('#type').append('<option value="food">Restaurant</option>')
+
+
+            var type = $('#type').val()
+            getAll( type)
+
+
+
+
+                $('#type').on('change selected', function () {
+
+                    type = $('#type').val()
+                    getAll( type)
+            })
+
+
+            $('#amount').on('change keyup', function () {
+                var due = $('#due').val() - $('#amount').val()
+                $('#due').val(due)
+            })
+
+
+
+            function getAll( type) {
+                var due = charge[type]['total'] - charge[type]['paid']
+
+                $('#total_bill').val( charge[type]['total'])
+                $('#total_paid').val( charge[type]['paid'])
+                $('#due').val( due)
+                $('#amount').attr('max', due)
+
+            }
+
+
+
+        })
+    </script>
 @endsection
 

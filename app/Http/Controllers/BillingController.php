@@ -21,20 +21,6 @@ class BillingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexOld()
-    {
-        $billing = Billing::orderBy('id','desc')->get();
-        foreach ($billing as $bill) {
-            $data[$bill->id]['booking'] = 0;
-            foreach ($bill->booking as $item) {
-                $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
-                $price = $item->room_id < 50 ? $item->room->price : $item->venue->price;
-                $data[$bill->id]['booking'] += $price * $days - $item->discount;
-            }
-            $data[$bill->id]['tax'] = $data[$bill->id]['booking'] * 5 / 100;
-        }
-        return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
-    }
 
 
     public function test()
@@ -88,27 +74,6 @@ class BillingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showOld($id)
-    {
-//        return $id;
-        $bill = Billing::find( $id);
-
-//        return $bill->checkout_status ? 0 : 1;
-
-        $data['total'] = 0;
-//        return $bill->booking->sum('bill');
-        foreach ($bill->booking as $item ) {
-            $booking[$item->id]['days'] = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
-            $booking[$item->id]['room_no'] = $item->room_id < 50 ? 'Room No-'.$item->room->room_no : $item->venue->name;
-            $booking[$item->id]['unit_price'] = ( $item->room_id < 50 ? $item->room->price : $item->venue->price);
-        }
-        $booking['vat'] = $bill->booking->sum('bill') * 5 / 100;
-        $booking['total'] = $bill->booking->sum('bill') + $booking['vat'];
-        $restaurant['vat'] = $bill->restaurant->sum('bill') * 10 / 100;
-        $restaurant['total'] = $bill->restaurant->sum('bill') + $restaurant['vat'];
-
-        return view('admin.mis.hotel.billing.showOld', compact('bill', 'booking', 'restaurant'));
-    }
 
 
     public function export($id)
@@ -153,15 +118,15 @@ class BillingController extends Controller
 
         foreach ($bill->booking as $item ) {
             $vat = $item->vat;
-            if ( $item->room_id < 50)
+            if ( $item->room_id < 50 || $item->room_id > 499)
                 $data['room'][$item->id] = $item;
 
-            if ( $item->room_id >= 50)
+            if ( $item->room_id > 49 && $item->room_id < 500)
                 $data['venue'][$item->id] = $item;
 
             $booking[$item->id]['days'] = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
-            $booking[$item->id]['room_no'] = $item->room_id < 50 ? 'Room No-'.$item->room->room_no : $item->venue->name;
-            $booking[$item->id]['unit_price'] = ( $item->room_id < 50 ? $item->room->price : $item->venue->price);
+            $booking[$item->id]['room_no'] = $item->room_id < 50 || $item->room_id > 499 ? 'Room No-'.$item->room->room_no : $item->venue->name;
+            $booking[$item->id]['unit_price'] = ( $item->room_id < 50 || $item->room_id > 499 ? $item->room->price : $item->venue->price);
         }
 
 
@@ -226,6 +191,12 @@ class BillingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
+
+
+
+
     public function update(Request $request, $id)
     {
 
@@ -237,27 +208,29 @@ class BillingController extends Controller
 
         $old_bill = 0; $new_bill = 0;
 
-        foreach ($input['booking'] as $key => $item) {
+        foreach ( $input['booking'] as $key => $item) {
             $room = $bill->booking->find($key);
             $days = ( strtotime( $item['end_date']) - strtotime( $item['start_date'])) / (60*60*24);
-            $price = $room->room_id < 50 ? $room->room->price : $room->venue->price;
+            $price = $room->room_id < 50 || $room->room_id > 499 ? $room->room->price : $room->venue->price;
             $item['discount'] = $item['discount'] * $days;
             $item['bill'] = $price * $days - $item['discount'];
 
             $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
             $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
-            $old_vat = $room->vat;
 
-            $old_bill += $room->bill;
+//            $old_vat = $room->vat;
+            $old_bill += $room->bill + ($room->bill * $room->vat) / 100;
             $new_bill += $item['bill'];
             $room->update( $item);
         }
 
-//        return $new_bill;
         if ( isset($input['new_booking']))
+            $count = $this->checkBooking( $input['new_booking']);
+
+        if ( isset($input['new_booking']) && $count < 1)
             foreach ($input['new_booking'] as $item) {
                 $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
-                $price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
+                $price = $item['room_id'] < 50 || $item['room_id'] > 499 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
                 $item['discount'] = $item['discount'] * $days;
                 $item['bill'] = $price * $days - $item['discount'];
                 $item['guest_id'] = $bill->guest_id;
@@ -269,23 +242,20 @@ class BillingController extends Controller
                 $new_bill += $item['bill'];
             }
 
-//        return $bill->booking;
 
-        $old_bill += ( $old_bill * $old_vat) / 100;
-        $new_bill += ( $new_bill * $vat) / 100;
+//        $old_bill += ( $old_bill * $old_vat) / 100;
 
-//        return $new_bill;
+        $new_bill += ($new_bill * $vat / 100);
+//        $old_bill -= $bill->discount;
 
 
-        $input['billing']['total_paid'] = $bill->total_paid + $input['billing']['advance_paid'] - $bill->advance_paid;
-        $input['billing']['total_bill'] = $bill->total_bill + $new_bill - $old_bill + $bill->discount - $input['billing']['discount'];
-
-//        return $input
+        $input['billing']['total_paid'] = $bill->total_paid - $bill->advance_paid + $input['billing']['advance_paid'];
+        $input['billing']['total_bill'] = $bill->total_bill - $old_bill + $new_bill;
 
 
         //updating AIS
-        $amount['old'] = $bill->total_paid;
-        $amount['new'] = $input['billing']['total_paid'];
+        $amount['old'] = $bill->advance_paid;
+        $amount['new'] = $input['billing']['advance_paid'];
         $data['note'] = 'Edited From MIS Bill';
         if ( $amount['old'] != $amount['new'])
             $this->updateAIS( $bill, $amount, $data);

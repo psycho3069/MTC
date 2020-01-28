@@ -31,14 +31,19 @@ class PaymentController extends Controller
     {
 //        return $request->all();
         $bill = Billing::find($bill_id);
+        $charge = $this->getBillDetails($bill);
+
         if ( $request->co)
             return view('admin.mis.hotel.billing.payment.checkout', compact('bill'));
 //            return view('admin.mis.hotel.billing.payment.test', compact('bill'));
 
-        return view('admin.mis.hotel.billing.payment.create', compact('bill'));
+        return view('admin.mis.hotel.billing.payment.create', compact('bill', 'charge'));
 
 
     }
+
+
+
 
 
     public function checkout(Request $request, $bill_id)
@@ -48,8 +53,8 @@ class PaymentController extends Controller
 
         if ( $bill->checkout_status != true){
 
-            $room['amount'] = $bill->booking->where('room_id', '<', 50)->sum('bill');
-            $venue['amount'] = $bill->booking->where('room_id', '>=', 50)->sum('bill');
+            $room['amount'] = $bill->booking->where('room_id', '<', 50)->Where('room_id', '>', 499)->sum('bill');
+            $venue['amount'] = $bill->booking->where('room_id', '>', 49)->where('room_id', '<', 500)->sum('bill');
             $food['amount'] = $bill->restaurant->sum('bill');
 
             if ( $room['amount'] != 0){
@@ -76,6 +81,10 @@ class PaymentController extends Controller
                 $this->ais( $food, $bill, $note);
             }
 
+
+
+
+
             $bill->booking()->update(['booking_status' => 2]);
             $bill->total_paid = $bill->total_bill;
             $bill->reserved = 0;
@@ -89,16 +98,7 @@ class PaymentController extends Controller
     }
 
 
-    public function ais($data, $bill, $note)
-    {
-        $date = Configuration::find(1)->software_start_date;
-        $voucher = $this->computeAIS( $data, $date);
-        $input['mis_voucher_id'] = $voucher->id;
 
-        $input['amount'] = $data['amount'];
-        $input['note'] = $note;
-        $bill->payments()->create( $input);
-    }
 
 
 
@@ -109,6 +109,124 @@ class PaymentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+
+    public function bill(Request $request, $bill_id)
+    {
+//        return $request->all();
+
+        $input = $request->except('_token');
+        $input['co'] = $request->co ? $request->co : 0;
+
+        $bill = Billing::find( $bill_id);
+
+        if ( $bill->checkout_status != true){
+
+            $total_paid = $this->getPayment($input, $bill);
+
+            if ( $input['co'] || $request->checkout_status)
+                $bill->checkout_status = 1;
+            if ( $input['co'])
+                $bill->discount = $input['discount'];
+
+            $bill->reserved = 0;
+            $bill->total_paid += $total_paid;
+            $bill->save();
+            $bill->booking()->update(['booking_status' => 2]);
+
+
+            if ( $input['co'])
+                return redirect('billing/'.$bill->id)->with('success', '<b>'.$bill->guest->name.'</b> has been successfully Checked-Out');
+
+            return  redirect('billing/'.$bill->id)->with('success', '<b>Payment Is Successful<b/>');
+        }
+
+        return redirect('billing/'.$bill->id)->with('danger', '<b>'.$bill->guest->name.'</b> has been already Checked-Out');
+
+
+
+    }
+
+
+    public function getPayment($input, $bill)
+    {
+//        return $input;
+
+
+//        return $input['co'] ? 55 : 44;
+
+        $total_paid = 0;
+
+
+        if ( $input['co']){
+            $charge = $this->getBillDetails($bill);
+            $key = $charge['all']['max'];
+
+            $room['amount'] = $charge['room']['total'] - $charge['room']['paid'];
+            $venue['amount'] = $charge['venue']['total'] - $charge['venue']['paid'];
+            $food['amount'] = $charge['food']['total'] - $charge['food']['paid'];
+
+            $$key['amount'] = $charge[$key]['total'] - $charge[$key]['paid'] - $input['discount'];        /*If u ever see this pls don't get mad at me. I had to do it :(*/
+
+        } else{
+
+            if ( $input['payment_type'] == 'room')
+                $room['amount'] = $input['amount'];
+
+            if ( $input['payment_type'] == 'venue')
+                $venue['amount'] = $input['amount'];
+
+            if ( $input['payment_type'] == 'food')
+                $food['amount'] = $input['amount'];
+        }
+
+
+
+        if ( isset( $room['amount']) && $room['amount'] != 0  ){
+            $room['mis_ac_head_id'] = 1;
+            $room['type'] = 'hotel_rv';
+            $input['type'] = 'room';
+            $total_paid += $this->ais( $room, $bill, $input);
+        }
+
+        if ( isset( $venue['amount']) && $venue['amount'] != 0  ){
+            $venue['mis_ac_head_id'] = 2;
+            $venue['type'] = 'venue_rv';
+            $input['type'] = 'venue';
+            $total_paid += $this->ais( $venue, $bill, $input);
+        }
+
+        if ( isset( $food['amount']) && $food['amount'] != 0 ){
+            $food['mis_ac_head_id'] = 4;
+            $food['type'] = 'restaurant_rv';
+            $input['type'] = 'food';
+            $total_paid += $this->ais( $food, $bill, $input);
+        }
+
+        return $total_paid;
+    }
+
+
+
+    public function ais($data, $bill, $input)
+    {
+//        return $input;
+        $date = Configuration::find(1)->software_start_date;
+        $mis_voucher = $this->computeAIS( $data, $date);
+
+        $input['mis_voucher_id'] = $mis_voucher->id;
+        $input['amount'] = $data['amount'];
+        $bill->payments()->create( $input);
+        return $data['amount'];
+    }
+
+
+
+
+
+
+
+
     public function store(Request $request, $bill_id)
     {
 //        return $request->all();
@@ -122,8 +240,9 @@ class PaymentController extends Controller
             $bill->discount = $input['discount'];
             $bill->checkout_status = 1;
         }
+
         $bill->booking()->update(['booking_status' => 2]);
-        if ($request->checkout_status)
+        if ( $request->checkout_status)
             $bill->checkout_status = 1;
 
         $bill->reserved = 0;

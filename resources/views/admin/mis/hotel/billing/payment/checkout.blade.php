@@ -7,7 +7,7 @@
             <div class="card-header">{{ $bill->guest->name }}</div>
             <div class="card-body">
                 <samp>
-                    <form action="{{ route('payment.store', $bill->id) }}" method="POST">
+                    <form action="{{ route('payment.bill', $bill->id) }}" method="POST">
                         {{ csrf_field() }}
                         <input type="hidden" name="co" value="1">
 
@@ -27,7 +27,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Due</label>
-                                    <input type="number" class="form-control" id="due" value="{{ $bill->total_bill - $bill->total_paid }}" disabled>
+                                    <input type="number" class="form-control" id="due" value="{{ $bill->total_bill - $bill->total_paid - $bill->discount }}" disabled>
                                 </div>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
 
             $('#discount').on('change keyup', function () {
                 var val = parseFloat($(this).val()) - discount
-                $('#total_bill').val(total_bill-val)
+                // $('#total_bill').val(total_bill-val)
                 $('#due').val(due-val)
                 $('#amount').val(amount-val)
 

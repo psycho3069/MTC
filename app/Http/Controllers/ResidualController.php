@@ -6,6 +6,7 @@ use App\Billing;
 use App\Booking;
 use App\Configuration;
 use App\Guest;
+use App\Http\Traits\CustomTrait;
 use App\Room;
 use App\Venue;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Controller;
 class ResidualController extends Controller
 {
     //
+    use CustomTrait;
 
 
     public function discount()
@@ -52,17 +54,22 @@ class ResidualController extends Controller
             'booking.*.*' => 'required',
         ]);
 
+
         $input = $request->except('_token');
         $input['billing']['code'] = $this->code();
 
-        $hotel_bill = 0;
+        $count = $this->checkBooking($input['booking']);
+        if ( $count > 0)
+            return redirect()->back()->with('danger', '<b>Room Has Been Already Taken.</b> Please Select Another Room or <b>Refresh the Page</b>');
 
         $check_guest = Guest::where( 'contact_no', $input['guest']['contact_no'])->get()->last();
         $guest = Guest::create($input['guest']);
         if ( $check_guest)
             $guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
 
-        //total bill
+
+        $hotel_bill = 0;
+        $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
         foreach ($input['booking'] as $item) {
             $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
             $room_price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
@@ -71,8 +78,7 @@ class ResidualController extends Controller
             $booking['bill'][$item['room_id']] = $room_price * $days;
         }
 
-        $vat = ($hotel_bill * 5) / 100;
-        $input['billing']['total_bill'] = $hotel_bill + $vat;
+        $input['billing']['total_bill'] = $hotel_bill + ( $hotel_bill * $vat) / 100;
         $input['billing']['guest_id'] = $guest->id;
         $input['billing']['reserved'] = 1;
 
@@ -87,6 +93,7 @@ class ResidualController extends Controller
             $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
             $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
             $item['bill'] = $booking['bill'][$item['room_id']];
+            $item['vat'] = $vat;
             $item['booking_status'] = 1;
             $billing->booking()->create($item);
         }

@@ -13,8 +13,9 @@
                         <tr>
                             <th></th>
                             <th>Date</th>
-                            <th>Note</th>
+                            <th>Payment Type</th>
                             <th>Amount</th>
+                            <th>Note</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -23,8 +24,9 @@
                             <tr>
                                 <th>{{ $loop->iteration }}</th>
                                 <td>{{ date('d-m-Y', strtotime($item->mis_voucher->date->date)) }}</td>
-                                <td>{{ $item->note ? $item->note : 'No Notes' }}</td>
+                                <td>{{ ucfirst( $item->payment_type).' Bill' }}</td>
                                 <td class="float-right">{{ $item->amount }}</td>
+                                <td>{{ $item->note ? $item->note : 'No Notes' }}</td>
                                 <td><button type="button" class="btn btn-sm btn-ii" onclick='window.location="{{ route('payment.edit', [$item->billing_id, $item->id] ) }}"'>Edit</button></td>
                             </tr>
                         @endforeach

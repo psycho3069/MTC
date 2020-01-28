@@ -2,12 +2,53 @@
 
 namespace App\Http\Traits;
 
+use App\Booking;
+use App\Configuration;
 use App\Date;
 use App\MisAccountHead;
 use App\MisVoucher;
 use App\Process;
 
 trait CustomTrait{
+
+
+    public function checkBooking( $input)
+    {
+        $date = Configuration::find( 1)->software_start_date;
+        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->get();
+
+        $room_id = collect( $input)->pluck('room_id');
+        return count( $booked->whereIn('room_id', $room_id));
+    }
+
+
+    public function getBillDetails( $bill)
+    {
+        $charge['room']['total'] = $bill->booking->where('room_id', '<', 50)->sum('bill');
+        $charge['room']['total'] += $bill->booking->where('room_id', '>', 499)->sum('bill');
+        $charge['venue']['total'] = $bill->booking->whereBetween('room_id', [50, 499])->sum('bill');
+        $charge['food']['total'] = $bill->restaurant->sum('bill');
+
+        $charge['room']['total'] += $charge['room']['total'] * $bill->booking[0]->vat / 100;
+        $charge['venue']['total'] += $charge['venue']['total'] * $bill->booking[0]->vat / 100;
+        if ( $bill->restaurant->isNotEmpty())
+            $charge['food']['total'] += $charge['food']['total'] * ( $bill->restaurant[0]->vat + $bill->restaurant[0]->service_charge ) / 100;
+
+        $charge['room']['paid'] = $bill->payments->where('payment_type', 'room')->sum('amount');
+        $charge['venue']['paid'] = $bill->payments->where('payment_type', 'venue')->sum('amount');
+        $charge['food']['paid'] = $bill->payments->where('payment_type', 'food')->sum('amount');
+
+        $max = collect($charge)->sortByDesc('total')->keys()->first();
+
+
+        $charge['all']['total'] = $charge['room']['total'] + $charge['venue']['total'] + $charge['food']['total'];
+        $charge['all']['max'] = $max;
+
+        return $charge;
+    }
+
+
+
 
     public function computeAIS( $input, $input_date)
     {

@@ -17,9 +17,10 @@
                             <th class="">Date</th>
                             <th class="">Guest Name</th>
                             <th class="">Organization</th>
-                            <th class="no-wrap">Bill w/o discount</th>
+                            <th class="no-wrap">Total Bill</th>
                             <th class="no-wrap">Total Paid</th>
                             <th class="">Due</th>
+                            <th class="">Discount</th>
                             <th class="">Checkout</th>
                             <th class=""></th>
                             <th class=""></th>
@@ -34,7 +35,8 @@
                                 <td><code>{{ $bill->guest->org_name ? $bill->guest->org_name : 'Not Found' }}</code></td>
                                 <td>{{ $bill->total_bill }}</td>
                                 <td>{{ $bill->total_paid }}</td>
-                                <td>{{ $bill->total_bill - $bill->total_paid }}</td>
+                                <td>{{ $bill->total_bill - $bill->total_paid - $bill->discount }}</td>
+                                <td>{{ $bill->discount }}</td>
                                 <td><b>{!! $bill->checkout_status ? '<span class="badge badge-success">YES</span>' : '<span class="badge badge-danger">NO</span>' !!}</b></td>
                                 <td>
                                     <div class="dropdown">

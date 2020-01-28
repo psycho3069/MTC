@@ -100,6 +100,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('billing', 'BillingController');
     Route::resource('booking', 'BookingController');
 
+    Route::post('{bill_id}/payment/bill', ['as' => 'payment.bill', 'uses' => 'PaymentController@bill']);
     Route::post('{bill_id}/payment/checkout', ['as' => 'payment.checkout', 'uses' => 'PaymentController@checkout']);
     Route::resource('{bill_id}/payment', 'PaymentController');
 

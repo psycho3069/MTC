@@ -92,6 +92,8 @@ class BookingController extends Controller
      */
 
 
+
+
     public function store(Request $request)
     {
 //        return $request->all();
@@ -101,10 +103,16 @@ class BookingController extends Controller
             'booking.*.*' => 'required',
         ]);
 
+
         $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
 
         $input = $request->except('_token');
         $input['billing']['code'] = $this->code();
+
+
+        $count = $this->checkBooking($input['booking']);
+        if ( $count > 0)
+            return redirect()->back()->with('danger', '<b>Room Has Been Already Taken.</b> Please Select Another Room or <b>Refresh the Page</b>');
 
         $hotel_bill = 0;
         $check_guest = Guest::where( 'contact_no', $input['guest']['contact_no'])->get()->last();
@@ -113,30 +121,30 @@ class BookingController extends Controller
             $guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
 
         //total bill
+        $charge['room'] = 0; $charge['venue'] = 0;
+
         foreach ($input['booking'] as $item) {
             $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
-            $room_price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
+            $room_price = $item['room_id'] < 50 || $item['room_id'] > 499 ? Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
             $hotel_bill += $room_price * $days - $item['discount'] * $days;
 
             $booking['bill'][$item['room_id']] = $room_price * $days - $item['discount'] * $days;
             $booking['discount'][$item['room_id']] = $item['discount'] * $days;
+
+            if ( $item['room_id'] < 50 || $item['room_id'] > 499 )
+                $charge['room'] += $booking['bill'][$item['room_id']];
+            else
+                $charge['venue'] += $booking['bill'][$item['room_id']];
+
         }
 
-//        return $hotel_bill;
+
         $hotel_vat = $hotel_bill * $vat / 100;
-        $input['billing']['total_bill'] = $hotel_bill + $hotel_vat - $input['billing']['discount'];
+        $input['billing']['total_bill'] = $hotel_bill + $hotel_vat;
         $input['billing']['total_paid'] = $input['billing']['advance_paid'];
         $input['billing']['guest_id'] = $guest->id;
 
-
-        $data['amount'] = $input['billing']['total_paid'];
-        $data['mis_ac_head_id'] = 1;
-        $data['type'] = 'hotel_rv';
-        $date = Configuration::find(1)->software_start_date;
-
-        //Compute AIS
-        $voucher = $this->computeAIS( $data, $date);
-        $input['billing']['mis_voucher_id'] = $voucher->id;
+        $input['billing']['mis_voucher_id'] = $this->ais( $charge, $input['billing']['total_paid']);
         $billing = Billing::create( $input['billing']);
 
         //Store Booking Data
@@ -157,6 +165,23 @@ class BookingController extends Controller
             return redirect('restaurant/sales/create?bill_id='.$billing->id );
 
         return redirect('billing/'.$billing->id );
+    }
+
+
+    public function ais( $charge, $amount)
+    {
+        if ( $charge['room'] > $charge['venue']){
+            $data['mis_ac_head_id'] = 1;
+            $data['type'] = 'hotel_rv';
+        }else {
+            $data['mis_ac_head_id'] = 2;
+            $data['type'] = 'venue_rv';
+        }
+        $data['amount'] = $amount;
+        $date = Configuration::find(1)->software_start_date;
+        $mis_voucher = $this->computeAIS( $data, $date);
+
+        return $mis_voucher->id;
     }
 
 
@@ -184,10 +209,11 @@ class BookingController extends Controller
     public function show($id)
     {
         $bill = Billing::find( $id);
+
         $data['total'] = 0;
         foreach ($bill->booking as $item ) {
             $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
-            $data['room_cost'][$item->id] = ( $item->room_id < 50 ? $item->room->price : $item->venue->price) * $days - $item->discount;
+            $data['room_cost'][$item->id] = ( $item->room_id < 50 || $item->room_id > 499 ? $item->room->price : $item->venue->price) * $days - $item->discount;
             $data['total'] += $data['room_cost'][$item->id];
         }
 

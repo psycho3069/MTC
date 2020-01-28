@@ -48,22 +48,24 @@
 
                     <hr>
 
+
+
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Check-In*</label>
-                                <input class="form-control date check_in_date" id="start_date" aria-describedby="emailHelp">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Check-Out*</label>
-                                <input type="text" class="form-control date check_out_date" id="end_date" aria-describedby="emailHelp">
+                                <input class="form-control date check_in_date" id="start_date">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label>Select Category</label>
+                                <label>Check-Out*</label>
+                                <input class="form-control date check_out_date" id="end_date">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Room Category</label>
                                 <select class="form-control" id="category">
                                     <option value="0">All</option>
                                     <option value="1" {{ $data['selected'] <50 ? 'selected' : '' }}>Room</option>
@@ -73,7 +75,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label>Select a Room</label>
+                                <label>Room</label>
                                 <select class="form-control" id="room_id">
                                     <option></option>
                                     @foreach( $data['room'] as $item )
