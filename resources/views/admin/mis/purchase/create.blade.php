@@ -7,7 +7,7 @@
             color: #ff0000;
         }
     </style>
-    <div class="col-md-8">
+    <div class="col-md-10">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -102,7 +102,7 @@
 
     <br><br>
 
-    <div class="col-md-8">
+    <div class="col-md-10">
         <samp>
             <div class="card text-left">
                 <div class="card-header"><b>Purchased List</b></div>
@@ -178,8 +178,10 @@
             });
 
 
+            var click = 0; var add = 1;
 
             $('#add-button').click(function () {
+                click += 1;
 
                 var check = $('#supplier').data('check')
 
@@ -193,7 +195,8 @@
                     if ( name && contact_no){
                         getSupplier( name, contact_no)
                         $(document).ajaxStop(function () {
-                            appendItems()
+                            if ( click == add)
+                                appendItems()
                         })
                     }
                 }
@@ -255,6 +258,7 @@
 
 
             function appendItems(){
+                add += 1;
 
                 var supplier = $('#supplier').val()
                 var category = $('#category').val()
