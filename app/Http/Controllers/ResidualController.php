@@ -72,6 +72,7 @@ class ResidualController extends Controller
         $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
         foreach ($input['booking'] as $item) {
             $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
+            $days = $item['room_id'] < 50 || $item['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
             $room_price = $item['room_id'] <50 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
             $hotel_bill += $room_price * $days;
 
