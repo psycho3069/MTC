@@ -52,13 +52,13 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Check-In*</label>
-                            <input class="form-control date check_in_date" id="start_date">
+                            <input type="date" class="form-control date check_in_date" value="{{ date('Y-m-d') }}" id="start_date">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Check-Out*</label>
-                            <input class="form-control date check_out_date" id="end_date">
+                            <input type="date" class="form-control date check_out_date" value="{{ date('Y-m-d') }}" id="end_date">
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -174,10 +174,10 @@
 
 
 
-@section('style')
-    <link href="{{ asset('css/datepicker.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/flatpickr.min.css') }}" rel="stylesheet">
-@endsection
+{{--@section('style')--}}
+{{--    <link href="{{ asset('css/datepicker.min.css') }}" rel="stylesheet">--}}
+{{--    <link href="{{ asset('css/flatpickr.min.css') }}" rel="stylesheet">--}}
+{{--@endsection--}}
 
 
 @section('script')
@@ -286,7 +286,20 @@
     </script>
 
 
-    <script src="{{asset('js/flatpickr.min.js')}}"></script>
-    <script src="{{asset('js/custom_datepicker.js')}}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.ufat').select2({
+                placeholder: 'Select an option'
+            });
+        });
+    </script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+
+{{--    <script src="{{asset('js/flatpickr.min.js')}}"></script>--}}
+{{--    <script src="{{asset('js/custom_datepicker.js')}}"></script>--}}
 
 @endsection

@@ -99,16 +99,6 @@ class BillingController extends Controller
         return $pdf->download('invoice.pdf');
         return view('admin.mis.hotel.billing.export.pdf', compact('bill', 'booking', 'restaurant', 'data', 'info'));
 
-
-
-
-//        $pdf = PDF::loadView('admin.mis.hotel.billing.export.pdf', compact('bill', 'booking', 'restaurant', 'data', 'info'));
-
-
-//        return view('')
-
-
-        return $bill;
     }
 
     public function show($id, $export = null)
@@ -124,7 +114,8 @@ class BillingController extends Controller
             if ( $item->room_id > 49 && $item->room_id < 500)
                 $data['venue'][$item->id] = $item;
 
-            $booking[$item->id]['days'] = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
+             $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
+            $booking[$item->id]['days'] = $item['room_id'] < 50 || $item['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
             $booking[$item->id]['room_no'] = $item->room_id < 50 || $item->room_id > 499 ? 'Room No-'.$item->room->room_no : $item->venue->name;
             $booking[$item->id]['unit_price'] = ( $item->room_id < 50 || $item->room_id > 499 ? $item->room->price : $item->venue->price);
         }
@@ -173,14 +164,12 @@ class BillingController extends Controller
         $data['room'] = Room::get();
         $data['venue'] = Venue::all();
 
-//        return $bill->booking;
         foreach ($bill->booking as $key => $book) {
 //            return $key;
             $days = ( strtotime($book->end_date) - strtotime($book->start_date)) / (60*60*24);
-            $data['discount'][$book->id] = $book->discount / $days;
+            $data['discount'][$book->id] = $days != 0 ? $book->discount / $days : 0;
         }
 
-//        return $data['discount'];
         return view('admin.mis.hotel.billing.edit', compact('bill', 'data'));
     }
 
@@ -199,10 +188,8 @@ class BillingController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $input = $request->except('_token', '_method');
         $bill = Billing::find($id);
-
 
         $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
 
@@ -218,8 +205,8 @@ class BillingController extends Controller
             $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
             $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
 
-//            $old_vat = $room->vat;
-            $old_bill += $room->bill + ($room->bill * $room->vat) / 100;
+            $old_vat = $room->vat;
+            $old_bill += $room->bill;
             $new_bill += $item['bill'];
             $room->update( $item);
         }
@@ -243,11 +230,9 @@ class BillingController extends Controller
             }
 
 
-//        $old_bill += ( $old_bill * $old_vat) / 100;
 
-        $new_bill += ($new_bill * $vat / 100);
-//        $old_bill -= $bill->discount;
-
+        $old_bill += ($old_bill * $old_vat) / 100;
+        $new_bill += ($new_bill * $vat) / 100;
 
         $input['billing']['total_paid'] = $bill->total_paid - $bill->advance_paid + $input['billing']['advance_paid'];
         $input['billing']['total_bill'] = $bill->total_bill - $old_bill + $new_bill;
@@ -263,6 +248,7 @@ class BillingController extends Controller
         $bill->guest->update( $input['billing']);
         $bill->update( $input['billing']);
         $bill->booking()->update([ 'vat' => $vat]);
+        $bill->payments[0]->update([ 'amount' => $bill->advance_paid ]);
 
         $request->session()->flash('update', 'Booking has been Updated');
 

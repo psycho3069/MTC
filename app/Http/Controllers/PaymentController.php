@@ -185,21 +185,21 @@ class PaymentController extends Controller
         if ( isset( $room['amount']) && $room['amount'] != 0  ){
             $room['mis_ac_head_id'] = 1;
             $room['type'] = 'hotel_rv';
-            $input['type'] = 'room';
+            $input['payment_type'] = 'room';
             $total_paid += $this->ais( $room, $bill, $input);
         }
 
         if ( isset( $venue['amount']) && $venue['amount'] != 0  ){
             $venue['mis_ac_head_id'] = 2;
             $venue['type'] = 'venue_rv';
-            $input['type'] = 'venue';
+            $input['payment_type'] = 'venue';
             $total_paid += $this->ais( $venue, $bill, $input);
         }
 
         if ( isset( $food['amount']) && $food['amount'] != 0 ){
             $food['mis_ac_head_id'] = 4;
             $food['type'] = 'restaurant_rv';
-            $input['type'] = 'food';
+            $input['payment_type'] = 'food';
             $total_paid += $this->ais( $food, $bill, $input);
         }
 
@@ -210,7 +210,6 @@ class PaymentController extends Controller
 
     public function ais($data, $bill, $input)
     {
-//        return $input;
         $date = Configuration::find(1)->software_start_date;
         $mis_voucher = $this->computeAIS( $data, $date);
 
@@ -298,18 +297,27 @@ class PaymentController extends Controller
     public function update(Request $request, $bill_id, $id)
     {
         $input = $request->except('_token', '_method');
-        $payment = Payment::find($id);
+        $bill = Billing::find( $bill_id);
+        $payment = $bill->payments->find($id);
+        $adv_payment = $bill->payments->sortBy('id')[0];
+
+
 
         //updating AIS
         $data['note'] = 'Updated From MIS Partial Payment';
         $amount['old'] = $payment->amount;
         $amount['new'] = $input['amount'];
-        $this->updateAIS( $payment, $amount, $data);
 
-        $payment->bill->total_paid = $payment->bill->total_paid - $payment->amount + $input['amount'];
-        $payment->bill->save();
+        if ( $payment->amount != $amount['new'])
+            $this->updateAIS( $payment, $amount, $data);
+
+        if ( $adv_payment->id == $payment->id )
+            $bill->advance_paid = $amount['new'];
+
+        $bill->total_paid = $bill->total_paid - $payment->amount + $amount['new'];
+        $bill->save();
         $payment->update( $input);
-        return redirect($bill_id.'/payment');
+        return redirect($bill_id.'/payment')->with('update', '<b>Payment Updated Successfully.</b>');
 //        return $payment;
     }
 

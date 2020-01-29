@@ -148,13 +148,13 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-In*</label>
-                                            <input class="form-control date check_in_date" id="start_date">
+                                            <input type="date" class="form-control date check_in_date" value="{{ date('Y-m-d') }}" id="start_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-Out*</label>
-                                            <input class="form-control date check_out_date" id="end_date">
+                                            <input type="date" class="form-control date check_out_date" value="{{ date('Y-m-d') }}" id="end_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -211,10 +211,10 @@
 
 
 
-@section('style')
-    <link href="{{ asset('css/datepicker.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/flatpickr.min.css') }}" rel="stylesheet">
-@endsection
+{{--@section('style')--}}
+{{--    <link href="{{ asset('css/datepicker.min.css') }}" rel="stylesheet">--}}
+{{--    <link href="{{ asset('css/flatpickr.min.css') }}" rel="stylesheet">--}}
+{{--@endsection--}}
 
 
 
@@ -307,7 +307,7 @@
     </script>
 
 
-    <script src="{{asset('js/flatpickr.min.js')}}"></script>
-    <script src="{{asset('js/custom_datepicker.js')}}"></script>
+{{--    <script src="{{asset('js/flatpickr.min.js')}}"></script>--}}
+{{--    <script src="{{asset('js/custom_datepicker.js')}}"></script>--}}
 
 @endsection

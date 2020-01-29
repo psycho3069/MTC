@@ -109,53 +109,66 @@ class BookingController extends Controller
         $input = $request->except('_token');
         $input['billing']['code'] = $this->code();
 
-
         $count = $this->checkBooking($input['booking']);
         if ( $count > 0)
             return redirect()->back()->with('danger', '<b>Room Has Been Already Taken.</b> Please Select Another Room or <b>Refresh the Page</b>');
 
-        $hotel_bill = 0;
         $check_guest = Guest::where( 'contact_no', $input['guest']['contact_no'])->get()->last();
         $guest = Guest::create($input['guest']);
         if ( $check_guest)
             $guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
 
         //total bill
-        $charge['room'] = 0; $charge['venue'] = 0;
+//        $charge['room'] = 0; $charge['venue'] = 0; $hotel_bill = 0;
 
-        foreach ($input['booking'] as $item) {
-            $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
-            $room_price = $item['room_id'] < 50 || $item['room_id'] > 499 ? Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
-            $hotel_bill += $room_price * $days - $item['discount'] * $days;
+        $others['vat'] = $vat;
+        $others['guest_id'] = $guest->id;
 
-            $booking['bill'][$item['room_id']] = $room_price * $days - $item['discount'] * $days;
-            $booking['discount'][$item['room_id']] = $item['discount'] * $days;
+        $data = $this->getBookingInfo( $input['booking'], $others);
 
-            if ( $item['room_id'] < 50 || $item['room_id'] > 499 )
-                $charge['room'] += $booking['bill'][$item['room_id']];
-            else
-                $charge['venue'] += $booking['bill'][$item['room_id']];
+        $input['booking'] = $data['booking'];
+        $hotel_bill = $data['hotel_bill'];
+        $charge = $data['charge'];
 
-        }
 
+//        foreach ($input['booking'] as $key => $item) {
+//
+//            $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
+//            $days = $item['room_id'] < 50 || $item['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
+//
+//            $room_price = $item['room_id'] < 50 || $item['room_id'] > 499 ? Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
+//            $hotel_bill += $room_price * $days - $item['discount'] * $days;
+//
+//            $booking['bill'][$item['room_id']] = $room_price * $days - $item['discount'] * $days;
+//            $booking['discount'][$item['room_id']] = $item['discount'] * $days;
+//
+//
+//            if ( $item['room_id'] < 50 || $item['room_id'] > 499 )
+//                $charge['room'] += $booking['bill'][$item['room_id']];
+//            else
+//                $charge['venue'] += $booking['bill'][$item['room_id']];
+//
+//        }
 
         $hotel_vat = $hotel_bill * $vat / 100;
         $input['billing']['total_bill'] = $hotel_bill + $hotel_vat;
         $input['billing']['total_paid'] = $input['billing']['advance_paid'];
         $input['billing']['guest_id'] = $guest->id;
 
-        $input['billing']['mis_voucher_id'] = $this->ais( $charge, $input['billing']['total_paid']);
+        $payment = $this->ais( $charge, $input['billing']['total_paid']);
+        $input['billing']['mis_voucher_id'] = $payment['mis_voucher_id'];
         $billing = Billing::create( $input['billing']);
+        $billing->payments()->create($payment);
 
         //Store Booking Data
         foreach ($input['booking'] as $item) {
-            $item['guest_id'] = $guest->id;
-            $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
-            $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
-            $item['bill'] = $booking['bill'][$item['room_id']];
-            $item['discount'] = $booking['discount'][$item['room_id']];
+//            $item['guest_id'] = $guest->id;
+//            $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
+//            $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
+//            $item['bill'] = $booking['bill'][$item['room_id']];
+//            $item['discount'] = $booking['discount'][$item['room_id']];
+//            $item['vat'] = $vat;
             $item['booking_status'] = 2;
-            $item['vat'] = $vat;
             $billing->booking()->create($item);
         }
 
@@ -173,15 +186,19 @@ class BookingController extends Controller
         if ( $charge['room'] > $charge['venue']){
             $data['mis_ac_head_id'] = 1;
             $data['type'] = 'hotel_rv';
+            $data['payment_type'] = 'room';
         }else {
             $data['mis_ac_head_id'] = 2;
             $data['type'] = 'venue_rv';
+            $data['payment_type'] = 'venue';
         }
         $data['amount'] = $amount;
         $date = Configuration::find(1)->software_start_date;
         $mis_voucher = $this->computeAIS( $data, $date);
+        $data['mis_voucher_id'] = $mis_voucher->id;
+        $data['note'] = 'Advance Payment';
 
-        return $mis_voucher->id;
+        return $data;
     }
 
 

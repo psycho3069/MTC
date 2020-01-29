@@ -59,7 +59,7 @@
                                             <i class="fa fa-caret-down" aria-hidden="true"></i>
                                         </button>
                                         <div class="dropdown-content">
-{{--                                            <a href="{{ route('payment.create', $bill->id) }}">Make Payment</a>--}}
+                                            <a href="{{ route('payment.create', $bill->id) }}">Make Payment</a>
                                             <a href="{{ route('payment.index', $bill->id) }}">All Payments</a>
                                             @if( !$bill->checkout_status)
                                                 <a href="{{ route('payment.create', [$bill->id, 'co' => 1]) }}">Checkout</a>

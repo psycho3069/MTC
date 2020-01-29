@@ -8,6 +8,8 @@ use App\Date;
 use App\MisAccountHead;
 use App\MisVoucher;
 use App\Process;
+use App\Room;
+use App\Venue;
 
 trait CustomTrait{
 
@@ -46,6 +48,42 @@ trait CustomTrait{
 
         return $charge;
     }
+
+
+    public function getBookingInfo( $input , $others)
+    {
+        $charge['room'] = 0; $charge['venue'] = 0; $hotel_bill = 0;
+
+        foreach ($input as $key => $item) {
+            $days = ( strtotime($item['end_date']) - strtotime($item['start_date'])) / (60 * 60 * 24);
+            $days = $item['room_id'] < 50 || $item['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
+
+            $room_price = $item['room_id'] < 50 || $item['room_id'] > 499 ? Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
+            $input[$key]['bill'] = $room_price * $days - $item['discount'] * $days;
+            $hotel_bill += $room_price * $days - $item['discount'] * $days;
+
+            if ( $item['room_id'] < 50 || $item['room_id'] > 499 )
+                $charge['room'] += $input[$key]['bill'];
+            else
+                $charge['venue'] += $input[$key]['bill'];
+
+            $input[$key]['start_date'] = date('Y-m-d', strtotime($item['start_date']) );
+            $input[$key]['end_date'] = date('Y-m-d', strtotime($item['end_date']) );
+            $input[$key]['discount'] = $item['discount'] * $days;
+            $input[$key]['guest_id'] = $others['guest_id'];
+            $input[$key]['vat'] = $others['vat'];
+        }
+
+
+        $data['booking'] = $input;
+        $data['charge'] = $charge;
+        $data['hotel_bill'] = $hotel_bill;
+
+        return $data;
+    }
+
+
+
 
 
 
