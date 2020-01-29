@@ -53,8 +53,12 @@ class MisAccountController extends Controller
 
     public function store(Request $request)
     {
-//        return $request->all();
-
+        $request->validate([
+            'software_start_date' => 'required',
+        ],[
+            'software_start_date.required' => 'Please Enter Software Date',
+        ]);
+        Configuration::find(1)->update(['software_start_date' => $request->software_start_date]);
         $input = $request->data;
         foreach ($request->conf as $key => $val) {
             Configuration::where( 'name', $key)->update([ 'value' => $val]);

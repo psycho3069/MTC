@@ -7,16 +7,17 @@
             <div class="card text-left">
                 <div class="card-header"> Configuration</div>
                 <div class="card-body">
+                    <p class="text-danger">{{ $errors->has('software_start_date') ? $errors->first('software_start_date') : '' }}</p>
                     <form method="POST" action="{{ route('mis.accounts.store') }}">
                         {{ csrf_field() }}
                         <div class="row">
                             <div class="col-md-3">
-                                <p class="config-label"><b>Software Start Date</b></p>
+                                <p class="config-label"><b>Software Date</b></p>
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group">
                                     <label>Select a date</label>
-                                    <input type="date" name="software_start_date" class="form-control" value="{{ $conf->firstWhere('name', 'software_date')->date }}" disabled>
+                                    <input type="date"  class="form-control date" name="software_start_date" value="{{ date('Y-m-d', strtotime($conf->firstWhere('name', 'software_date')->software_start_date)) }}">
                                 </div>
                             </div>
                         </div>

@@ -115,7 +115,7 @@ class BillingController extends Controller
                 $data['venue'][$item->id] = $item;
 
              $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
-            $booking[$item->id]['days'] = $item['room_id'] < 50 || $item['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
+            $booking[$item->id]['days'] = $item->room_id < 50 || $item->room_id > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
             $booking[$item->id]['room_no'] = $item->room_id < 50 || $item->room_id > 499 ? 'Room No-'.$item->room->room_no : $item->venue->name;
             $booking[$item->id]['unit_price'] = ( $item->room_id < 50 || $item->room_id > 499 ? $item->room->price : $item->venue->price);
         }
@@ -198,6 +198,8 @@ class BillingController extends Controller
         foreach ( $input['booking'] as $key => $item) {
             $room = $bill->booking->find($key);
             $days = ( strtotime( $item['end_date']) - strtotime( $item['start_date'])) / (60*60*24);
+            $days = $room->room_id < 50 || $room->room_id > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
+
             $price = $room->room_id < 50 || $room->room_id > 499 ? $room->room->price : $room->venue->price;
             $item['discount'] = $item['discount'] * $days;
             $item['bill'] = $price * $days - $item['discount'];
@@ -217,6 +219,8 @@ class BillingController extends Controller
         if ( isset($input['new_booking']) && $count < 1)
             foreach ($input['new_booking'] as $item) {
                 $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
+                $days = $item['room_id'] < 50 || $item['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
+
                 $price = $item['room_id'] < 50 || $item['room_id'] > 499 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
                 $item['discount'] = $item['discount'] * $days;
                 $item['bill'] = $price * $days - $item['discount'];
