@@ -172,12 +172,6 @@ strong {
     color: #ff0000;
 }
 
-
-.table-fixed {
-    table-layout: fixed;
-    width: 100%;
-}
-
 .unit {
     font-family: initial;
     color: navy;
@@ -215,3 +209,8 @@ strong {
 /*    width: 10%;*/
 
 /*}*/
+
+.table-fixed {
+    table-layout: fixed;
+    width: 100%;
+}

@@ -26,6 +26,7 @@ class CreateBookingsTable extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->double('discount',12,2)->unsigned()->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

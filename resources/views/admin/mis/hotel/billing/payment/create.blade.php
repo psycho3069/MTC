@@ -101,7 +101,9 @@
 
 
             $('#amount').on('change keyup', function () {
-                var due = $('#due').val() - $('#amount').val()
+                if(!$('#amount').val())
+                    $('#amount').val(0)
+                var due = charge[type]['total'] - charge[type]['paid'] - parseInt($('#amount').val())
                 $('#due').val(due)
             })
 

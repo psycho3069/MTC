@@ -25,6 +25,7 @@ class CreateBillingsTable extends Migration
             $table->double('discount',14,2)->unsigned()->default(0);
             $table->text('note')->nullable();
             $table->text('code')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

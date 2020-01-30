@@ -266,9 +266,31 @@ class BillingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $bill = Billing::find( $id);
+
+        $amount['old'] = $bill->payments->sum('amount');
+        $amount['new'] = 0;
+
+
+        foreach ( $bill->payments as $payment) {
+
+            $data['note'] = 'Deleted Bill of Guest '.$bill->guest->name;
+            $amount['old'] = $payment->amount;
+            $amount['new'] = 0;
+            $this->updateAIS( $payment, $amount, $data);
+        }
+
+        $bill->payments()->delete();
+        $bill->booking()->delete();
+        $bill->restaurant()->delete();
+        $bill->delete();
+
+        $request->session()->flash('success', '<b>Operation Successful.</b> Bill has been Deleted.');
+
+        return 44;
+
     }
 
 

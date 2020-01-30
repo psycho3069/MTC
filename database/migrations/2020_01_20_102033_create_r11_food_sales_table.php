@@ -22,6 +22,7 @@ class CreateR11FoodSalesTable extends Migration
             $table->double('discount',14,2)->default(0);
             $table->tinyInteger('vat')->unsigned()->default(0);
             $table->tinyInteger('service_charge')->unsigned()->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

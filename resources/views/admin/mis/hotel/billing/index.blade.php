@@ -3,6 +3,7 @@
 
 @section('content')
     <div class="col-md-10">
+        {{ csrf_field() }}
         <br><br><br>
 
         <div class="card text-left">
@@ -24,6 +25,7 @@
                             <th class="">Checkout</th>
                             <th class=""></th>
                             <th class=""></th>
+                            <th class=""></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -38,6 +40,17 @@
                                 <td>{{ $bill->total_bill - $bill->total_paid - $bill->discount }}</td>
                                 <td>{{ $bill->discount }}</td>
                                 <td><b>{!! $bill->checkout_status ? '<span class="badge badge-success">YES</span>' : '<span class="badge badge-danger">NO</span>' !!}</b></td>
+                                <td width="18%" align="right">
+                                    <a href="{{ route('billing.show', $bill->id) }}" class="btn btn-sm btn-i" title="View">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ route('billing.edit', $bill->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="" class="btn btn-sm btn-danger" data_id="{{ $bill->id }}" title="Delete" onclick="destroy( $(this).attr('data_id')); return false;">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </td>
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-i">
@@ -45,10 +58,8 @@
                                             <i class="fa fa-caret-down" aria-hidden="true"></i>
                                         </button>
                                         <div class="dropdown-content">
-                                            <a href="{{ route('billing.show', $bill->id) }}">View</a>
                                             <a href="{{ route('booking.show', $bill->id) }}">Booking</a>
                                             <a href="{{ route('sales.show', $bill->id) }}">Restaurant</a>
-                                            <a href="{{ route('billing.edit', $bill->id) }}">Edit</a>
                                         </div>
                                     </div>
                                 </td>
@@ -79,6 +90,35 @@
     </div>
 
 @endsection
+
+
+
+@section('script')
+    <script>
+        var _token = $('input[name="_token"]').val()
+
+        function destroy(id) {
+            var check = confirm('Are you sure want Delete this?')
+
+
+            if( check){
+                $.ajax({
+                    type: 'DELETE',
+                    url: 'billing/'+id,
+                    data:{ _token: _token },
+                    success:function (data) {
+                        // console.log( data)
+                        window.location.href = "{{ route('billing.index') }}";
+                    }
+                })
+            }
+
+
+        }
+    </script>
+@endsection
+
+
 
 @section('datatable')
 

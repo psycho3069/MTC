@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Billing extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'guest_id', 'mis_voucher_id', 'checkout_status', 'code',
         'total_bill', 'advance_paid', 'total_paid', 'discount', 'note', 'reserved', 'service_charge'

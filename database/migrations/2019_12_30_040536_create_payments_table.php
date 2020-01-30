@@ -20,6 +20,7 @@ class CreatePaymentsTable extends Migration
             $table->double('amount', 14,2)->default(0);
             $table->text('note')->nullable();
             $table->integer('mis_voucher_id')->unsigned()->index();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
