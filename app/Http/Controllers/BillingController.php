@@ -147,8 +147,9 @@ class BillingController extends Controller
 
 //        return $bill->booking[0];
 
-        return view('admin.mis.hotel.billing.show', compact('bill', 'booking', 'restaurant', 'data', 'info'));
+//        return view('admin.mis.hotel.billing.show', compact('bill', 'booking', 'restaurant', 'data', 'info'));
 //        return view('admin.mis.hotel.billing.dropdown', compact('bill', 'booking', 'restaurant', 'data', 'info'));
+        return view('admin.mis.hotel.billing.test', compact('bill', 'booking', 'restaurant', 'data', 'info'));
     }
 
 
