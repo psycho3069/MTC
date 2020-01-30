@@ -23,6 +23,7 @@ return array(
     'App\\FoodMenu' => $baseDir . '/app/FoodMenu.php',
     'App\\FoodMenuItem' => $baseDir . '/app/FoodMenuItem.php',
     'App\\FoodSale' => $baseDir . '/app/FoodSale.php',
+    'App\\GeneralInfo' => $baseDir . '/app/GeneralInfo.php',
     'App\\Guest' => $baseDir . '/app/Guest.php',
     'App\\Http\\Controllers\\AccountController' => $baseDir . '/app/Http/Controllers/AccountController.php',
     'App\\Http\\Controllers\\AccountsController' => $baseDir . '/app/Http/Controllers/AccountsController.php',

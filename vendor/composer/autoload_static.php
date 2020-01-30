@@ -541,6 +541,7 @@ class ComposerStaticInite306fed4854648cafb929486eda1218f
         'App\\FoodMenu' => __DIR__ . '/../..' . '/app/FoodMenu.php',
         'App\\FoodMenuItem' => __DIR__ . '/../..' . '/app/FoodMenuItem.php',
         'App\\FoodSale' => __DIR__ . '/../..' . '/app/FoodSale.php',
+        'App\\GeneralInfo' => __DIR__ . '/../..' . '/app/GeneralInfo.php',
         'App\\Guest' => __DIR__ . '/../..' . '/app/Guest.php',
         'App\\Http\\Controllers\\AccountController' => __DIR__ . '/../..' . '/app/Http/Controllers/AccountController.php',
         'App\\Http\\Controllers\\AccountsController' => __DIR__ . '/../..' . '/app/Http/Controllers/AccountsController.php',
