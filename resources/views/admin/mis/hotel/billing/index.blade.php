@@ -25,7 +25,6 @@
                             <th class="">Checkout</th>
                             <th class=""></th>
                             <th class=""></th>
-                            <th class=""></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -51,18 +50,7 @@
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
                                 </td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-i">
-                                            Bill
-                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                        </button>
-                                        <div class="dropdown-content">
-                                            <a href="{{ route('booking.show', $bill->id) }}">Booking</a>
-                                            <a href="{{ route('sales.show', $bill->id) }}">Restaurant</a>
-                                        </div>
-                                    </div>
-                                </td>
+                                
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-i" for="btnControl">
