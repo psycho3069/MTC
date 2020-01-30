@@ -50,7 +50,7 @@
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
                                 </td>
-                                
+
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-i" for="btnControl">
