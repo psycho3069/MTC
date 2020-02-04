@@ -25,9 +25,9 @@
                         @foreach( $deliveries as $item )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d M,y', strtotime($item->created_at)) }}</td>
-                                <td>{{ $item->stock->name }}</td>
-                                <td>{{ $item->quantity.' '.$item->stock->unit }}</td>
+                                <td>{{ date('d-m-Y', strtotime($item->date->date)) }}</td>
+                                <td>{{ $item->ledgerHead->name }}</td>
+                                <td>{{ $item->quantity.' '.$item->unit->name }}</td>
                                 <td>
                                     <div class="btn-group">
                                         <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -41,7 +41,6 @@
                                     </div>
                                 </td>
                             </tr>
-
                         @endforeach
                         </tbody>
                     </table>

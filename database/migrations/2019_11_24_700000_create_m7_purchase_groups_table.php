@@ -20,6 +20,7 @@ class CreateM7PurchaseGroupsTable extends Migration
             $table->integer('date_id')->unsigned()->index();
             $table->integer('user_id')->unsigned()->index();
             $table->text('note')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

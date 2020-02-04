@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PurchaseGroup extends Model
 {
+    use SoftDeletes;
+
+
     protected $fillable = [ 'type_id', 'mis_voucher_id', 'date_id', 'user_id', 'note', ];
 
 

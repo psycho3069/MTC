@@ -5,8 +5,9 @@
         <samp>
             @if( count($categories))
                 <div class="card text-left">
-                    <div class="card-header"> <strong> {{ ucfirst($categories->first()->category) }} Opening Balance</strong></div>
+                    <div class="card-header"> <strong> {{ $categories->first()->mis_head_id != 5 ? 'Grocerie' : 'Inventorie' }}'s Opening Balance</strong></div>
                     <div class="card-body">
+                        <p class="text-danger">{{ $errors->has('input.*.amount') ? $errors->first('input.*.amount') : '' }}</p>
                         <form action="{{ route('stock.balance') }}" method="POST">
                             {{ csrf_field()}}
                             <table class="table table-hover table-info">
@@ -20,19 +21,22 @@
                                 </thead>
                                 <tbody>
                                 @foreach( $categories as $category )
-                                    @foreach( $category->stock as $item )
+                                    @foreach( $category->ledger as $item )
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->name }}</td>
-                                            <td>{{ $item->stockHead->name }}</td>
+                                            <td>{{ $category->name }}</td>
                                             <td class="col-md-4">
                                                 <div class="row">
-                                                    <input type="number" class="inputbox form-control" name="input[{{$item->id}}][quantity]" value="{{ $item->quantity }}" min="0">
-                                                    <div class="col-md-5">
-                                                        <select class="form-control" name="input[{{$item->id}}][unit]">
-                                                            <option value="kg" {{ $item->unit == 'kg' ? 'selected' : '' }}>Kg</option>
-                                                            <option value="liter" {{ $item->unit == 'liter' ? 'selected' : '' }}>Liter</option>
-                                                            <option value="piece" {{ $item->unit == 'piece' ? 'selected' : ( $category->type_id !=3 ? 'selected' : '') }}>Piece</option>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" name="input[{{$item->id}}][amount]" value="{{ $item->amount }}" min="0">
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <select class="form-control" name="input[{{$item->id}}][unit_type_id]">
+                                                            @foreach( $units as $unit )
+                                                                <option value="{{ $unit->id }}" {{ $item->unit_type_id == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                 </div>

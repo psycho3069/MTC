@@ -175,6 +175,7 @@ strong {
 .unit {
     font-family: initial;
     color: navy;
+    text-transform: lowercase;
 }
 
 .list-sup-btn {

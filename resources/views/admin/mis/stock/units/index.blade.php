@@ -1,13 +1,14 @@
 @extends('admin.master')
 
+
 @section('content')
     <div class="col-md-8">
         {{ csrf_field() }}
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    <strong>{{ $mis_head_id != 4 ? 'Inventory' : 'Grocery' }} List</strong>
-                    <a href="{{ route('stock.create', ['mis_head_id' => $mis_head_id]) }}" class="btn btn-iii float-right">Add Category </a>
+                    <strong> List</strong>
+                    <a href="{{ route('units.create') }}" class="btn btn-i float-right">Add Unit Type </a>
                 </div>
 
                 <div class="card-body">
@@ -21,34 +22,35 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach( $mis_heads as $mis_head )
+                        @foreach( $unit_types as $type )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <b><code>{{ $mis_head->name }}</code></b>
+                                    <b><code>1 {{ $type->name }}</code></b>
                                     <ul>
-                                        @foreach( $mis_head->ledger as $item )
+                                        @foreach( $type->units as $unit )
                                             <li>
                                                 <span>
-                                                    {{ $item->name }} ({{ $item->currentStock ? $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr').' '.$item->unitType->name: 0 }})
-                                                    <a href="" class="delete" id="{{ $item->id }}" onclick="destroy(this.id, 1); return false;">
+                                                    {{ $unit->multiply_by. ' '.$unit->name  }}
+                                                    <a href="" class="delete" id="{{ $unit->id }}" onclick="destroy(this.id, 1); return false;">
                                                         <i title="Delete" class="fa fa-trash-o delete" aria-hidden="true"></i>
                                                     </a>
                                                 </span>
                                             </li>
                                         @endforeach
                                     </ul>
-
                                 </td>
-                                <td>{{ $mis_head->description ? $mis_head->description : 'Not Found'}}</td>
+
+                                <td>{{ $type->description ? $type->description : 'Not Found'}}</td>
+
                                 <td width="18%" align="right">
-                                    <a href="{{ route('stock.create', ['cat_id' => $mis_head->id, 'mis_head_id' => $mis_head->mis_head_id] ) }}" class="btn btn-sm btn-i" title="Add Item">
+                                    <a href="{{ route('units.create', ['type_id' => $type->id]) }}" class="btn btn-sm btn-i" title="Add Item">
                                         <i class="fa fa-plus-square" aria-hidden="true"></i>
                                     </a>
-                                    <a href="{{ route('stock.edit', $mis_head->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                    <a href="{{ route('units.edit', $type->id) }}" class="btn btn-sm btn-primary" title="Edit">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
-                                    <a href="" class="btn btn-sm btn-danger" data_id="{{ $mis_head->id }}" title="Delete" onclick="destroy( $(this).attr('data_id'), 0); return false;">
+                                    <a href="" class="btn btn-sm btn-danger" data_id="{{ $type->id }}" title="Delete" onclick="destroy( $(this).attr('data_id'), 0); return false;">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
                                 </td>
@@ -64,24 +66,21 @@
 
 
 
-
 @section('script')
     <script>
-
         var _token = $('input[name="_token"]').val()
 
-        function destroy( id, type) {
+        function destroy(id, type) {
             var check = confirm('Are you sure want Delete this?')
             // console.log( id+' ->'+ type)
             if( check){
                 $.ajax({
                     type: 'DELETE',
-                    url: "stock/"+id,
+                    url: "units/"+id,
                     data: {_token: _token, id: id, type: type},
                     success:function (data) {
                         // console.log(data)
-                        var m_id = @json($mis_head_id);
-                        window.location.href = "stock?mis_head_id="+m_id
+                        window.location.href = "units"
                     }
 
                 })
@@ -91,20 +90,4 @@
         }
 
     </script>
-@endsection
-
-
-@section('datatable')
-
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.table').DataTable({
-                "paging": true,
-                "ordering":  true,
-            });
-        } );
-    </script>
-
 @endsection

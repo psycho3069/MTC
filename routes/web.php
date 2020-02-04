@@ -61,6 +61,20 @@ include('checkout_routes.php');
 
 
 Route::get('insert', function (){
+
+
+
+//    DB::table('m1_mis_heads')->insert([
+//        ['name' => 'Hotel Receipt', 'voucher_type_id' => 10],
+//        ['name' => 'Venue Receipt', 'voucher_type_id' => 10],
+//        ['name' => 'Restaurant Receipt', 'voucher_type_id' => 10],
+//        ['name' => 'Restaurant Payment', 'voucher_type_id' => 11],
+//        ['name' => 'Inventory Payment', 'voucher_type_id' => 11],
+//    ]);
+
+
+//    return \App\MISHead::all();
+
     $theads = TransactionHead::all();
 
     foreach ($theads as $thead) {
@@ -81,6 +95,9 @@ Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@
 
 
 Route::group(['middleware' => 'auth'], function (){
+
+    Route::resource('ledgers', 'LedgerHeadController');
+    Route::resource('units', 'UnitController');
 
 
     Route::post('add/supplier', ['as' => 'add.supplier', 'uses' => 'SupplierController@add']);

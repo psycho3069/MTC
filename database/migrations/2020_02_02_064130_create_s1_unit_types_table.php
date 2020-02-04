@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDeliveriesTable extends Migration
+class CreateS1UnitTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateDeliveriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('deliveries', function (Blueprint $table) {
+        Schema::create('s1_unit_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('stock_id')->unsigned()->index();
-            $table->integer('date_id')->unsigned()->index();
-            $table->double('quantity',10,3)->default(0);
-            $table->integer('unit_id')->unsigned()->index();
+            $table->string('name');
+            $table->string('short_name');
+            $table->text('description')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateDeliveriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('deliveries');
+        Schema::dropIfExists('s1_unit_types');
     }
 }

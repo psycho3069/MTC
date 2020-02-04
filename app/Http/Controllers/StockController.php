@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\MISHeadChild_I;
+use App\MISLedgerHead;
 use App\Stock;
 use App\StockHead;
+use App\UnitType;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
@@ -15,42 +18,50 @@ class StockController extends Controller
      */
     public function index(Request $request)
     {
-        $type_id = $request->type_id != 5 ? 3 : 5;
-        $stock_heads = StockHead::where( 'type_id', $type_id)->get();
-        return view('admin.mis.stock.index', compact('stock_heads', 'type_id'));
+        $mis_head_id = $request->mis_head_id != 5 ? 4 : 5;
+        $mis_heads = MISHeadChild_I::where( 'mis_head_id', $mis_head_id)->get();
+        return view('admin.mis.stock.index', compact('mis_heads', 'mis_head_id'));
     }
 
 
 
-    public function list($type_id)
+    public function list($mis_head_id)
     {
-        $type_id = ($type_id != 5) ? 3 : 5;
-        $categories = StockHead::where('type_id', $type_id)->get();
-        return view('admin.mis.stock.list', compact('categories', 'type_id'));
+        $mis_head_id = ($mis_head_id != 5) ? 4 : 5;
+        $categories = MISHeadChild_I::where('mis_head_id', $mis_head_id)->get();
+        return view('admin.mis.stock.list', compact('categories', 'mis_head_id'));
     }
 
 
-    public function opening($type_id)
+    public function opening($mis_head_id)
     {
-        $type_id = ($type_id != 5) ? 3 : 5;
-        $categories = StockHead::where('type_id', $type_id)->get();
-        return view('admin.mis.stock.opening', compact('categories'));
+        $mis_head_id = $mis_head_id != 5 ? 4 : 5;
+        $categories = MISHeadChild_I::where('mis_head_id', $mis_head_id)->get();
+        $units = UnitType::all();
+        return view('admin.mis.stock.opening', compact('categories', 'units'));
     }
 
 
     public function balance(Request $request)
     {
+
+        $request->validate([
+            'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
+        ], [
+            'input.*.amount.regex' => 'Only Decimal Values are Allowed',
+        ]);
+
         $input = $request->input;
-//        return $input;
+
         foreach ($input as $key => $item) {
-            $stock = Stock::find($key);
-            $stock->update( $item);
-            $stock->currentStock()->where( 'date_id', 0)->first()->update([ 'quantity_dr' => $stock->quantity]);
+            $ledger = MISLedgerHead::find($key);
+            $ledger->update( $item);
+            $ledger->currentStock()->where( 'date_id', 0)->update([ 'quantity_dr' => $ledger->amount]);
         }
 
         $request->session()->flash('update', 'Opening balance has been updated');
 
-        return redirect('stock/opening/'.$stock->stockHead->type_id);
+        return redirect('stock/opening/'.$ledger->mis_head_id );
     }
 
 
@@ -63,12 +74,14 @@ class StockController extends Controller
      */
     public function create(Request $request)
     {
-        $type_id = $request->type_id != 5 ? 3 : 5;
-        $stock_head_id = $request->stock_head_id;
-        if ( $stock_head_id)
-            return view('admin.mis.stock.create', compact('stock_head_id', 'type_id'));
+        $mis_head_id = $request->mis_head_id != 5 ? 4 : 5;
+        $cat_id = $request->cat_id;
+        $units = UnitType::all();
 
-        return view('admin.mis.stock.create', compact('type_id'));
+        if ( $cat_id)
+            return view('admin.mis.stock.create', compact('cat_id', 'mis_head_id', 'units'));
+
+        return view('admin.mis.stock.create', compact('mis_head_id'));
     }
 
     /**
@@ -79,27 +92,32 @@ class StockController extends Controller
      */
     public function store(Request $request)
     {
+        if ( $request->cat_id)
+            $request->validate([
+                'name' => 'required',
+                'unit_type_id' => 'required',
+            ]);
 
         $request->validate([
             'name' => 'required',
-        ],[
-             'name.required' => 'Please Enter Category Name',
-            ]);
+        ]);
 
         $input = $request->all();
 
-        if ($request->stock_head_id){
-            $stock = Stock::create($input);
+        if ($request->cat_id){
+            $code= MISLedgerHead::withTrashed()->orderBy('id', 'desc')->first();
+            $input['code'] = !$code ? 1000 : $code->code + 100;
+            $category = MISHeadChild_I::find( $request->cat_id);
+            $stock = $category->ledger()->create( $input);
+
             $stock->currentStock()->create(['date_id' => 0 ]);
-            $request->session()->flash('create', '<b>'.$stock->name.'</b> has been added to the <b>'.$stock->stockHead->name.'</b> category list');
+            $request->session()->flash('create', '<b>'.$stock->name.'</b> has been added to the <b>'.$stock->ledgerable->name.'</b> category list');
         }
-        else {
-            $input['type_id'] = $request->type_id;
-            $input['category'] = $request->type_id ==3 ? 'restaurant' : 'inventory';
-            $item = StockHead::create($input);
+        else{
+            $item = MISHeadChild_I::create( $input);
             $request->session()->flash('create', '<b>'.$item->name.'</b> has been added to the category list');
         }
-        return redirect('stock?type_id='.$request->type_id);
+        return redirect('stock?mis_head_id='.$request->mis_head_id);
 //        return redirect()->back();
     }
 
@@ -123,8 +141,9 @@ class StockController extends Controller
     public function edit($id)
     {
 //        return $stock_head->stock;
-        $stock_head = StockHead::find( $id);
-        return view('admin.mis.stock.edit', compact('stock_head'));
+        $mis_head = MISHeadChild_I::find( $id);
+        $units = UnitType::get();
+        return view('admin.mis.stock.edit', compact('mis_head', 'units'));
 
     }
 
@@ -140,23 +159,22 @@ class StockController extends Controller
         $request->validate([
             'name' => 'required',
             'input.*.name' => 'required',
-            'input.*.unit' => 'required',
+            'input.*.unit_type_id' => 'required',
         ],[
             'name.required' => 'Please Enter Category Name',
             'input.*.name.required' => 'Please Enter Item Name',
-            'input.*.unit.required' => 'Please Select A Unit',
+            'input.*.unit_type_id.required' => 'Please Select A Unit',
         ]);
 //        return $request->all();
-        $input = $request->input;
-        $stock_head = StockHead::find( $id);
+        $input = $request->input ? $request->input : [];
+        $mis_head = MISHeadChild_I::find( $id);
 
-        if( $request->input)
-            foreach ( $input as $key => $item) {
-                $stock_head->stock->find( $key)->update( $item);
+        foreach ( $input as $key => $item) {
+                $mis_head->ledger->find( $key)->update( $item);
             }
 
-        $stock_head->update( $request->except('_token', 'input'));
-        return redirect('stock?type_id='.$stock_head->type_id)->with('update', 'Updated successfully');
+        $mis_head->update( $request->except('_token', 'input'));
+        return redirect('stock?mis_head_id='.$mis_head->mis_head_id)->with('update', '<b>'. $mis_head->name.'</b> has been Updated successfully');
 
 
     }
@@ -167,45 +185,46 @@ class StockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
 //        return $request->all();
 
         $i = 0; $operation = false;
 
         if ( !$request->type){
-            $stock_head = StockHead::find($id);
-            $cat = '<b>'.$stock_head->name.'</b>';
+            $mis_head = MISHeadChild_I::find($id);
+            $cat = '<b>'.$mis_head->name.'</b>';
 
-            if ( $stock_head->stock->isNotEmpty() ){
-                foreach ( $stock_head->stock as $item) {
-                    if ( $item->purchase->isEmpty() && $item->deliver->isEmpty()){
+            if ( $mis_head->ledger->isNotEmpty() ){
+                foreach ( $mis_head->ledger as $item) {
+                    if ( $item->purchases->isEmpty() && $item->deliveries->isEmpty()){
                         $item->currentStock()->where('date_id', 0)->delete();
                         $item->delete(); $i++;
                     }
-                 $operation = count($stock_head->stock) == $i ? true : false;
+                 $operation = count( $mis_head->ledger) == $i ? true : false;
                 }
             }
 
-            if ( $stock_head->stock->isEmpty())
-                $operation = true;
+            $operation = $mis_head->ledger->isNotEmpty() ? false : true;
 
             if ( $operation)
-                $stock_head->delete();
+                $mis_head->delete();
 
             $operation ? $request->session()->flash('success', $cat. ' has been removed from category list') : $request->session()->flash('warning', 'Not all Items in category '.$cat.' is Empty');
 
         }
 
         if ( $request->type){
-            $item = Stock::find($id);
-            if( $item->purchase->isEmpty() && $item->deliver->isEmpty()){
+
+            $item = MISLedgerHead::find($id);
+
+            if( $item->purchases->isEmpty() && $item->deliveries->isEmpty() && count($item->currentStock) == 1 ){
                 $item->currentStock()->where('date_id', 0)->delete();
                 $item->delete();
                 $operation = true;
             }
 
-            $operation ? $request->session()->flash('success', '<b>'.$item->name.'</b> has been deleted successfully') : $request->session()->flash('failed', '<b> Operation Unsuccessfull. '.$item->name.'</b> Has Dependencies.');
+            $operation ? $request->session()->flash('success', '<b>'.$item->name.'</b> has been deleted successfully') : $request->session()->flash('failed', '<b> Operation Unsuccessful. '.$item->name.'</b> Has Dependencies.');
         }
 
 

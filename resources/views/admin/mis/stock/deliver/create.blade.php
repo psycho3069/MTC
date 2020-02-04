@@ -2,12 +2,7 @@
 
 
 @section('content')
-    <style>
-        .required{
-            color: #ff0000;
-        }
-    </style>
-    <div class="col-md-8">
+    <div class="col-md-9">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -33,16 +28,23 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Stock <span class="unit"></span></label>
                                 <input type="number" class="form-control" id="stock" value="0" disabled>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
-                                <label>Quantity <span class="unit"></span></label>
+                                <label>Quantity</label>
                                 <input type="text" class="form-control" id="quantity" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Unit</label>
+                                <select class="form-control" id="unit" >
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -57,7 +59,7 @@
 
     <br><br>
 
-    <div class="col-md-8">
+    <div class="col-md-9">
         <samp>
             <div class="card text-left">
                 <div class="card-header"><b>Delivery List</b></div>
@@ -93,8 +95,12 @@
 @section('script')
     <script>
         $(document).ready(function () {
+            var units = @json($data['units']);
+
+            console.log(units)
+
             var i = 0;
-            var in_stock = []; var items = [];
+            var items = [];
             var _token = $("input[name='_token']").val();
             getItems()
 
@@ -108,6 +114,7 @@
             })
 
             $('#category').on('change', function () {
+                $('#item').val('');
                 getItems()
 
             })
@@ -117,24 +124,22 @@
 
 
             function getItems() {
-
-                $('#item').val(0); $('#stock').val(0); $('#quantity').val(0);
-                var stock_head_id = $('#category').val()
-                in_stock = []
+                $('#stock').val(0); $('#quantity').val(0);
+                $('#item').empty();
+                var id = $('#category').val();
 
                 $.ajax({
                     type:'POST',
                     url: '{{ route("purchase.item") }}',
-                    data: { _token: _token, stock_head_id: stock_head_id },
+                    data: { _token: _token, id: id},
                     success:function (data) {
-                        // console.log(data)
+                        // console.log(data['item'])
                         var item = $('#item'); var stock = $('#stock');
                         item.empty(); stock.empty();
-
                         items = data['item']
+
                         $.each(data['item'], function (key, val) {
                             // console.log(data['stock'][key])
-                            in_stock[key] = val['stock']
                             item.append('<option value="'+key+'">'+val['name']+'</option>')
                         })
 
@@ -148,6 +153,14 @@
 
             function getUnit() {
                 var id = $('#item').val()
+                var unit = $('#unit'); unit.empty();
+                // console.log( items[id]['unit_type_id'])
+
+                $.each( units, function (key, val) {
+                    if ( val['unit_type_id'] == items[id]['unit_type_id'])
+                        unit.append('<option value="'+val["id"]+'">'+val['name']+ '</option>')
+                })
+
                 $('#quantity').val(0)
                 $('#stock').val(items[id]['stock'])
                 $('.unit').text('('+items[id]['unit']+')')
@@ -163,37 +176,32 @@
 
 
 
-            $('#quantity').on('change keyup', function () {
-                var x = parseFloat(in_stock[$('#item').val()]).toFixed(3)
-                var y = parseFloat($(this).val()).toFixed(3)
-                var z = parseFloat((x-y)).toFixed(3)
-                $('#stock').val(z)
-                $('#quantity').attr('max', z)
-            })
 
 
-            // console.log(in_stock)
+
 
 
 
             $('#add-button').click(function () {
+
                 var item_id = parseInt($('#item').val())
-                // alert(item_id)
+                var unit_id = parseInt($('#unit').val())
                 var quantity = parseFloat( $('#quantity').val() )
 
                 var msg1 = 'Please Select an Item';
                 var msg2 = 'Please Enter Some Quantity to Deliver'
+                var msg3 = 'Please Select a Unit'
 
-                !item_id ? alert(msg1) : ( !quantity ? alert(msg2) : '')
+                !item_id ? alert(msg1) : ( !quantity ? alert(msg2) : ( !unit_id ? msg3 : ''))
 
-                if( item_id && quantity )
+                if( item_id && quantity && unit_id )
                  {
                     i++
                     $('#list-item').append(
                         '<tr id="row'+i+'">' +
                         '<td>'+i+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][stock_id]" value="'+item_id+'">'+$('#item :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity +' '+ items[item_id]['unit'] +'</td>' +
+                        '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'"><input type="hidden" name="input['+i+'][unit_id]" value="'+unit_id+'">'+quantity +' '+ $('#unit :selected').text() +'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
                     )
@@ -201,6 +209,7 @@
                     $('#quantity').val(0)
                 }
             })
+
 
 
             $(document).on('click', '.remove', function(){

@@ -6,6 +6,7 @@ use App\Configuration;
 use App\Employee;
 use App\Http\Traits\CustomTrait;
 use App\MisCurrentStock;
+use App\MISHeadChild_I;
 use App\PurchaseGroup;
 use App\StockHead;
 use App\Supplier;
@@ -62,14 +63,13 @@ class PurchaseController extends Controller
     public function item(Request $request)
     {
 //        return $request->all();
-        $result = StockHead::find($request->stock_head_id);
-        foreach ($result->stock as $item) {
-//            $data['stock'][$item->id] = $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr');
+        $result = MISHeadChild_I::find( $request->id);
+        foreach ($result->ledger as $item) {
             $data['item'][$item->id]['stock'] = $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr');
             $data['item'][$item->id]['name'] = $item->name;
-            $data['item'][$item->id]['unit'] = $item->unit;
+            $data['item'][$item->id]['unit'] = $item->unitType->name;
+            $data['item'][$item->id]['unit_type_id'] = $item->unit_type_id;
         }
-//        $data['item'] = $result->stock->pluck('name', 'id');
 
         return $data;
     }

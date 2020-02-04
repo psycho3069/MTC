@@ -102,11 +102,11 @@
               Grocery
           </a>
           <div class="dropdown-menu sm-menu">
-              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 3]) }}">Groceries</a>
-              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 3]) }}">Stock</a>
+              <a class="dropdown-item" href="{{ route('stock.index', ['mis_head_id' => 4]) }}">Groceries</a>
+              <a class="dropdown-item" href="{{ route('stock.list', ['mis_head_id' => 4]) }}">Stock</a>
               <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 3]) }}">Purchase</a>
               <a class="dropdown-item" href="{{ route('deliver.index') }}">Delivery</a>
-              <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 3]) }}">Opening Balance</a>
+              <a class="dropdown-item" href="{{ route('stock.opening', ['mis_head_id' => 4]) }}">Opening Balance</a>
           </div>
       </li>
 
@@ -118,10 +118,10 @@
           </a>
           <div class="dropdown-menu sm-menu">
               {{-- type_id = 1 for Inventory, cat_id = 1 Suppliers--}}
-              <a class="dropdown-item" href="{{ route('stock.index', ['type_id' => 5]) }}">Inventories</a>
-              <a class="dropdown-item" href="{{ route('stock.list', ['type_id' => 5]) }}">Stock</a>
+              <a class="dropdown-item" href="{{ route('stock.index', ['mis_head_id' => 5]) }}">Inventories</a>
+              <a class="dropdown-item" href="{{ route('stock.list', ['mis_head_id' => 5]) }}">Stock</a>
               <a class="dropdown-item" href="{{ route('purchase.index', ['type_id' => 5]) }}">Purchase</a>
-              <a class="dropdown-item" href="{{ route('stock.opening', ['type_id' => 5]) }}">Opening Balance</a>
+              <a class="dropdown-item" href="{{ route('stock.opening', ['mis_head_id' => 5]) }}">Opening Balance</a>
           </div>
       </li>
 

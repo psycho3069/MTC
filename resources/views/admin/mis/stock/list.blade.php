@@ -6,7 +6,7 @@
             <div class="card text-left">
 {{--                <div class="card-header"> <strong>All {{ ucfirst($categories->first()->category) }} Item</strong></div>--}}
                 <div class="card-header">
-                    <b>{{ $type_id != 5 ? 'Grocerie\'s' : 'Inventorie\'s' }} Stock</b>
+                    <b>{{ $mis_head_id != 5 ? 'Grocerie\'s' : 'Inventorie\'s' }} Stock</b>
                 </div>
 
                 <div class="card-body">
@@ -17,18 +17,17 @@
                             <th>Name</th>
                             <th>Category</th>
                             <th>Quantity</th>
-                            {{--                            <th>Date</th>--}}
                         </tr>
                         </thead>
                         <tbody>
                         @php( $i = 0)
                         @foreach( $categories as $category )
-                            @foreach( $category->stock as $item )
+                            @foreach( $category->ledger as $item )
                                 <tr>
                                     <td>{{ ++$i }}</td>
                                     <td>{{ $item->name }}</td>
-                                    <td>{{ $item->stockHead->name }}</td>
-                                    <td>{{ $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr').' '.$item->unit }}</td>
+                                    <td>{{ $category->name }}</td>
+                                    <td>{{ $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr').' '.$item->unitType->name }}</td>
                                 </tr>
                             @endforeach
                         @endforeach

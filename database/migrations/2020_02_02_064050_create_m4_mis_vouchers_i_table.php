@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDeliveriesTable extends Migration
+class CreateM4MisVouchersITable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateDeliveriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('deliveries', function (Blueprint $table) {
+        Schema::create('m4_mis_vouchers_i', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('stock_id')->unsigned()->index();
+            $table->integer('ledger_head_id')->unsigned()->index();
             $table->integer('date_id')->unsigned()->index();
-            $table->double('quantity',10,3)->default(0);
-            $table->integer('unit_id')->unsigned()->index();
+            $table->integer('voucher_id')->unsigned()->index();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateDeliveriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('deliveries');
+        Schema::dropIfExists('m4_mis_vouchers_i');
     }
 }

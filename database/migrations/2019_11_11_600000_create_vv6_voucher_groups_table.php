@@ -20,6 +20,7 @@ class CreateVV6VoucherGroupsTable extends Migration
             $table->text('note');
             $table->text('code');
             $table->integer('user_id')->index()->unsigned();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

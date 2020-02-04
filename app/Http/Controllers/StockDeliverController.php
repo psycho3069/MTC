@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Configuration;
 use App\Date;
 use App\Delivery;
+use App\MISHeadChild_I;
+use App\MISLedgerHead;
 use App\Stock;
 use App\StockHead;
+use App\Unit;
+use App\UnitType;
 use Illuminate\Http\Request;
 
 class StockDeliverController extends Controller
@@ -30,9 +34,10 @@ class StockDeliverController extends Controller
      */
     public function create()
     {
-        $stock_head = StockHead::where( 'type_id', 3)->get();
-        return view('admin.mis.stock.deliver.create', compact('stock_head'));
+        $stock_head = MISHeadChild_I::where( 'mis_head_id', 4)->has('ledger')->get();
+        $data['units'] = Unit::get(['id', 'name', 'unit_type_id']);
 
+        return view('admin.mis.stock.deliver.create', compact('stock_head', 'data'));
     }
 
     /**
@@ -46,8 +51,6 @@ class StockDeliverController extends Controller
 //        return $request->all();
 
         $input = $request->input;
-//        return $input;
-
         $conf_date = Configuration::find(1)->software_start_date;
         $date = Date::where( 'date', $conf_date)->first();
 
@@ -55,22 +58,20 @@ class StockDeliverController extends Controller
             $date = Date::create([ 'date' => $conf_date ]);
 
         foreach ($input as $item) {
-            $stock = Stock::find($item['stock_id']);
+            $stock = MISLedgerHead::find($item['stock_id']);
+            $unit = $stock->unitType->units->find( $item['unit_id']);
+            $quantity = $item['quantity'] / $unit->multiply_by;
             $total = $stock->currentStock->sum('quantity_dr') - $stock->currentStock->sum('quantity_cr');
 
-            if ( $total >= $item['quantity']){
-                $item['date_id'] = $date->id;
-                $stock->deliver()->create($item);
-
-                $item['quantity_cr'] = $item['quantity'];
-                $stock->currentStock()->create($item);
-            }
-
+            $item['quantity'] = $quantity > $total ? $total * $unit->multiply_by : $item['quantity'];
+            $item['date_id'] = $date->id;
+            $stock->deliveries()->create($item);
+            $item['quantity_cr'] = $item['quantity'] / $unit->multiply_by;
+            $stock->currentStock()->create($item);
         }
 
 
-        $request->session()->flash('create', 'Items has been Delivered successfully');
-
+        $request->session()->flash('success', 'Items has been Delivered successfully');
         return redirect('stocks/deliver');
 
     }
