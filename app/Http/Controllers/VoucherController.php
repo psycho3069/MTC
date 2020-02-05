@@ -159,7 +159,7 @@ class VoucherController extends Controller
             if ( !isset( $data[$item->debit_head_id] ['debit']) )
                 $data[$item->debit_head_id] ['debit'] = 0;
 
-            if ( !isset( $data[$item->credit_head_id] ['debit']) )
+            if ( !isset( $data[$item->credit_head_id] ['credit']) )
                 $data[$item->credit_head_id] ['credit'] = 0;
 
             $data[$item->debit_head_id] ['name'] = $item->debitAccount->name;

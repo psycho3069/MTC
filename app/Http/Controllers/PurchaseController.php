@@ -3,13 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Configuration;
+use App\Date;
 use App\Employee;
 use App\Http\Traits\CustomTrait;
 use App\MisCurrentStock;
 use App\MISHeadChild_I;
+use App\MISLedgerHead;
+use App\Process;
+use App\Purchase;
 use App\PurchaseGroup;
 use App\StockHead;
 use App\Supplier;
+use App\Unit;
+use App\VoucherGroup;
 use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
@@ -20,27 +26,12 @@ class PurchaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexOld(Request $request)
-    {
-//        return $request->all();
-        $data = [];
-        $type_id = $request->type_id != 5 ? 3 : 5;
-        $stock_head = StockHead::where( 'type_id', $type_id)->get(['id']);
-        foreach ( $stock_head as $item) {
-            if ($item->stock->isNotEmpty())
-                $data[] = $item->stock->modelKeys(['amount']);
-        }
-        $stock_id = collect($data)->flatten();
-        $current_stock = MisCurrentStock::whereIn( 'stock_id', $stock_id)->get();
-        return view('admin.mis.purchase.index.old', compact('current_stock'));
-
-    }
 
 
     public function index(Request $request)
     {
-        $type_id = $request->type_id != 5 ? 3 : 5;
-        $p_groups = PurchaseGroup::where( 'type_id', $type_id)->orderBy('id', 'desc')->get();
+        $type_id = $request->mis_head_id != 5 ? 4 : 5;
+        $p_groups = PurchaseGroup::where( 'mis_head_id', $type_id)->orderBy('id', 'desc')->get();
         return view('admin.mis.purchase.index', compact('p_groups', 'type_id'));
 
     }
@@ -52,11 +43,13 @@ class PurchaseController extends Controller
      */
     public function create(Request $request)
     {
-        $type_id = $request->type_id != 5 ? 3 : 5;
+        $cat_id = $request->mis_head_id != 5 ? 4 : 5;
         $data['supplier'] = Supplier::all();
         $data['receiver'] = Employee::all();
-        $stock_head = StockHead::where( 'type_id', $type_id)->get();
-        return view('admin.mis.purchase.create', compact('stock_head', 'type_id', 'data'));
+        $mis_heads = MISHeadChild_I::where( 'mis_head_id', $cat_id)->has('ledger')->get();
+        $data['units'] = Unit::get(['id', 'name', 'unit_type_id']);
+
+        return view('admin.mis.purchase.create', compact('mis_heads', 'data', 'cat_id'));
     }
 
 
@@ -80,59 +73,54 @@ class PurchaseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+
+
+
     public function store(Request $request)
     {
 //        return $request->all();
         $request->validate([
+            'mis_head_id' => 'required',
             'input.*.*' => 'required',
-            'input.*.quantity' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
+            'input.*.quantity_dr' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
             'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
         ],[
+            'mis_head_id.required' => 'Your request can\'t be completed. Please try again',
             'input.*.*.required' => 'Please Enter Valid Info',
-            'input.*.quantity.required' => 'Please Enter Quantity',
-            'input.*.quantity.regex' => 'Invalid Quantity',
+            'input.*.quantity_dr.required' => 'Please Enter Quantity',
+            'input.*.quantity_dr.regex' => 'Invalid Quantity. Only decimal values are allowed',
             'input.*.amount.required' => 'Please Enter Amount',
-            'input.*.amount.regex' => 'Invalid Amount',
+            'input.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
         ]);
 
+
         $input = collect( $request->input);
-        if ( $request->mis_ac_head_id == 3)
-            $data['type'] = 'restaurant_pv';
-        if ( $request->mis_ac_head_id == 5)
-            $data['type'] = 'inventory_pv';
+        $date = $this->getDate();
 
-        $data['mis_ac_head_id'] = $request->mis_ac_head_id;
-        $data['amount'] = $input->sum('amount');
-        $date = Configuration::find(1)->software_start_date;
+        $data = $request->except('input', '_token');
+        $data['date_id'] = $date->id;
+        $data['user_id'] = auth()->user()->id;
 
-        $mis_voucher = $this->computeAIS( $data, $date );
-
-        $p_group['date_id'] = $mis_voucher->date->id;
-        $p_group['user_id'] = auth()->user()->id;
-        $p_group['type_id'] = $data['mis_ac_head_id'];
-        $p_group['note'] = $request->note;
-
-        $purchase_group = $mis_voucher->purchaseGroup()->create( $p_group);
+        $p_group = PurchaseGroup::create( $data);
 
         foreach ($input as $item) {
-//            return $item;
-            $item['quantity_dr'] = $item['quantity'];
-            $purchase = $purchase_group->purchases()->create( $item);
+            $ledger = MISLedgerHead::find( $item['stock_id']);
+            $item['mis_voucher_id'] = $this->computeAIS( $ledger, $item['amount']);
 
+            $item['date_id'] = $date->id;
+            $unit = $ledger->unitType->units->find( $item['unit_id']);
+            $item['quantity_dr'] = $item['quantity_dr'] / $unit->multiply_by;
 
-            $joji['stock_id'] = $item['stock_id'];
-            $joji['quantity_dr'] = $item['quantity_dr'];
-            $mis_stock = MisCurrentStock::where('stock_id', $item['stock_id'])->where('date_id', $purchase_group->date_id )->get()->first();
-            if ( $mis_stock)
-                $mis_stock->update(['quantity_dr' => $mis_stock->quantity_dr + $item['quantity_dr'] ]);
-            else
-                $purchase_group->date->misStock()->create( $joji);
+            $cr_stock = $ledger->currentStock()->create($item);
+            $item['current_stock_id'] = $cr_stock->id;
+            $p_group->purchases()->create( $item);
         }
-//        return $purchase_group->type_id;
 
-        $request->session()->flash('create', 'Items has been purchased.');
 
-        return redirect('purchase?type_id='.$purchase_group->type_id);
+        $request->session()->flash('create', '<b>All Items has been purchased.</b>');
+
+        return redirect('purchase?mis_head_id='.$ledger->mis_head_id);
 
     }
 
@@ -162,10 +150,9 @@ class PurchaseController extends Controller
         $p_group = PurchaseGroup::find($id);
         $data['supplier'] = Supplier::all();
         $data['receiver'] = Employee::all();
-//        return $p_group->purchases;
-        return view('admin.mis.purchase.edit', compact('p_group', 'data'));
-//        return $id;
+        $data['units'] = Unit::all();
 
+        return view('admin.mis.purchase.edit', compact('p_group', 'data'));
     }
 
     /**
@@ -175,28 +162,43 @@ class PurchaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
     public function update(Request $request, $id)
     {
 //        return $request->all();
+        $request->validate([
+            'input.*.*' => 'required',
+            'input.*.quantity_dr' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
+            'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
+        ],[
+            'input.*.*.required' => 'Please Enter Valid Info',
+            'input.*.quantity_dr.required' => 'Please Enter Quantity',
+            'input.*.quantity_dr.regex' => 'Invalid Quantity. Only decimal values are allowed',
+            'input.*.amount.required' => 'Please Enter Amount',
+            'input.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
+        ]);
+
         $input = collect($request->input);
-
         $p_group = PurchaseGroup::find($id);
-
-        //updating AIS
         $data['note'] = 'Updated From Grocery Purchase';
-        $amount['old'] = $p_group->purchases->sum('amount');
-        $amount['new'] = $input->sum('amount');
-        $this->updateAIS( $p_group, $amount, $data);
 
         foreach ($input as $key => $item) {
-            $p_group->purchases->find($key)->update($item);
+            $purchase = $p_group->purchases->find($key);
+            $voucher = $purchase->misVoucher->voucher;
+            $data['new_amount'] = $item['amount'];
+
+            if ( $voucher->amount != $item['amount'])
+                $this->updateAIS( $voucher, $data);
+
+            $purchase->update( $item);
+            $unit = $purchase->ledger->unitType->units->find( $item['unit_id']);
+            $purchase->currentStock->update([ 'quantity_dr' => $item['quantity_dr'] / $unit->multiply_by ]);
+
         }
 
-        $p_group->update([ 'note' => $request->note]);
-
-        $request->session()->flash('update', 'Purchase has been updated successfully');
-
-        return redirect('purchase?type_id='.$p_group->type_id);
+        $request->session()->flash('update', '<b>Purchase has been updated successfully</b>');
+        return redirect('purchase?mis_head_id='.$p_group->mis_head_id);
 
     }
 
@@ -206,8 +208,26 @@ class PurchaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
+
+
     public function destroy($id)
     {
-        //
+        $p_group = PurchaseGroup::find( $id);
+
+        foreach ($p_group->purchases as $purchase) {
+            $voucher = $purchase->misVoucher->voucher;
+            $data['new_amount'] = 0; $data['note'] = 'Deleted From Grocery Purchase - [id: '.$purchase->id. ']';
+            $this->deleteVoucher( $voucher, $data);
+            $purchase->misVoucher->delete();
+            $purchase->currentStock->delete();
+            $purchase->delete();
+        }
+        $p_group->delete();
+
+        session()->flash('success', '<b>Purchase Has Been Deleted Successfully.</b>');
+
+        return $p_group->mis_head_id;
     }
 }

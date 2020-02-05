@@ -62,12 +62,13 @@ class StockDeliverController extends Controller
             $unit = $stock->unitType->units->find( $item['unit_id']);
             $quantity = $item['quantity'] / $unit->multiply_by;
             $total = $stock->currentStock->sum('quantity_dr') - $stock->currentStock->sum('quantity_cr');
-
             $item['quantity'] = $quantity > $total ? $total * $unit->multiply_by : $item['quantity'];
+
             $item['date_id'] = $date->id;
-            $stock->deliveries()->create($item);
             $item['quantity_cr'] = $item['quantity'] / $unit->multiply_by;
-            $stock->currentStock()->create($item);
+            $cr_stock = $stock->currentStock()->create($item);
+            $item['current_stock_id'] = $cr_stock->id;
+            $stock->deliveries()->create($item);
         }
 
 

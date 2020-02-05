@@ -17,7 +17,7 @@ class CreateVV6VoucherGroupsTable extends Migration
             $table->increments('id');
             $table->integer('date_id')->index()->unsigned();
             $table->integer('type_id')->index()->unsigned();
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->text('code');
             $table->integer('user_id')->index()->unsigned();
             $table->softDeletes();

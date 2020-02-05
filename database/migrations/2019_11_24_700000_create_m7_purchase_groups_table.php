@@ -15,8 +15,7 @@ class CreateM7PurchaseGroupsTable extends Migration
     {
         Schema::create('purchase_groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('type_id')->unsigned()->index();
-            $table->integer('mis_voucher_id')->unsigned()->index();
+            $table->integer('mis_head_id')->unsigned()->index();
             $table->integer('date_id')->unsigned()->index();
             $table->integer('user_id')->unsigned()->index();
             $table->text('note')->nullable();

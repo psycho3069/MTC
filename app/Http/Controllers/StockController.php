@@ -20,6 +20,13 @@ class StockController extends Controller
     {
         $mis_head_id = $request->mis_head_id != 5 ? 4 : 5;
         $mis_heads = MISHeadChild_I::where( 'mis_head_id', $mis_head_id)->get();
+
+//        $x = MISLedgerHead::all();
+//        foreach ($x as $item) {
+//            $item->update(['credit_head_id' => 353, 'debit_head_id' => 16, ]);
+//        }
+//        return 503;
+
         return view('admin.mis.stock.index', compact('mis_heads', 'mis_head_id'));
     }
 

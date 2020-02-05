@@ -96,9 +96,7 @@
     <script>
         $(document).ready(function () {
             var units = @json($data['units']);
-
-            console.log(units)
-
+            // console.log(units)
             var i = 0;
             var items = [];
             var _token = $("input[name='_token']").val();

@@ -43,6 +43,18 @@ class MISLedgerHead extends Model
     }
 
 
+    public function misHead()
+    {
+        return $this->belongsTo('App\MISHead', 'mis_head_id');
+    }
+
+
+    public function misVouchers()
+    {
+        return $this->hasMany('App\MISVoucher_I', 'ledger_head_id');
+    }
+
+
 
 
 

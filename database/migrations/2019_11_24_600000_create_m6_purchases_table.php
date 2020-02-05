@@ -15,10 +15,10 @@ class CreateM6PurchasesTable extends Migration
     {
         Schema::create('purchases', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('mis_voucher_id')->unsigned()->index();
             $table->integer('purchase_group_id')->unsigned()->index();
+            $table->integer('current_stock_id')->unsigned()->index();
             $table->integer('stock_id')->unsigned()->index();
-            $table->double('quantity_cr', 10,3)->default(0);
-            $table->double('quantity_dr', 10,3)->default(0);
             $table->double('amount',14,2)->default(0);
             $table->integer('unit_id')->unsigned()->index();
             $table->integer('supplier_id')->unsigned()->index();

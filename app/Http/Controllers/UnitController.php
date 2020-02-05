@@ -167,7 +167,7 @@ class UnitController extends Controller
             if ( $operation)
                 $type->delete();
 
-            $operation ? $request->session()->flash('success', $cat. ' has been removed from Unit List') : $request->session()->flash('warning', '<b>Operation Unsuccessful!</b> Not all units in '.$cat.' type is Empty');
+            $operation ? $request->session()->flash('success', $cat. ' has been removed from Unit List') : $request->session()->flash('failed', '<b>Operation Unsuccessful!</b> Not all units in '.$cat.' type is Empty');
 
         }
 

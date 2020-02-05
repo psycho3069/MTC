@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="col-md-8">
+        {{ csrf_field() }}
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -12,7 +13,7 @@
                 </div>
 
                 <div class="card-body">
-                    <table class="table table-info table-hover table-bordered">
+                    <table class="table table-hover table-bordered blue">
                         <thead>
                         <tr>
                             <th></th>
@@ -30,23 +31,24 @@
                                 <td>{{ date('d-m-Y', strtotime( $item->date->date)) }}</td>
                                 <td>
                                     @foreach( $item->purchases as $purchase )
-                                        {{ $purchase->stock->name }},
+                                        {{ $purchase->ledger->name }},
                                     @endforeach
                                 </td>
                                 <td>{{ $item->purchases->sum('amount') }} tk.</td>
                                 <td>{{ $item->note ? $item->note : 'No notes' }}</td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">
-                                            More
-                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                        </button>
-                                        <div class="dropdown-content">
-                                            <a href="{{ route('purchase.show', $item->id) }}">View</a>
-                                            <a href="{{ route('purchase.edit', $item->id) }}">Edit</a>
-                                        </div>
-                                    </div>
+
+                                <td width="18%" align="right">
+                                    <a href="{{ route('purchase.show', $item->id) }}" class="btn btn-sm btn-i" title="Add Item">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ route('purchase.edit', $item->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="" class="btn btn-sm btn-danger" title="Delete" onclick="destroy({{$item->id}}); return false;">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
                                 </td>
+
                             </tr>
                         @endforeach
                         </tbody>
@@ -55,6 +57,29 @@
             </div>
         </samp>
     </div>
+@endsection
+
+
+
+@section('script')
+    <script>
+        var _token = $('input[name="_token"]').val()
+
+        function destroy(id){
+            var check = confirm('Are you sure want Delete this?')
+            if( check)
+                $.ajax({
+                    type: 'DELETE',
+                    url: 'purchase/'+id,
+                    data: {_token: _token},
+                    success: function (data) {
+                        console.log(data)
+                        window.location.href = "purchase?mis_head_id="+data;
+                    }
+                })
+        }
+
+    </script>
 @endsection
 
 

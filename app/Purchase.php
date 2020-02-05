@@ -11,14 +11,14 @@ class Purchase extends Model
 
 
     protected $fillable = [
-        'purchase_group_id', 'stock_id', 'quantity_cr', 'quantity_dr',
-        'amount', 'unit_id', 'supplier_id', 'receiver_id',
+        'purchase_group_id', 'stock_id', 'amount', 'unit_id', 'supplier_id',
+        'receiver_id', 'mis_voucher_id', 'current_stock_id',
         ];
 
 
-    public function stock()
+    public function ledger()
     {
-        return $this->belongsTo('App\Stock');
+        return $this->belongsTo('App\MISLedgerHead', 'stock_id');
     }
 
 
@@ -36,7 +36,19 @@ class Purchase extends Model
 
     public function unit()
     {
-        return $this->belongsTo('App\Unit', 'unit_id');
+        return $this->belongsTo('App\Unit');
+    }
+
+
+    public function misVoucher()
+    {
+        return $this->belongsTo('App\MISVoucher_I', 'mis_voucher_id');
+    }
+
+
+    public function currentStock()
+    {
+        return $this->belongsTo('App\MisCurrentSTock', 'current_stock_id');
     }
 
 

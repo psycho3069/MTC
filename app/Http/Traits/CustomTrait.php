@@ -88,7 +88,178 @@ trait CustomTrait{
 
 
 
-    public function computeAIS( $input, $input_date)
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    public function getDate()
+    {
+        $conf_date = Configuration::find(1)->software_start_date;
+        $date = Date::where('date', $conf_date)->first();
+        if ( !$date)
+            $date = $date->create([ 'date' => $conf_date]);
+
+        return $date;
+    }
+
+
+
+    public function neutreCrBl( $voucher, $new_amount)
+    {
+        $credit_ac = Process::where( 'date_id', $voucher->date_id)->Where( 'thead_id', $voucher->credit_head_id )->first();
+        $debit_ac = Process::where( 'date_id', $voucher->date_id)->Where( 'thead_id', $voucher->debit_head_id )->first();
+
+        $credit_ac->update([ 'credit' => $credit_ac->credit - $voucher->amount + $new_amount ]);
+        $debit_ac->update([ 'debit' => $debit_ac->debit - $voucher->amount + $new_amount ]);
+    }
+
+
+    public function voucherHistory( $voucher, $note)
+    {
+        $date = $this->getDate();
+        $data['amount'] = $voucher->amount;
+        $data['note'] = $note;
+        $data['date_id'] = $date->id;
+        $data['user_id'] = auth()->user()->id;
+
+        $voucher->voucherHistory()->create( $data);
+
+    }
+
+
+    public function updateAIS( $voucher, $data)
+    {
+        $this->neutreCrBl( $voucher, $data['new_amount']);
+        $this->voucherHistory( $voucher, $data['note']);
+        $voucher->update([ 'amount' => $data['new_amount']]);
+    }
+
+
+    public function deleteVoucher( $voucher, $data)
+    {
+        $this->neutreCrBl( $voucher, $data['new_amount']);
+        $this->voucherHistory( $voucher, $data['note']);
+        $voucher->delete();
+    }
+
+
+    public function computeAIS($ledger, $amount)
+    {
+
+        $date = $this->getDate();
+
+        $v_type = $ledger->misHead->voucherType;
+        $v_group = $date->vGroup->firstWhere( 'type_id', $v_type->id );
+        if ( !$v_group){
+            $input['v_group']['type_id'] = $v_type->id;
+            $input['v_group']['note'] = $v_type->name. 'voucher';
+            $input['v_group']['code'] = $this->voucherCode($date, $v_type->short_name);
+            $input['v_group']['user_id'] = auth()->user()->id;
+
+            $v_group = $date->vGroup()->create( $input['v_group']);
+        }
+
+        $input['voucher']['date_id'] = $date->id;
+        $input['voucher']['debit_head_id'] = $ledger->debit_head_id;
+        $input['voucher']['credit_head_id'] = $ledger->credit_head_id;
+        $input['voucher']['amount'] = $amount;
+
+        $voucher = $v_group->vouchers()->create( $input['voucher']);
+
+
+        $all_bl = Process::all();
+        $credit_ac = $all_bl->where('thead_id', $voucher->credit_head_id)->where('date_id', $date->id)->first();
+        $debit_ac = $all_bl->where('thead_id', $voucher->debit_head_id)->where('date_id', $date->id)->first();
+
+        if ( $credit_ac)
+            $credit_ac->update([ 'credit' => $credit_ac->credit + $amount, ]);
+        else
+            $date->currentBalance()->create([ 'thead_id' => $voucher->credit_head_id, 'credit' => $amount, ]);
+        if ( $debit_ac)
+            $debit_ac->update([ 'debit' => $debit_ac->debit + $amount, ]);
+        else
+            $date->currentBalance()->create([ 'thead_id' => $voucher->debit_head_id, 'debit' => $amount, ]);
+
+
+        $mis_voucher = $this->getMISVoucher($ledger, $voucher);
+
+        return $mis_voucher->id;
+    }
+
+
+
+    public function getMISVoucher($ledger, $voucher)
+    {
+        $data['mis_head_id'] = $ledger->mis_head_id;
+        $data['date_id'] = $voucher->date_id;
+        $data['voucher_id'] = $voucher->id;
+
+        $mis_voucher = $ledger->misVouchers()->create($data);
+        return $mis_voucher;
+
+    }
+
+
+
+    public function voucherCode($date, $short_name)
+    {
+        $slice_num = 0;
+        $slice_date = date('-y-m-', strtotime($date->date));
+        if ( $date->vGroup->isNotEmpty())
+            $slice_num = substr($date->vGroup->last()->code,-2);
+        $slice_num = $slice_num +1;
+        $code =  str_pad($slice_num,2, '0', STR_PAD_LEFT);
+        $code = $short_name.$slice_date.$code;
+
+        return $code;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function computeAISOld( $input, $input_date)
     {
 //        return $input;
         $date = Date::Where( 'date', $input_date )->get()->first();
@@ -145,11 +316,9 @@ trait CustomTrait{
     {
         $slice_num = 0;
         $slice_date = date('-y-m-', strtotime($date->date));
-//        return $date->vGroup;
         if ( $date->vGroup->isNotEmpty())
             $slice_num = substr($date->vGroup->last()->code,-2);
         $slice_num = $slice_num +1;
-//        return $slice_num;
         $code =  str_pad($slice_num,2, '0', STR_PAD_LEFT);
         $content['code'] = $content['short_note'].$slice_date.$code;
         $input = $mis_voucher->toArray();
@@ -211,7 +380,7 @@ trait CustomTrait{
     }
 
 
-    public function updateAIS( $old_record, $amount, $data )
+    public function updateAISOld( $old_record, $amount, $data )
     {
         $credit_ac = Process::Where( 'thead_id', $old_record->mis_voucher->credit_head_id )->where('date_id', $old_record->mis_voucher->date_id)->first();
         $debit_ac = Process::Where( 'thead_id', $old_record->mis_voucher->debit_head_id )->where('date_id', $old_record->mis_voucher->date_id)->first();

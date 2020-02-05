@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MisCurrentStock extends Model
 {
-    protected $fillable = [ 'stock_id', 'date_id', 'quantity_cr', 'quantity_dr', 'unit', 'amount', ];
+    protected $fillable = [ 'stock_id', 'date_id', 'quantity_cr', 'quantity_dr', 'unit', ];
 
 
     public function date()
@@ -18,4 +18,8 @@ class MisCurrentStock extends Model
     {
         return $this->belongsTo('App\Stock');
     }
+
+
+
+
 }

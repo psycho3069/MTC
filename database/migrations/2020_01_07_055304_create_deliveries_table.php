@@ -15,10 +15,12 @@ class CreateDeliveriesTable extends Migration
     {
         Schema::create('deliveries', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('current_stock_id')->unsigned()->index();
             $table->integer('stock_id')->unsigned()->index();
             $table->integer('date_id')->unsigned()->index();
             $table->double('quantity',10,3)->default(0);
             $table->integer('unit_id')->unsigned()->index();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

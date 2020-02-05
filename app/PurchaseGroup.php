@@ -10,13 +10,15 @@ class PurchaseGroup extends Model
     use SoftDeletes;
 
 
-    protected $fillable = [ 'type_id', 'mis_voucher_id', 'date_id', 'user_id', 'note', ];
+    protected $fillable = [ 'mis_head_id', 'date_id', 'user_id', 'note', ];
 
 
     public function purchases()
     {
         return $this->hasMany('App\Purchase', 'purchase_group_id');
     }
+
+
 
     public function date()
     {

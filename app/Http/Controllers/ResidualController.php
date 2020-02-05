@@ -7,6 +7,7 @@ use App\Booking;
 use App\Configuration;
 use App\Guest;
 use App\Http\Traits\CustomTrait;
+use App\MISLedgerHead;
 use App\Room;
 use App\Venue;
 use Illuminate\Http\Request;
@@ -121,6 +122,22 @@ class ResidualController extends Controller
         return $code;
 
     }
+
+
+    public function general()
+    {
+        $ledger_heads = MISLedgerHead::all();
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 

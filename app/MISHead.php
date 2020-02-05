@@ -10,5 +10,11 @@ class MISHead extends Model
     protected $fillable = [ 'voucher_type_id', 'name', 'description', ];
 
 
+    public function voucherType()
+    {
+        return $this->belongsTo('App\VoucherType', 'voucher_type_id');
+    }
+
+
 
 }

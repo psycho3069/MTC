@@ -96,6 +96,13 @@ Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@
 
 Route::group(['middleware' => 'auth'], function (){
 
+
+    Route::get('general/configuration/ledgers', 'ResidualController@general');
+
+
+
+
+
     Route::resource('ledgers', 'LedgerHeadController');
     Route::resource('units', 'UnitController');
 

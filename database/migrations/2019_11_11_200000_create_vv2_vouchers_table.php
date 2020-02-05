@@ -20,7 +20,7 @@ class CreateVV2VouchersTable extends Migration
             $table->integer('debit_head_id')->index()->unsigned();
             $table->integer('credit_head_id')->index()->unsigned();
             $table->double('amount',14,2);
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

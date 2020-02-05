@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Delivery extends Model
 {
-    protected $fillable = [ 'stock_id', 'date_id', 'quantity', 'unit_id',  ];
+    use SoftDeletes;
+
+    protected $fillable = [ 'stock_id', 'date_id', 'quantity', 'unit_id', 'current_stock_id', ];
 
 
     public function stock()
@@ -30,6 +33,12 @@ class Delivery extends Model
     public function date()
     {
         return $this->belongsTo('App\Date');
+    }
+
+
+    public function currentStock()
+    {
+        return $this->belongsTo('App\MisCurrentStock', 'current_stock_id');
     }
 
 

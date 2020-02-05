@@ -2,53 +2,61 @@
 
 
 @section('content')
-<style>
-        .required{
-            color: #ff0000;
-        }
-    </style>
-    <div class="col-md-10">
+
+    <div class="col-md-8">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    <b>Purchase {{ $type_id != 3 ? 'Inventory' : 'Grocery' }} Item</b>
+                    <b>Purchase {{ $cat_id != 4 ? 'Inventory' : 'Grocery' }} Item</b>
                 </div>
                 <div class="card-body">
+                    <p class="text-danger">{{ $errors->has('mis_head_id') ? $errors->first('mis_head_id') : '' }}</p>
                     <p class="text-danger">{{ $errors->has('input.*.*') ? $errors->first('input.*.*') : '' }}</p>
                     <p class="text-danger">{{ $errors->has('input.*.amount') ? $errors->first('input.*.amount') : '' }}</p>
-                    <p class="text-danger">{{ $errors->has('input.*.quantity') ? $errors->first('input.*.quantity') : '' }}</p>
+                    <p class="text-danger">{{ $errors->has('input.*.quantity_dr') ? $errors->first('input.*.quantity_dr') : '' }}</p>
 
                     <div class="row">
-
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="stock_head_id">Select a category</label>
-                                <select class="form-control" id="category" required>
-                                    @foreach( $stock_head as $item )
+                                <label>Select a category</label>
+                                <select class="form-control" id="category">
+                                    @foreach( $mis_heads as $item )
                                         <option value="{{ $item->id }}">{{ $item->name }} </option>
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label>Total Cost <small>(tk)</small>*</label>
+                                <input type="text" class="form-control" id="amount" value="0" min="0">
+                            </div>
                         </div>
-                        <div class="col-md-4">
+
+
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Item</label>
                                 <select class="form-control" id="item" >
                                     <option></option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label>Quantity*</label>
+                                <input type="text" class="form-control" id="quantity" value="0">
+                            </div>
                         </div>
-                        <div class="col-md-4">
+
+
+                        <div class="col-md-6">
                             <div class="row">
                                 <div class="form-group list-supplier">
-                                    <label>Supplier<span class="required">*</span></label>
+                                    <label>Supplier*</label>
                                     <select class="form-control" id="supplier" data-check="list">
                                         @foreach( $data['supplier'] as $item )
                                             <option value="{{ $item->id }}">{{ $item->name }} </option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-i list-sup-btn">New</button>
+
 
 
                                 <div class="form-group add-supplier">
@@ -60,38 +68,36 @@
                                     <input type="text" class="form-control" id="sup_contact">
                                 </div>
                                 <div>
+                                    <button type="button" class="btn btn-sm btn-i list-sup-btn">New</button>
                                     <button type="button" class="btn btn-sm btn-i add-sup-btn">List</button>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Unit*</label>
+                                        <select class="form-control" id="unit">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Receiver*</label>
+                                        <select class="form-control" id="receiver">
+                                            @foreach( $data['receiver'] as $item )
+                                                <option value="{{ $item->id }}">{{ $item->name }} </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group" style="width: 60%">
-                                <label>Quantity <span class="unit"></span><span class="required">*</span></label>
-                                <input type="text" class="form-control" id="quantity" min="1" value="0">
-                            </div>
-
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Total Cost <small>(tk)</small><span class="required">*</span></label>
-                                <input type="text" class="form-control" id="amount" value="0" min="0">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Receiver <span class="required">*</span></label>
-                                <select class="form-control" id="receiver">
-                                    @foreach( $data['receiver'] as $item )
-                                        <option value="{{ $item->id }}">{{ $item->name }} </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="card-footer">
                     <button type="button" id="add-button" class="btn btn-info btn-block">Add</button>
@@ -102,14 +108,14 @@
 
     <br><br>
 
-    <div class="col-md-10">
+    <div class="col-md-8">
         <samp>
             <div class="card text-left">
                 <div class="card-header"><b>Purchased List</b></div>
                 <div class="card-body purchase-list">
                     <form method="POST" action="{{ route('purchase.store') }}" >
                         {{ csrf_field() }}
-                        <input type="hidden" name="mis_ac_head_id" value="{{ $stock_head->isNotEmpty() ? $stock_head->first()->type->id : 0 }}">
+                        <input type="hidden" name="mis_head_id" value="{{ $cat_id }}">
 
                         <table class="table table-info">
                             <thead>
@@ -145,7 +151,9 @@
 @section('script')
     <script>
         $(document).ready(function () {
-            var i = 0; var items = [];
+            var units = @json($data['units']);
+            var i = 0;
+            var items = [];
             var _token = $("input[name='_token']").val();
 
             getItems()
@@ -209,16 +217,19 @@
 
 
             function getItems(){
-                var stock_head_id = $('#category').val()
+                $('#stock').val(0); $('#quantity').val(0);
+                $('#item').empty();
+                var id = $('#category').val()
+
                 $.ajax({
                     type:'POST',
                     url: '{{ route("purchase.item") }}',
-                    data: {_token:_token, stock_head_id:stock_head_id },
+                    data: {_token: _token, id: id },
                     success:function (data) {
-                        items = data['item'];
                         // console.log(data)
-                        var item = $('#item');
-                        item.empty();
+                        items = data['item'];
+                        var item = $('#item'); item.empty();
+
                         $.each(data['item'], function (key, val) {
                             item.append('<option value="'+key+'">'+val['name']+'</option>')
                         })
@@ -228,9 +239,18 @@
             }
 
 
-            function getUnit(){
-                var unit = items[$('#item').val()]['unit']
-                $('.unit').text('('+unit+')')
+
+            function getUnit() {
+                var id = $('#item').val()
+                var unit = $('#unit'); unit.empty();
+                // console.log( items[id]['unit_type_id'])
+
+                $.each( units, function (key, val) {
+                    if ( val['unit_type_id'] == items[id]['unit_type_id'])
+                        unit.append('<option value="'+val["id"]+'">'+val['name']+ '</option>')
+                })
+
+                $('#quantity').val(0)
             }
 
 
@@ -260,17 +280,31 @@
             function appendItems(){
                 add += 1;
 
-                var supplier = $('#supplier').val()
-                var category = $('#category').val()
+
+
                 var item_id = parseInt($('#item').val())
                 var quantity = parseFloat($('#quantity').val()).toFixed(3)
+                var unit_id = parseInt($('#unit').val())
+                var supplier = parseInt($('#supplier').val())
+                var category = parseInt($('#category').val())
 
-                var receiver = $('#receiver').val()
-                var amount = $('#amount').val()
+                var receiver = parseInt($('#receiver').val())
+                var amount = parseFloat($('#amount').val()).toFixed(2)
 
-                var msg1 = 'Please Select A Item'; var msg2 = 'Quantity Can\'t be 0';
 
-                console.log('1st ->'+ supplier)
+                var msg1 = 'Please Select an Item';
+                var msg2 = 'Please Enter Some Quantity to Purchase';
+                var msg3 = 'Please Select a Unit';
+                var msg4 = 'Please Select a Supplier';
+                var msg5 = 'Please Select Enter Some Amount';
+
+                var msg = !item_id ? msg1 : ( !quantity ? msg2 : ( !unit_id ? msg3 : ( !supplier ? msg4 : ( !amount ? msg5 : ''))))
+
+                // msg ? alert(msg) : alert('No msg')
+
+
+
+                // console.log('1st ->'+ supplier)
                 // getSupplier()
 
                 !item_id ? alert(msg1) : ( quantity == 0 ? alert(msg2) : '')
@@ -289,7 +323,7 @@
                         '<td>'+i+'</td>' +
                         // '<td>'+$('#category :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][stock_id]" value="'+item_id+'">'+$('#item :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity+' '+items[item_id]['unit']+'</td>' +
+                        '<td><input type="hidden" name="input['+i+'][quantity_dr]" value="'+quantity+'"> <input type="hidden" name="input['+i+'][unit_id]" value="'+unit_id+'">'+quantity+' '+ $('#unit :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][amount]" value="'+amount+'">'+amount+' tk.'+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][supplier_id]" value="'+supplier+'">'+$('#supplier :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][receiver_id]" value="'+receiver+'">'+$('#receiver :selected').text()+'</td>' +

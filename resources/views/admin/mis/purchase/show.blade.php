@@ -6,11 +6,11 @@
             <div class="card text-left">
                 {{--                <div class="card-header"> <strong>All {{ ucfirst($categories->first()->category) }} Item</strong></div>--}}
                 <div class="card-header">
-                    <b>{{ date('d M, Y', strtotime( $p_group->date->date )) }} Purchase</b>
+                    <b>{{ date('d-m-Y', strtotime( $p_group->date->date )) }} Purchase</b>
                 </div>
 
                 <div class="card-body">
-                    <table class="table table-info table-hover">
+                    <table class="table table-hover table-bordered blue">
                         <thead>
                         <tr>
                             <th></th>
@@ -25,11 +25,11 @@
                         @foreach( $p_group->purchases as $item )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->stock->name }}</td>
-                                <td>{{ $item->quantity_dr.' '.$item->stock->unit }}</td>
-                                <td>{{ $item->amount }} tk.</td>
-                                <td>{{ $item->supplier->name }}</td>
-                                <td>{{ $item->receiver->name }}</td>
+                                <td class="text-center">{{ $item->ledger->name }}</td>
+                                <td class="text-right">{{ $item->currentStock->quantity_dr * $item->unit->multiply_by.' '.$item->unit->name }}</td>
+                                <td class="text-right">{{ $item->amount }} tk.</td>
+                                <td class="text-center">{{ $item->supplier->name }}</td>
+                                <td class="text-center">{{ $item->receiver->name }}</td>
                             </tr>
                         @endforeach
                         </tbody>
