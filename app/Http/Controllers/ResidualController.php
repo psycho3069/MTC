@@ -133,7 +133,7 @@ class ResidualController extends Controller
         $mis_head = MISHead::find( $type_id);
         $data['theads'] = TransactionHead::all();
 
-        return view('admin.configuration.general.test', compact('data', 'mis_head'));
+        return view('admin.configuration.general.ledger', compact('data', 'mis_head'));
     }
 
 
@@ -162,11 +162,7 @@ class ResidualController extends Controller
         }
 
 
-
-
         return back()->with('update', 'Operation Successful!');
-
-
 
     }
 

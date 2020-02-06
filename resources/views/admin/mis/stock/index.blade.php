@@ -24,19 +24,28 @@
                         @foreach( $mis_heads as $mis_head )
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    <b><code>{{ $mis_head->name }}</code></b>
+                                <td class="tree">
                                     <ul>
-                                        @foreach( $mis_head->ledger as $item )
-                                            <li>
-                                                <span>
-                                                    {{ $item->name }} ({{ $item->currentStock ? $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr').' '.$item->unitType->name: 0 }})
-                                                    <a href="" class="delete" id="{{ $item->id }}" onclick="destroy(this.id, 1); return false;">
-                                                        <i title="Delete" class="fa fa-trash-o delete" aria-hidden="true"></i>
-                                                    </a>
-                                                </span>
-                                            </li>
-                                        @endforeach
+                                        <li>
+                                            <span>
+                                                <i class="fa fa-plus-circle"></i>
+                                                <b><code>{{ $mis_head->name }}</code></b>
+                                            </span>
+
+                                            <ul>
+                                                @foreach( $mis_head->ledger as $item )
+                                                    <li class="collapse-i">
+                                                        <span>
+                                                            {{ $item->name }} ({{ $item->currentStock ? $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr').' '.$item->unitType->name: 0 }})
+                                                            <a href="" class="delete" id="{{ $item->id }}" onclick="destroy(this.id, 1); return false;">
+                                                                <i title="Delete" class="fa fa-trash-o delete" aria-hidden="true"></i>
+                                                            </a>
+                                                        </span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+
+                                        </li>
                                     </ul>
 
                                 </td>
@@ -66,6 +75,31 @@
 
 
 @section('script')
+
+    <script>
+
+        $(function () {
+            $('.collapse-i').hide()
+
+            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+
+            $('.tree li.parent_li > span').on('click', function (e) {
+                var children = $(this).parent('li.parent_li').find(' > ul > li');
+                if (children.is(":visible")) {
+                    children.hide('fast');
+                    $(this).attr('title', 'Expand this branch').find(' > i').addClass('fa-plus-circle').removeClass('fa-minus-circle');
+                } else {
+                    children.show('fast');
+                    $(this).attr('title', 'Collapse this branch').find(' > i').addClass('fa-minus-circle').removeClass('fa-plus-circle');
+                }
+                e.stopPropagation();
+            });
+        });
+    </script>
+
+
+
+
     <script>
 
         var _token = $('input[name="_token"]').val()

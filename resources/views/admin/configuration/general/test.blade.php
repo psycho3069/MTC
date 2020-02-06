@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-6">
+    <div class="col-md-8">
         <samp>
             <form method="POST" action="{{ route('update.ledger') }}" >
                 {{ csrf_field() }}
@@ -10,85 +10,67 @@
                     <div class="card-header text-left">
                         <b>Ledger Head Configuration</b>
                     </div>
+                    <code>
+                        <div class="card-body text-left">
+                            <ul>
+                                @foreach( $data['mis_head'] as $key => $mis_head )
+                                    <li style="margin-top: 20px;">
+                                <span>
+                                    {{ $mis_head->name }}
 
+                                    <select class="ufat col-md-2" name="input[kate][{{ $mis_head->id }}][credit_head_id]">
+                                        @foreach( $data['theads'] as $thead )
+                                            <option value="{{ $thead->id }}" >{{ $thead->name }} [ {{ $thead->code }} ]</option>
+                                        @endforeach
+                                    </select>
+                                    <select class="ufat col-md-2" name="input[kate][{{ $mis_head->id }}][debit_head_id]">
+                                        @foreach( $data['theads'] as $thead )
+                                            <option value="{{ $thead->id }}" >{{ $thead->name }} [ {{ $thead->code }} ]</option>
+                                        @endforeach
+                                    </select>
 
-                    <div class="card-body text-left">
-                        <code>
-                            <div class="tree">
-
-                                <ul>
-                                    <li>
-
-                                        <input type="checkbox" id="override" title="Override" >
-
-                                        <span>
-                                            <i class="fa fa-minus-square"></i>
-                                            {{ $mis_head->id != 5 ? 'Grocery' : 'Inventory' }}
-                                        </span>
-
-                                        <select class="ufat col-md-4" name="input[kate][{{ $mis_head->id }}][credit_head_id]">
-                                            @foreach( $data['theads'] as $thead )
-                                                <option value="{{ $thead->id }}" {{ $mis_head->credit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
-                                            @endforeach
-                                        </select>
-                                        <select class="ufat col-md-4" name="input[kate][{{ $mis_head->id }}][debit_head_id]">
-                                            @foreach( $data['theads'] as $thead )
-                                                <option value="{{ $thead->id }}" {{ $mis_head->debit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
-                                            @endforeach
-                                        </select>
-
+                                </span>
 
                                         <ul>
                                             @foreach( $mis_head->child as $mis_cat )
-                                                <li class="kate" style="margin-top: 10px;">
-                                                    <input type="hidden" name="input[mis_head][{{ $mis_cat->id }}][checked]" value="{{ 0 }}">
-                                                    <input type="checkbox" class="checked" name="input[mis_head][{{ $mis_cat->id }}][checked]" value="{{ 1 }}" {{ $mis_cat->checked ? 'checked' : '' }}>
+                                                @if( $mis_cat->ledger->isNotEmpty() )
+                                                    <li style="margin-top: 10px;">
                                                     <span>
-                                                        <i class="fa fa-plus-square"></i>
                                                         {{ $mis_cat->name }}
                                                     </span>
-
-                                                    <ul>
-                                                        <li class="account" style="margin-top: 15px;">
-                                                            <span>
-                                                                <i class="fa fa-tag" aria-hidden="true"></i>
+                                                        <ul>
+                                                            <li style="margin-top: 10px;">
                                                                 Credit Account
-                                                            </span>
-                                                            <div class="col-md-6">
-                                                                <select class="form-control ufat" name="input[mis_head][{{ $mis_cat->id }}][credit_head_id]">
-                                                                    @foreach( $data['theads'] as $thead )
-                                                                        <option value="{{ $thead->id }}" {{ $mis_cat->credit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                        </li>
-
-
-                                                        <li class="account" style="margin-top: 10px;">
-                                                            <span>
-                                                                <i class="fa fa-tag" aria-hidden="true"></i>
+                                                                <div class="col-md-4">
+                                                                    <select class="form-control ufat" name="input[mis_head][{{ $mis_cat->id }}][credit_head_id]">
+                                                                        @foreach( $data['theads'] as $thead )
+                                                                            <option value="{{ $thead->id }}" {{ $mis_cat->ledger->first()->credit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </li>
+                                                            <li style="margin-top: 10px;">
                                                                 Debit Account
-                                                            </span>
-
-                                                            <div class="col-md-6">
-                                                                <select class="form-control ufat" name="input[mis_head][{{ $mis_cat->id }}][debit_head_id]">
-                                                                    @foreach( $data['theads'] as $thead )
-                                                                        <option value="{{ $thead->id }}" {{ $mis_cat->debit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                </li>
+                                                                <div class="col-md-4">
+                                                                    <select class="form-control ufat" name="input[mis_head][{{ $mis_cat->id }}][debit_head_id]">
+                                                                        @foreach( $data['theads'] as $thead )
+                                                                            <option value="{{ $thead->id }}" {{ $mis_cat->ledger->first()->debit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                @endif
                                             @endforeach
                                         </ul>
 
                                     </li>
-                                </ul>
-                            </div>
-                        </code>
-
-                    </div>
+                                    <br><br><br><br>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </code>
 
 
                     <div class="card-footer">
@@ -103,23 +85,21 @@
 
 
 
+@section('style')
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+@endsection
+
+
+
+
+
+
 @section('script')
 
 
-
     <script>
-
-       $('#override').click(function () {
-           $('.checked').not(this).prop('checked', this.checked)
-
-       })
-
-
         $(function () {
-            $('.account').hide()
-
             $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-
             $('.tree li.parent_li > span').on('click', function (e) {
                 var children = $(this).parent('li.parent_li').find(' > ul > li');
                 if (children.is(":visible")) {
