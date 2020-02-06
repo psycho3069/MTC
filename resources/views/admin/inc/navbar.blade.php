@@ -42,6 +42,8 @@
           </a>
           <div class="dropdown-menu sm-menu">
               <a class="dropdown-item" href="{{ route('units.index') }}">Unit</a>
+              <a class="dropdown-item" href="{{ route('configure.ledger', 1) }}">Grocery</a>
+              <a class="dropdown-item" href="{{ route('configure.ledger', 2) }}">Inventory</a>
           </div>
       </li>
 

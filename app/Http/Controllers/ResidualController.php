@@ -7,8 +7,11 @@ use App\Booking;
 use App\Configuration;
 use App\Guest;
 use App\Http\Traits\CustomTrait;
+use App\MISHead;
+use App\MISHeadChild_I;
 use App\MISLedgerHead;
 use App\Room;
+use App\TransactionHead;
 use App\Venue;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -25,7 +28,7 @@ class ResidualController extends Controller
         $data['bill'] = [];
 
         foreach ($bills as $bill) {
-            if ( $bill->discount || $bill->restaurant->sum('discount') || $bill->booking->sum('discount'))
+            if ( $bill->discount != 0 || $bill->restaurant->sum('discount') != 0 || $bill->booking->sum('discount') != 0 )
                 $data['bill'][] = $bill;
         }
 //        return $data;
@@ -124,9 +127,52 @@ class ResidualController extends Controller
     }
 
 
-    public function general()
+    public function ledger( $type)
     {
-        $ledger_heads = MISLedgerHead::all();
+        $type_id = $type != 1 ? 4 : 5;
+
+        $data['ledger_heads'] = MISLedgerHead::all();
+
+        $mis_head = MISHead::find( $type_id);
+        $data['theads'] = TransactionHead::all();
+
+        return view('admin.configuration.general.test', compact('data', 'mis_head'));
+    }
+
+
+    public function updateLedger(Request $request)
+    {
+//        return $request->all();
+
+        $input = $request->input;
+
+
+        $mis_types = MISHead::get();
+
+
+        foreach ($input['kate'] as $key => $item) {
+            $mis_type = $mis_types->find( $key);
+            $mis_type->ledgerHeads()->update( $item);
+        }
+
+
+
+
+        $mis_head_i = MISHeadChild_I::get();
+
+        foreach ($input['mis_head'] as $key => $item) {
+            $heath = $mis_head_i->find( $key);
+            $heath->ledger()->update( $item);
+        }
+
+
+
+
+
+        return back();
+
+
+
     }
 
 

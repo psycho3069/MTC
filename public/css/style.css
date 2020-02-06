@@ -226,3 +226,9 @@ strong {
     border: 1px solid blue !important;
     border-bottom-color: blue !important;
 }
+
+
+
+ul {
+    list-style-type: none;
+}
