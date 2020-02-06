@@ -18,7 +18,7 @@
 @if( session('update'))
     <div class="alert alert-primary alert-block">
         <button type="button" class="close" data-dismiss="alert">×</button>
-        {!! session('update') !!}
+        <span style="color: darkblue;">{!! session('update') !!}</span>
     </div>
 @endif
 

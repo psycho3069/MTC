@@ -129,10 +129,7 @@ class ResidualController extends Controller
 
     public function ledger( $type)
     {
-        $type_id = $type != 1 ? 4 : 5;
-
-        $data['ledger_heads'] = MISLedgerHead::all();
-
+        $type_id = $type != 1 ? 5 : 4;
         $mis_head = MISHead::find( $type_id);
         $data['theads'] = TransactionHead::all();
 
@@ -142,34 +139,32 @@ class ResidualController extends Controller
 
     public function updateLedger(Request $request)
     {
-//        return $request->all();
-
-        $input = $request->input;
-
-
+        $input['kate'] = $request->input['kate'];
+        $input['mis_head'] = isset( $request->input['mis_head'] ) ? $request->input['mis_head'] : [];
         $mis_types = MISHead::get();
 
-
-        foreach ($input['kate'] as $key => $item) {
+        foreach ( $input['kate'] as $key => $item) {
             $mis_type = $mis_types->find( $key);
-            $mis_type->ledgerHeads()->update( $item);
+            $mis_type->update( $item);
+
+            foreach ( $input['mis_head'] as $id => $val ) {
+                $item['checked'] = $val['checked'];
+
+                if ( isset( $val['checked']) && $val['checked'] == true)
+                    $val = $item;
+
+                $heath = $mis_type->child->find( $id);
+                $heath->update( $val);
+                $heath->ledger()->update( $val);
+
+            }
+
         }
 
 
 
 
-        $mis_head_i = MISHeadChild_I::get();
-
-        foreach ($input['mis_head'] as $key => $item) {
-            $heath = $mis_head_i->find( $key);
-            $heath->ledger()->update( $item);
-        }
-
-
-
-
-
-        return back();
+        return back()->with('update', 'Operation Successful!');
 
 
 

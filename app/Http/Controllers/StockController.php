@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\MISHead;
 use App\MISHeadChild_I;
 use App\MISLedgerHead;
 use App\Stock;
@@ -111,17 +112,25 @@ class StockController extends Controller
 
         $input = $request->all();
 
-        if ($request->cat_id){
+
+        $mis_head = MISHead::find( $input['mis_head_id']);
+
+        if ( $request->cat_id){
+            $kate = MISHeadChild_I::find( $request->cat_id);
             $code= MISLedgerHead::withTrashed()->orderBy('id', 'desc')->first();
             $input['code'] = !$code ? 1000 : $code->code + 100;
-            $category = MISHeadChild_I::find( $request->cat_id);
-            $stock = $category->ledger()->create( $input);
+
+            $input['credit_head_id'] = $kate->credit_head_id;
+            $input['debit_head_id'] = $kate->debit_head_id;
+            $stock = $kate->ledger()->create( $input);
 
             $stock->currentStock()->create(['date_id' => 0 ]);
             $request->session()->flash('create', '<b>'.$stock->name.'</b> has been added to the <b>'.$stock->ledgerable->name.'</b> category list');
         }
         else{
-            $item = MISHeadChild_I::create( $input);
+            $input['credit_head_id'] = $mis_head->credit_head_id;
+            $input['debit_head_id'] = $mis_head->debit_head_id;
+            $item = $mis_head->child()->create( $input);
             $request->session()->flash('create', '<b>'.$item->name.'</b> has been added to the category list');
         }
         return redirect('stock?mis_head_id='.$request->mis_head_id);

@@ -11,8 +11,8 @@ class MISLedgerHead extends Model
 
     protected $table = 'm3_mis_ledger_heads';
 
-    protected $fillable = [ 'mis_head_id', 'name', 'credit_head_id', 'debit_head_id', 'code',
-                            'amount', 'description', 'unit_type_id', 'ledgerable_id', 'ledgerable_type', ];
+    protected $fillable = [ 'mis_head_id', 'name', 'credit_head_id', 'debit_head_id', 'code', 'amount',
+                            'description', 'unit_type_id', 'ledgerable_id', 'ledgerable_type', 'checked', ];
 
 
     public function ledgerable()
