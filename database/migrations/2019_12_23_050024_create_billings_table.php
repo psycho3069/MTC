@@ -16,6 +16,7 @@ class CreateBillingsTable extends Migration
         Schema::create('billings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('guest_id')->unsigned()->index();
+            $table->integer('date_id')->unsigned()->index();
             $table->integer('mis_voucher_id')->unsigned()->index();
             $table->boolean('checkout_status')->default(0);
             $table->boolean('reserved')->default(0);

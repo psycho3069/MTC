@@ -27,6 +27,11 @@ class MISHead extends Model
         return $this->hasMany('App\MISLedgerHead', 'mis_head_id');
     }
 
+    public function ledger()
+    {
+        return $this->morphMany('App\MISLedgerHead', 'ledgerable');
+    }
+
 
 
 

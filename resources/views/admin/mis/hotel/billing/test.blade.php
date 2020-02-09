@@ -20,7 +20,7 @@
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6 text-right">
                         <p>
-                            <code>Date: {{ date('jS F, Y') }}</code>
+                            <code>Date: {{ date('jS F, Y', strtotime( $bill->date->date)) }}</code>
 
                         </p>
                         <p>

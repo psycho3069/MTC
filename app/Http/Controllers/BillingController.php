@@ -167,8 +167,8 @@ class BillingController extends Controller
 
         foreach ($bill->booking as $key => $book) {
 //            return $key;
-            $days = ( strtotime($book->end_date) - strtotime($book->start_date)) / (60*60*24);
-            $data['discount'][$book->id] = $days != 0 ? $book->discount / $days : 0;
+            $days = ( strtotime( $book->end_date) - strtotime( $book->start_date)) / (60*60*24);
+            $data['discount'][$book->id] = $days != 0 ? $book->discount / $days : $book->discount;
         }
 
         return view('admin.mis.hotel.billing.edit', compact('bill', 'data'));
@@ -197,16 +197,10 @@ class BillingController extends Controller
         $old_bill = 0; $new_bill = 0;
 
         foreach ( $input['booking'] as $key => $item) {
-            $room = $bill->booking->find($key);
-            $days = ( strtotime( $item['end_date']) - strtotime( $item['start_date'])) / (60*60*24);
-            $days = $room->room_id < 50 || $room->room_id > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
-
-            $price = $room->room_id < 50 || $room->room_id > 499 ? $room->room->price : $room->venue->price;
-            $item['discount'] = $item['discount'] * $days;
-            $item['bill'] = $price * $days - $item['discount'];
-
-            $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
-            $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
+//            return $input['booking'];
+            $room = $bill->booking->find( $key);
+            $item['room_id'] = $room->room_id;
+            $item = $this->getRoomInfo( $item);
 
             $old_vat = $room->vat;
             $old_bill += $room->bill;
@@ -219,22 +213,12 @@ class BillingController extends Controller
 
         if ( isset($input['new_booking']) && $count < 1)
             foreach ($input['new_booking'] as $item) {
-                $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
-                $days = $item['room_id'] < 50 || $item['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
-
-                $price = $item['room_id'] < 50 || $item['room_id'] > 499 ?  Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
-                $item['discount'] = $item['discount'] * $days;
-                $item['bill'] = $price * $days - $item['discount'];
+                $item = $this->getRoomInfo( $item);
                 $item['guest_id'] = $bill->guest_id;
-                $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
-                $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
                 $item['vat'] = $vat;
-                $bill->booking()->create( $item);
-
+//                $bill->booking()->create( $item);
                 $new_bill += $item['bill'];
             }
-
-
 
         $old_bill += ($old_bill * $old_vat) / 100;
         $new_bill += ($new_bill * $vat) / 100;
@@ -244,6 +228,8 @@ class BillingController extends Controller
 
 
         //updating AIS
+
+        $data['note'] = 'Edited From MIS Bill- [id: '.$bill->id .']';
         $amount['old'] = $bill->advance_paid;
         $amount['new'] = $input['billing']['advance_paid'];
         $data['note'] = 'Edited From MIS Bill';

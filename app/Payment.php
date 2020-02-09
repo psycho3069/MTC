@@ -9,7 +9,7 @@ class Payment extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = [ 'billing_id', 'amount', 'note', 'mis_voucher_id', 'payment_type', ];
+    protected $fillable = [ 'billing_id', 'date_id', 'amount', 'note', 'mis_voucher_id', 'payment_type', ];
 
 
     public function mis_voucher()

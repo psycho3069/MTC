@@ -89,7 +89,6 @@ trait CustomTrait{
 
 
 
-    
 
 
 
@@ -97,9 +96,23 @@ trait CustomTrait{
 
 
 
+    public function getRoomInfo( $room)
+    {
+//        return $room;
 
+        $room['start_date'] = date('Y-m-d', strtotime($room['start_date']));
+        $room['end_date'] = date('Y-m-d', strtotime($room['end_date']));
 
+        $days = (strtotime( $room['end_date']) - strtotime( $room['start_date']) ) / (60 * 60 * 24);
+        $days = $room['room_id'] < 50 || $room['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
 
+        $room_price = $room['room_id'] < 50 || $room['room_id'] > 499 ? Room::find($room['room_id'])->price : Venue::find( $room['room_id'])->price;
+        $room['discount'] = $room['discount'] * $days;
+        $room['bill'] = $room_price * $days - $room['discount'];
+        $room['days'] = $days;
+
+        return $room;
+    }
 
 
     public function getDate()
@@ -137,7 +150,7 @@ trait CustomTrait{
     }
 
 
-    public function updateAIS( $voucher, $data)
+    public function updateAIS( $voucher, $data)    /*data[note], data[new_amount]*/
     {
         $this->neutreCrBl( $voucher, $data['new_amount']);
         $this->voucherHistory( $voucher, $data['note']);
@@ -223,6 +236,13 @@ trait CustomTrait{
 
         return $code;
     }
+
+
+
+
+
+
+
 
 
 

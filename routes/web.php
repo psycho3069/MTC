@@ -64,13 +64,13 @@ Route::get('insert', function (){
 
 
 
-//    DB::table('m1_mis_heads')->insert([
-//        ['name' => 'Hotel Receipt', 'voucher_type_id' => 10],
-//        ['name' => 'Venue Receipt', 'voucher_type_id' => 10],
-//        ['name' => 'Restaurant Receipt', 'voucher_type_id' => 10],
-//        ['name' => 'Restaurant Payment', 'voucher_type_id' => 11],
-//        ['name' => 'Inventory Payment', 'voucher_type_id' => 11],
-//    ]);
+    DB::table('m1_mis_heads')->insert([
+        ['name' => 'Hotel Receipt', 'voucher_type_id' => 10, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+        ['name' => 'Venue Receipt', 'voucher_type_id' => 10,  'credit_head_id' => 12, 'debit_head_id' => 353, ],
+        ['name' => 'Restaurant Receipt', 'voucher_type_id' => 10, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+        ['name' => 'Restaurant Payment', 'voucher_type_id' => 11, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+        ['name' => 'Inventory Payment', 'voucher_type_id' => 11, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+    ]);
 
 
 //    return \App\MISHead::all();
@@ -78,12 +78,12 @@ Route::get('insert', function (){
     $theads = TransactionHead::all();
 
     foreach ($theads as $thead) {
-//        if ( !$thead->currentBalance){
+        if ( $thead->currentBalance->isNotEmpty()){
             $thead->currentBalance()->create([
                 'debit' => $thead->debit,
                 'credit' => $thead->credit,
             ]);
-//        }
+        }
     }
 
     return redirect('process');

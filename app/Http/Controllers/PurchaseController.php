@@ -181,7 +181,7 @@ class PurchaseController extends Controller
 
         $input = collect($request->input);
         $p_group = PurchaseGroup::find($id);
-        $data['note'] = 'Updated From Grocery Purchase';
+        $data['note'] = 'Updated From Grocery Purchase- [id: '.$p_group->id .']';
 
         foreach ($input as $key => $item) {
             $purchase = $p_group->purchases->find($key);

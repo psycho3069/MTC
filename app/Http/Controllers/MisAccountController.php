@@ -25,10 +25,11 @@ class MisAccountController extends Controller
 
     public function index()
     {
-        $type = MisAccountHead::orderBy('id')->get();
-        $theads = TransactionHead::where('code','!=', 353)->get();
+//        $type = MisAccountHead::orderBy('id')->get();
+//        $theads = TransactionHead::where('code','!=', 353)->get();
         $conf = Configuration::all();
-        return view('admin.mis.index', compact('type', 'theads', 'conf'));
+//        return view('admin.mis.index', compact('type', 'theads', 'conf'));
+        return view('admin.mis.index', compact('conf'));
 
     }
 
@@ -64,10 +65,10 @@ class MisAccountController extends Controller
             Configuration::where( 'name', $key)->update([ 'value' => $val]);
         }
 
-        $accounts = MisAccountHead::all();
-        foreach ( $input as $key => $item) {
-            $accounts->find($key)->update( $item);
-        }
+//        $accounts = MisAccountHead::all();
+//        foreach ( $input as $key => $item) {
+//            $accounts->find($key)->update( $item);
+//        }
         return redirect()->back()->with('update', 'Configuration updated successfully');
     }
 

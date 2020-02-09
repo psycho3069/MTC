@@ -7,6 +7,8 @@ use App\Booking;
 use App\Configuration;
 use App\Guest;
 use App\Http\Traits\CustomTrait;
+use App\MISHead;
+use App\MISLedgerHead;
 use App\Room;
 use App\Venue;
 use App\Visitor;
@@ -25,6 +27,7 @@ class BookingController extends Controller
     public function index()
     {
         $billing = Billing::all();
+
         return view('admin.mis.hotel.booking.index', compact('billing'));
     }
 
@@ -103,11 +106,12 @@ class BookingController extends Controller
             'booking.*.*' => 'required',
         ]);
 
-
         $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
+        $date = $this->getDate();
 
         $input = $request->except('_token');
         $input['billing']['code'] = $this->code();
+        $input['billing']['date_id'] = $date->id;
 
         $count = $this->checkBooking($input['booking']);
         if ( $count > 0)
@@ -115,60 +119,41 @@ class BookingController extends Controller
 
         $check_guest = Guest::where( 'contact_no', $input['guest']['contact_no'])->get()->last();
         $guest = Guest::create($input['guest']);
+
         if ( $check_guest)
             $guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
 
-        //total bill
-//        $charge['room'] = 0; $charge['venue'] = 0; $hotel_bill = 0;
+        $charge['room'] = 0; $charge['venue'] = 0; $hotel_bill = 0;
 
-        $others['vat'] = $vat;
-        $others['guest_id'] = $guest->id;
+        foreach ($input['booking'] as $key => $item) {
+            $item = $this->getRoomInfo($item);
+            $hotel_bill += $item['bill'];
 
-        $data = $this->getBookingInfo( $input['booking'], $others);
-
-        $input['booking'] = $data['booking'];
-        $hotel_bill = $data['hotel_bill'];
-        $charge = $data['charge'];
-
-
-//        foreach ($input['booking'] as $key => $item) {
-//
-//            $days = ( strtotime($item['end_date']) - strtotime($item['start_date']) ) / (60 * 60 * 24);
-//            $days = $item['room_id'] < 50 || $item['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
-//
-//            $room_price = $item['room_id'] < 50 || $item['room_id'] > 499 ? Room::find($item['room_id'])->price : Venue::find( $item['room_id'])->price;
-//            $hotel_bill += $room_price * $days - $item['discount'] * $days;
-//
-//            $booking['bill'][$item['room_id']] = $room_price * $days - $item['discount'] * $days;
-//            $booking['discount'][$item['room_id']] = $item['discount'] * $days;
-//
-//
-//            if ( $item['room_id'] < 50 || $item['room_id'] > 499 )
-//                $charge['room'] += $booking['bill'][$item['room_id']];
-//            else
-//                $charge['venue'] += $booking['bill'][$item['room_id']];
-//
-//        }
+            $item['booking_status'] = 2;
+            $item['guest_id'] = $guest->id;
+            $item['vat'] = $vat;
+            $input['booking'][$key] = $item;
+            $item['room_id'] < 50 || $item['room_id'] > 499  ? $charge['room'] += $item['bill'] : $charge['venue'] += $item['bill'];
+        }
 
         $hotel_vat = $hotel_bill * $vat / 100;
+
         $input['billing']['total_bill'] = $hotel_bill + $hotel_vat;
-        $input['billing']['total_paid'] = $input['billing']['advance_paid'];
+        $input['billing']['total_paid'] = $input['billing']['advance_paid'] ? $input['billing']['advance_paid'] : 0;
         $input['billing']['guest_id'] = $guest->id;
 
-        $payment = $this->ais( $charge, $input['billing']['total_paid']);
+        $ledger = $charge['room'] > $charge['venue'] ? MISLedgerHead::where( 'code', 1000)->first() : MISLedgerHead::where( 'code', 1100)->first();
+
+        $payment['amount'] = $input['billing']['total_paid'];
+        $payment['mis_voucher_id'] = $this->computeAIS( $ledger, $payment['amount']);
+        $payment['note'] = 'Advance Payment';
+
         $input['billing']['mis_voucher_id'] = $payment['mis_voucher_id'];
         $billing = Billing::create( $input['billing']);
         $billing->payments()->create($payment);
 
         //Store Booking Data
         foreach ($input['booking'] as $item) {
-//            $item['guest_id'] = $guest->id;
-//            $item['start_date'] = date('Y-m-d', strtotime($item['start_date']));
-//            $item['end_date'] = date('Y-m-d', strtotime($item['end_date']));
-//            $item['bill'] = $booking['bill'][$item['room_id']];
-//            $item['discount'] = $booking['discount'][$item['room_id']];
-//            $item['vat'] = $vat;
-            $item['booking_status'] = 2;
             $billing->booking()->create($item);
         }
 
@@ -181,7 +166,7 @@ class BookingController extends Controller
     }
 
 
-    public function ais( $charge, $amount)
+    public function aisOld( $charge, $amount)
     {
         if ( $charge['room'] > $charge['venue']){
             $data['mis_ac_head_id'] = 1;
@@ -194,12 +179,13 @@ class BookingController extends Controller
         }
         $data['amount'] = $amount;
         $date = Configuration::find(1)->software_start_date;
-        $mis_voucher = $this->computeAIS( $data, $date);
+        $mis_voucher = $this->computeAISOld( $data, $date);
         $data['mis_voucher_id'] = $mis_voucher->id;
         $data['note'] = 'Advance Payment';
 
         return $data;
     }
+
 
 
     public function code()

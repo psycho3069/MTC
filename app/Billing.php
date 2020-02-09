@@ -10,7 +10,7 @@ class Billing extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'guest_id', 'mis_voucher_id', 'checkout_status', 'code',
+        'guest_id', 'mis_voucher_id', 'checkout_status', 'code', 'date_id',
         'total_bill', 'advance_paid', 'total_paid', 'discount', 'note', 'reserved', 'service_charge'
         ];
 
@@ -41,6 +41,18 @@ class Billing extends Model
     public function mis_voucher()
     {
         return $this->belongsTo('App\MisVoucher', 'mis_voucher_id');
+    }
+
+
+    public function misVoucher()
+    {
+        return $this->belongsTo('App\MisVoucher_I', 'mis_voucher_id');
+    }
+
+
+    public function date()
+    {
+        return $this->belongsTo('App\date');
     }
 
 }

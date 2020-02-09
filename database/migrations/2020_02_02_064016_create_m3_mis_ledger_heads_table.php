@@ -22,7 +22,7 @@ class CreateM3MisLedgerHeadsTable extends Migration
             $table->integer('code')->unsigned()->unique();
             $table->double('amount', 14, 2)->default(0);
             $table->text('description')->nullable();
-            $table->integer('unit_type_id')->unsigned()->index();
+            $table->integer('unit_type_id')->unsigned()->index()->nullable();
             $table->integer('ledgerable_id');
             $table->string('ledgerable_type');
             $table->boolean('checked')->default(true);
