@@ -62,8 +62,6 @@ include('checkout_routes.php');
 
 Route::get('insert', function (){
 
-
-
 //    DB::table('m1_mis_heads')->insert([
 //        ['name' => 'Hotel Receipt', 'voucher_type_id' => 10, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
 //        ['name' => 'Venue Receipt', 'voucher_type_id' => 10,  'credit_head_id' => 12, 'debit_head_id' => 353, ],
@@ -85,7 +83,7 @@ Route::get('insert', function (){
     $theads = TransactionHead::all();
 
     foreach ($theads as $thead) {
-        if ( $thead->currentBalance->isNotEmpty()){
+        if ( $thead->currentBalance->isEmpty()){
             $thead->currentBalance()->create([
                 'debit' => $thead->debit,
                 'credit' => $thead->credit,

@@ -22,13 +22,48 @@ class StockController extends Controller
         $mis_head_id = $request->mis_head_id != 5 ? 4 : 5;
         $mis_heads = MISHeadChild_I::where( 'mis_head_id', $mis_head_id)->get();
 
-//        $x = MISLedgerHead::all();
-//        foreach ($x as $item) {
-//            $item->update(['credit_head_id' => 353, 'debit_head_id' => 16, ]);
-//        }
-//        return 503;
-
         return view('admin.mis.stock.index', compact('mis_heads', 'mis_head_id'));
+    }
+
+
+    public function test()
+    {
+
+
+        $x = MISLedgerHead::all();
+        foreach ($x as $key => $item) {
+//            $item->update(['credit_head_id' => 353, 'debit_head_id' => 16, ]);
+            $item->update(['unit_type_id' => 1]);
+        }
+
+
+
+        $main = MISHead::find([4, 5]);
+        $stock_heads = StockHead::all();
+        $code = 1300;
+
+        foreach ($stock_heads as $stock_head) {
+
+            $x = $stock_head->type_id == 3 ? $main->find(4) : $main->find(5);
+            $mis_head = $x->child()->create([
+                'name' => $stock_head->name,
+                'credit_head_id' => $x->credit_head_id,
+                'debit_head_id' => $x->debit_head_id,
+            ]);
+
+            foreach ( $stock_head->stock as $stock){
+                $code += 100;
+                $ledger = $mis_head->ledger()->create([
+                    'name' => $stock->name,
+                    'code' => $code,
+                    'mis_head_id' => $mis_head->mis_head_id,
+                    'credit_head_id' => $mis_head->credit_head_id,
+                    'debit_head_id' => $mis_head->debit_head_id,
+                ]);
+                $ledger->currentStock()->create([ 'date_id' => 0]);
+            }
+        }
+
     }
 
 

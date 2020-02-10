@@ -21,9 +21,10 @@
                         </tr>
                         </thead>
                         <tbody>
+                        @php( $i = 0)
                         @foreach( $mis_heads as $mis_head )
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ ++$i }}</td>
                                 <td class="tree">
                                     <ul>
                                         <li>
@@ -78,18 +79,23 @@
 
     <script>
 
+        setTimeout(function () {
+            $('.collapse-i').hide(2500)
+        }, 500)
+
+
         $(function () {
-            $('.collapse-i').hide()
+
 
             $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
 
             $('.tree li.parent_li > span').on('click', function (e) {
                 var children = $(this).parent('li.parent_li').find(' > ul > li');
                 if (children.is(":visible")) {
-                    children.hide('fast');
+                    children.hide(500);
                     $(this).attr('title', 'Expand this branch').find(' > i').addClass('fa-plus-circle').removeClass('fa-minus-circle');
                 } else {
-                    children.show('fast');
+                    children.show(500);
                     $(this).attr('title', 'Collapse this branch').find(' > i').addClass('fa-minus-circle').removeClass('fa-plus-circle');
                 }
                 e.stopPropagation();
