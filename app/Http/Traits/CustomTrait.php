@@ -14,6 +14,18 @@ use App\Venue;
 trait CustomTrait{
 
 
+
+    public function getDate()
+    {
+        $conf_date = Configuration::find(1)->software_start_date;
+        $date = Date::where('date', $conf_date)->first();
+        if ( !$date)
+            $date = $date->create([ 'date' => $conf_date]);
+
+        return $date;
+    }
+
+
     public function checkBooking( $input)
     {
         $date = Configuration::find( 1)->software_start_date;
@@ -57,14 +69,6 @@ trait CustomTrait{
 
 
 
-
-
-
-
-
-
-
-
     public function getRoomInfo( $room)
     {
 //        return $room;
@@ -81,17 +85,6 @@ trait CustomTrait{
         $room['days'] = $days;
 
         return $room;
-    }
-
-
-    public function getDate()
-    {
-        $conf_date = Configuration::find(1)->software_start_date;
-        $date = Date::where('date', $conf_date)->first();
-        if ( !$date)
-            $date = $date->create([ 'date' => $conf_date]);
-
-        return $date;
     }
 
 

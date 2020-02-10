@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Booking;
 use App\Configuration;
 use App\Date;
 use App\MisAccountHead;
+use App\MISLedgerHead;
 use App\Process;
+use App\Room;
+use App\Venue;
 use App\VenueBilling;
 use App\VenueBooking;
 use Illuminate\Http\Request;
@@ -43,29 +47,39 @@ class HomeController extends Controller
     {
         //return view('home');
 
-        $room = DB::table('h6_rooms')->count();
-        $room_bookings = DB::table('h8_room_bookings')->count();
-        $venue = DB::table('v1_venues')->count();
-        $venue_bookings = DB::table('v3_venue_bookings')->count();
 
-        $employees=DB::table('e4_employees')
-            ->join('e1_departments', 'e4_employees.department_id', '=', 'e1_departments.id')
-            ->select('e4_employees.*', 'e1_departments.id as depId')
-            ->orderBy('e4_employees.id', 'desc')
-            ->count();
-
-        $employees_total=DB::table('e4_employees')
-            ->count();
-
-        $leaves=DB::table('e6_leaves')
-            ->count();
-
+        $employees=DB::table('e4_employees')->join('e1_departments', 'e4_employees.department_id', '=', 'e1_departments.id')->select('e4_employees.*', 'e1_departments.id as depId')->orderBy('e4_employees.id', 'desc')->count();
+        $employees_total=DB::table('e4_employees')->count();
+        $leaves=DB::table('e6_leaves')->count();
         $departments = DB::table('e1_departments')->get();
+
+        $data = $this->countBooking();
 
         $stock_heads = DB::table('stock_heads')->get();
         $stocks = DB::table('stocks')->get();
 
-        return view('admin.home.homeContent', compact('room','room_bookings','venue','venue_bookings','employees','departments','stock_heads','stocks','leaves','employees_total'));
+        $ledger_heads = MISLedgerHead::all();
+
+        return view('admin.home.homeContent', compact('data','stock_heads', 'stocks', 'ledger_heads','employees','departments','leaves','employees_total'));
+    }
+
+    public function countBooking()
+    {
+        $date = $this->getDate();
+
+        $room_booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date->date)))->where('room_id', '<', 50)->orWhere('room_id', '>', 499)->get();
+        $venue_booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date->date)))->whereBetween('room_id', [50, 499])->get();
+
+        $data['room']['total'] = count(Room::all());
+        $data['room']['booked'] = count( $room_booked);
+        $data['room']['available'] = $data['room']['total'] - $data['room']['booked'];
+
+        $data['venue']['total'] = count(Venue::all());
+        $data['venue']['booked'] = count( $venue_booked);
+        $data['venue']['available'] = $data['venue']['total'] - $data['venue']['booked'];
+
+        return $data;
+
     }
 
     // --- METHODS FOR VENUE --- //

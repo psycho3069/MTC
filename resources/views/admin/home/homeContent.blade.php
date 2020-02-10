@@ -37,7 +37,7 @@
                         <p><a href="{{ URL::to('hr_payroll/employee/add_employee') }}">Add New</a></p>
                       </div>
                       </div>
-                    </div> 
+                    </div>
 
                     <div class="item row-eq-height col-md-5">
                         <div class="row">
@@ -64,7 +64,7 @@
                     </div>
                         <div class="item row-eq-height col-md-1"></div>
 
-                    </div> 
+                    </div>
 
                     {{-- 2nd row --}}
 
@@ -72,22 +72,12 @@
 
                     <div class="item row-eq-height col-md-6">
                         <div id="top_x_div" style="width: 400px; height: 300px;"></div>
-                    </div> 
+                    </div>
 
                     <div class="item row-eq-height col-md-6">
                         <div id="top_x_div2" style="width: 400px; height: 300px;"></div>
                     </div>
                     </div>
-                        <?php
-                            $rooms =   $room;
-                            $roomBook =   $room_bookings;
-                            $roomAvailable =   $rooms-$roomBook;
-
-                            $venues =   $venue;
-                            $venueBook =   $venue_bookings;
-                            $venueAvailable =   $venues-$venueBook;
-
-                        ?>
                 </div>
             </div>
         </div>
@@ -107,10 +97,10 @@
 
         var data = google.visualization.arrayToDataTable([
           ['Space', 'Available'],
-          ['Room Available',     {{ $roomAvailable }}],
-          ['Room Booked',    {{ $room_bookings }}],
-          ['Venue Available',     {{ $venueAvailable }}],
-          ['Venue Booked',    {{ $venue_bookings }}]
+          ['Room Available',     {{ $data['room']['available'] }}],
+          ['Room Booked',    {{ $data['room']['booked'] }}],
+          ['Venue Available',     {{ $data['venue']['available'] }}],
+          ['Venue Booked',    {{ $data['venue']['booked'] }}]
         ]);
 
         var options = {
@@ -147,7 +137,7 @@
           width: 400,
           legend: { position: 'none' },
           chart: { title: 'Grocery Status',
-                   //subtitle: 'popularity by percentage' 
+                   //subtitle: 'popularity by percentage'
                  },
           bars: 'horizontal', // Required for Material Bar Charts.
           axes: {
