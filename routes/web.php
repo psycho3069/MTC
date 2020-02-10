@@ -161,16 +161,6 @@ Route::group(['middleware' => 'auth'], function (){
 
 
 
-
-//    Route::resource('receiver', 'ReceiverController');
-//    Route::resource('staff', 'StaffController');
-//    Route::resource('mis/accounts', 'MisAccountController', ['as' => 'mis']);
-//    Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'InventoryPurchaseController@item']);
-//    Route::get('inventory/list', ['as' => 'inventory.list', 'uses' => 'MisInventoryController@list']);
-//    Route::resource('mis/inventory', 'MisInventoryController', ['as' => 'mis']);
-
-
-
     Route::get('process/list', ['as' => 'process.list', 'uses' => 'ProcessController@list']);
     Route::post('process/list', ['as' => 'process.show.list', 'uses' => 'ProcessController@showList']);
     Route::resource('process', 'ProcessController');
@@ -185,6 +175,16 @@ Route::group(['middleware' => 'auth'], function (){
     Route::post('reports/ledger', ['as' => 'report.show.ledger', 'uses' => 'ReportController@showLedger']);
     Route::get('reports/daily', ['as' => 'report.daily', 'uses' => 'ReportController@daily']);
     Route::post('reports/daily', ['as' => 'report.show.daily', 'uses' => 'ReportController@showDaily']);
+
+
+
+//    Route::resource('receiver', 'ReceiverController');
+//    Route::resource('staff', 'StaffController');
+//    Route::resource('mis/accounts', 'MisAccountController', ['as' => 'mis']);
+//    Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'InventoryPurchaseController@item']);
+//    Route::get('inventory/list', ['as' => 'inventory.list', 'uses' => 'MisInventoryController@list']);
+//    Route::resource('mis/inventory', 'MisInventoryController', ['as' => 'mis']);
+
 
 
 });

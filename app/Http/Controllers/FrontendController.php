@@ -26,12 +26,9 @@ class FrontendController extends Controller
 
     public function room_viewer(){
         $venues=DB::table('v1_venues')->get();
-        $venuereservations=DB::table('v2_venue_reservations')->get();
-        $venuebookings=DB::table('v3_venue_bookings')->get();
-
         $booking = Booking::where('end_date','>=', $this->configDate())->get();
 
-        return view('admin.hotel_management.room.room_viewer', compact('venues','venuereservations','venuebookings', 'booking'));
+        return view('admin.hotel_management.room.room_viewer', compact('venues', 'booking'));
     }
 
     public function configDate()
@@ -47,10 +44,6 @@ class FrontendController extends Controller
     // FLOOR 1
     public function floor1()
     {
-        $reservation = DB::table('h7_room_reservations')->get();
-        $venuereservation = DB::table('v2_venue_reservations')->get();
-        $booked = DB::table('h8_room_bookings')->get();
-        $venuebooking = DB::table('v3_venue_bookings')->get();
         $rooms = DB::table('h6_rooms')->get();
         $room_category = DB::table('h5_room_categories')->get();
         $venues = DB::table('v1_venues')->get();
@@ -58,7 +51,7 @@ class FrontendController extends Controller
         $floor1 = [ 3, 4, 5, 6, 7, 51, 54 ];
         $booking = Booking::where('end_date','>=', $this->configDate())->get()->whereIn('room_id', $floor1);
 //        return $booking;
-        return view('admin.hotel_management.room.floor1', compact('reservation', 'booking', 'rooms', 'room_category', 'venues', 'venuereservation', 'venuebooking', 'booked'));
+        return view('admin.hotel_management.room.floor1', compact( 'booking', 'rooms', 'room_category', 'venues'));
     }
 
     public function viewFloor1($id)
@@ -70,22 +63,17 @@ class FrontendController extends Controller
     // FLOOR 2
     public function floor2()
     {
-        $reservation = DB::table('h7_room_reservations')->get();
-        $booked = DB::table('h8_room_bookings')->get();
         $rooms = DB::table('h6_rooms')->get();
         $room_category = DB::table('h5_room_categories')->get();
 
-
         $floor2 = [ 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ];
         $booking = Booking::where('end_date','>=', $this->configDate())->get()->whereIn('room_id', $floor2);
-        return view('admin.hotel_management.room.floor2', compact('reservation', 'booking', 'rooms', 'room_category', 'booked'));
+        return view('admin.hotel_management.room.floor2', compact( 'booking', 'rooms', 'room_category'));
     }
 
     // FLOOR 3
     public function floor3()
     {
-        $reservation = DB::table('h7_room_reservations')->get();
-        $booking = DB::table('h8_room_bookings')->get();
         $rooms = DB::table('h6_rooms')->get();
 
 //        $room = Room::where('id', '>', 24)->where('id', '<', 40)->get()->pluck('id');
@@ -95,16 +83,12 @@ class FrontendController extends Controller
         $booking = Booking::where('end_date','>=', $this->configDate())->get()->whereIn('room_id', $floor3);
 
         $room_category = DB::table('h5_room_categories')->get();
-        return view('admin.hotel_management.room.floor3', compact('reservation', 'booking', 'rooms', 'room_category'));
+        return view('admin.hotel_management.room.floor3', compact( 'booking', 'rooms', 'room_category'));
     }
 
     // FLOOR 4
     public function floor4()
     {
-        $reservation = DB::table('h7_room_reservations')->get();
-        $venuereservation = DB::table('v2_venue_reservations')->get();
-        $venuebooking = DB::table('v3_venue_bookings')->get();
-        $booking = DB::table('h8_room_bookings')->get();
         $rooms = DB::table('h6_rooms')->get();
         $room_category = DB::table('h5_room_categories')->get();
         $venues = DB::table('v1_venues')->get();
@@ -115,7 +99,7 @@ class FrontendController extends Controller
         $floor3 = [ 40, 41, 42, 43, 44, 45, 53 ];
         $booking = Booking::where('end_date','>=', $this->configDate())->get()->whereIn('room_id', $floor3);
 
-        return view('admin.hotel_management.room.floor4', compact('reservation', 'booking', 'rooms', 'room_category', 'venues', 'venuereservation', 'venuebooking'));
+        return view('admin.hotel_management.room.floor4', compact( 'booking', 'rooms', 'room_category', 'venues'));
     }
 
     public function viewVenues($id)
