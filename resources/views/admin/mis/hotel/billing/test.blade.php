@@ -20,7 +20,7 @@
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6 text-right">
                         <p>
-                            <code>Date: {{ date('jS F, Y', strtotime( $bill->date->date)) }}</code>
+                            <code>Date: {{ date('jS F, Y', strtotime( $data['date']->date )) }}</code>
 
                         </p>
                         <p>
@@ -158,7 +158,7 @@
                             <tbody>
                             @foreach( $bill->restaurant as $food )
                                 <tr>
-                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $bill->mis_voucher->date->date)) }}</code></td>
+                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $food->date->date)) }}</code></td>
                                     <td class="bill-top col-md-2"> <samp>{{ $food->menu->name  }}</samp> </td>
                                     <td class="bill-top col-md-1 no-wrap"><samp>{{ $food->menu->price.' tk.' }} </samp></td>
                                     <td class="bill-top col-md-1 text-center"><samp>{{ $food->quantity }}</samp></td>
@@ -211,17 +211,18 @@
 
                                 <td class="bill-top col-md-1 text-right">
                                     <b><code>Advance paid: <samp>{{ $bill->advance_paid }}</samp></code></b>
+                                    <b><code>Discount: <samp>{{ $bill->discount }}</samp></code></b>
                                 </td>
 
                                 <td class="bill-top col-md-1 text-right">
                                     <b><code>Total bill:</code></b>
-                                    <b><code>Discount:</code></b>
+{{--                                    <b><code>Discount:</code></b>--}}
                                     <b><code>Total paid:</code></b>
                                 </td>
 
                                 <td class="bill-top col-md-1 text-right">
                                     <b><samp>{{ $bill->total_bill }}</samp></b><br>
-                                    <b><samp>{{ -$bill->discount }}</samp></b><br>
+{{--                                    <b><samp>{{ -$bill->discount }}</samp></b><br>--}}
                                     <b><samp>-{{ $bill->total_paid }}</samp></b>
                                 </td>
                             </tr>
@@ -237,7 +238,7 @@
                                     <b><code>Due:</code></b>
                                 </td>
                                 <td class="bill-down text-right">
-                                    <b><samp>{{ $bill->total_bill - $bill->total_paid - $bill->discount }}</samp></b>
+                                    <b><samp>{{ $bill->total_bill - $bill->total_paid }}</samp></b>
                                 </td>
                             </tr>
                         </tbody>

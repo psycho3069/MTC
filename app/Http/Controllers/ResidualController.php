@@ -15,6 +15,7 @@ use App\TransactionHead;
 use App\Venue;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ResidualController extends Controller
 {
@@ -164,6 +165,54 @@ class ResidualController extends Controller
 
         return back()->with('update', 'Operation Successful!');
 
+    }
+
+
+    public function hotel()
+    {
+
+//        return 55;
+
+        $theads = TransactionHead::where('code','!=', 353)->get();
+        $conf = Configuration::all();
+        $mis_heads = MISHead::all();
+        $data['hotel'] = $mis_heads->find([ 1, 2, 3]);
+        $data['discount'] = $mis_heads->find(6);
+
+        return view('admin.configuration.general.hotel', compact('conf', 'data', 'theads'));
+
+    }
+
+
+    public function updateHotel(Request $request)
+    {
+        $request->validate([
+            'software_start_date' => 'required',
+        ],[
+            'software_start_date.required' => 'Please Enter Software Date',
+        ]);
+
+//        return $request->all();
+
+        $input = $request->input;
+        $configurations = Configuration::get();
+        $mis_heads = MISHead::all();
+
+        $configurations->find(1)->update([ 'software_start_date' => $request->software_start_date]);
+
+        foreach ( $request->conf as $key => $val) {
+            $configurations->where( 'name', $key)->first()->update([ 'value' => $val]);
+        }
+
+        foreach ( $input as $accounts) {
+            foreach ($accounts as $key => $item) {
+             $mis_head = $mis_heads->find( $key);
+             $mis_head->ledger()->update( $item);
+             $mis_head->update( $item);
+            }
+        }
+
+        return redirect()->back()->with('update', '<b>Configuration updated successfully</b>');
     }
 
 

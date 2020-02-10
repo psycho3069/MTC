@@ -18,6 +18,12 @@ class Payment extends Model
     }
 
 
+    public function misVoucher()
+    {
+        return $this->belongsTo('App\MISVoucher_I', 'mis_voucher_id');
+    }
+
+
     public function bill()
     {
         return $this->belongsTo('App\Billing', 'billing_id');

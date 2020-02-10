@@ -49,7 +49,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Discount <small>(tk.)</small></label>
-                                <input type="number" class="form-control" id="discount" min="1" value="0">
+                                <input type="text" class="form-control" id="discount" value="0">
                             </div>
                         </div>
                     </div>

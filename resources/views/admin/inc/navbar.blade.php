@@ -31,7 +31,7 @@
               Configuration
           </a>
           <div class="dropdown-menu sm-menu">
-              <a class="dropdown-item" href="{{ route('mis.accounts.index') }}">Configuration</a>
+{{--              <a class="dropdown-item" href="{{ route('mis.accounts.index') }}">Configuration</a>--}}
               <a class="dropdown-item" href="{{URL::to('/maintenance')}}">Discount</a>
           </div>
       </li>
@@ -44,6 +44,7 @@
               <a class="dropdown-item" href="{{ route('units.index') }}">Unit</a>
               <a class="dropdown-item" href="{{ route('configure.ledger', 1) }}">Grocery</a>
               <a class="dropdown-item" href="{{ route('configure.ledger', 2) }}">Inventory</a>
+              <a class="dropdown-item" href="{{ route('configure.hotel') }}">Hotel</a>
           </div>
       </li>
 

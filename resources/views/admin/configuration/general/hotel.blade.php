@@ -8,7 +8,7 @@
                 <div class="card-header"> Configuration</div>
                 <div class="card-body">
                     <p class="text-danger">{{ $errors->has('software_start_date') ? $errors->first('software_start_date') : '' }}</p>
-                    <form method="POST" action="{{ route('mis.accounts.store') }}">
+                    <form method="POST" action="{{ route('update.hotel') }}">
                         {{ csrf_field() }}
                         <div class="row">
                             <div class="col-md-3">
@@ -64,16 +64,28 @@
                                 <p class="config-label"><b>Discount</b></p>
                             </div>
                             <div class="col-md-5">
-                                @foreach( $mis_heads as $mis_head )
+                                @foreach( $data['hotel'] as $mis_head )
                                     <div class="form-group">
                                         <label>Receipt Account</label>
-                                        <select class="form-control ufat" name="input[mis_head][{{$mis_head->id}}]">
+                                        <input type="hidden" name="input[hotel][{{$mis_head->id}}][debit_head_id]" value="{{ 353 }}">
+                                        <select class="form-control ufat" name="input[hotel][{{$mis_head->id}}][credit_head_id]">
                                             @foreach( $theads as $thead )
                                                 <option value="{{ $thead->id }}" {{ $mis_head->ledger[0]->credit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 @endforeach
+
+                                    <div class="form-group">
+                                        <label>Receipt Account</label>
+                                        <input type="hidden" name="input[discount][{{$data['discount']->id}}][credit_head_id]" value="{{ 353 }}">
+                                        <select class="form-control ufat" name="input[discount][{{$data['discount']->id}}][debit_head_id]">
+                                            @foreach( $theads as $thead )
+                                                <option value="{{ $thead->id }}" {{ $data['discount']->ledger[0]->debit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
                             </div>
                         </div>
 

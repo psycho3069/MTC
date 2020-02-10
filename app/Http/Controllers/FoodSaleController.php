@@ -6,6 +6,7 @@ use App\Billing;
 use App\Configuration;
 use App\FoodMenu;
 use App\FoodSale;
+use App\Http\Traits\CustomTrait;
 use App\Menu;
 use App\MenuType;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Controller;
 
 class FoodSaleController extends Controller
 {
+    use CustomTrait;
     /**
      * Display a listing of the resource.
      *
@@ -74,6 +76,7 @@ class FoodSaleController extends Controller
 
         $vat = $request->vat ? Configuration::where('name', 'vat_food')->first()->value : 0;
         $service_charge = $request->service_charge ? Configuration::where('name', 'vat_service')->first()->value : 0;
+        $date = $this->getDate();
 
 //        return $item;
         foreach ( $input as $item ) {
@@ -87,6 +90,7 @@ class FoodSaleController extends Controller
                 }
             }
 
+            $item['date_id'] = $date->id;
             $item['discount'] = $item['quantity'] * $item['discount'];
             $item['bill'] = ( FoodMenu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
             $food_bill = FoodSale::create( $item);
@@ -100,7 +104,7 @@ class FoodSaleController extends Controller
 
         $request->session()->flash('create', '<b>Food has been sold And added to the bill</b>');
 
-        return redirect('billing/'.$food_bill->billing_id);
+        return redirect('billing/'.$bill->id );
     }
 
     /**
@@ -111,6 +115,8 @@ class FoodSaleController extends Controller
      */
     public function show($bill_id)
     {
+        $data['date'] = $this->getDate();
+
         $bill = Billing::find($bill_id);
         $data['vat']['%'] = $bill->restaurant->isNotEmpty() ? $bill->restaurant[0]->vat : 0;
         $data['service']['%'] = $bill->restaurant->isNotEmpty() ? $bill->restaurant[0]->service_charge : 0;
@@ -160,6 +166,7 @@ class FoodSaleController extends Controller
 //        return 3 + 3 *( 3 + 2) / 10;
         $input = $request->except('_token', '_method');
         $bill = Billing::find($bill_id);
+        $date =  $this->getDate();
 
         $vat = $request->vat ? Configuration::where('name', 'vat_food')->first()->value : 0;
         $service_charge = $request->service_charge ? Configuration::where('name', 'vat_service')->first()->value : 0;
@@ -173,8 +180,8 @@ class FoodSaleController extends Controller
                 $item['discount'] = $item['discount'] * $item['quantity'];
                 $item['bill'] = ( $food->menu->price * $item['quantity']) - $item['discount'];
 
-                $new_bill += $item['bill'] + $item['bill'] * ( $vat + $service_charge) / 100;
                 $old_bill += $food->bill + $food->bill * ( $food->vat + $food->service_charge) / 100;
+                $new_bill += $item['bill'] + $item['bill'] * ( $vat + $service_charge) / 100;
                 $food->update($item);
             }
 
@@ -182,6 +189,7 @@ class FoodSaleController extends Controller
         if ( isset($input['new_food']))
             foreach ($input['new_food'] as $item) {
                 $item['vat'] = $vat;
+                $item['date_id'] = $date->id;
                 $item['service_charge'] = $service_charge;
                 $item['discount'] = $item['discount'] * $item['quantity'];
                 $item['bill'] = ( FoodMenu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
@@ -191,7 +199,7 @@ class FoodSaleController extends Controller
             }
 
         $bill->update([ 'total_bill' => $bill->total_bill + $new_bill - $old_bill ]);
-        $request->session()->flash('update', 'Sale has been updated');
+        $request->session()->flash('update', '<b> Food sale has been updated</b>');
 
         return redirect('restaurant/sales/'.$bill_id);
     }

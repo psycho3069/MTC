@@ -4,7 +4,7 @@
 @section('content')
     <div class="col-md-4">
         <samp>
-            <form action="{{ route('payment.bill', $bill->id) }}" method="POST">
+            <form action="{{ route('payment.store', $bill->id) }}" method="POST">
                 <div class="card">
                     <div class="card-header"><b>Payment</b></div>
                     <div class="card-body text-left">
@@ -71,9 +71,15 @@
         $(document).ready(function () {
 
             var charge = @json($charge);
-            console.log(charge)
+            // console.log(charge)
 
             // $('#type').append('<option value="all">All</option>')
+
+
+            $(':submit').click(function (e) {
+                if(!$('#amount').val())
+                    $('#amount').val(0)
+            })
 
 
 
@@ -101,8 +107,6 @@
 
 
             $('#amount').on('change keyup', function () {
-                if(!$('#amount').val())
-                    $('#amount').val(0)
                 var due = charge[type]['total'] - charge[type]['paid'] - parseInt($('#amount').val())
                 $('#due').val(due)
             })

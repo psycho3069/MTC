@@ -16,6 +16,7 @@ class CreateR11FoodSalesTable extends Migration
         Schema::create('r11_food_sales', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('billing_id')->unsigned()->index();
+            $table->integer('date_id')->unsigned()->index();
             $table->integer('menu_id')->unsigned()->index();
             $table->tinyInteger('quantity')->unsigned()->default(0);
             $table->double('bill',12,2)->default(0);

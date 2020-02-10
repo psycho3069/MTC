@@ -11,7 +11,7 @@ class FoodSale extends Model
 
     protected $table = 'r11_food_sales';
 
-    protected $fillable = [ 'billing_id', 'booking_id', 'quantity', 'bill', 'discount', 'menu_id', 'vat', 'service_charge' ];
+    protected $fillable = [ 'billing_id', 'date_id', 'booking_id', 'quantity', 'bill', 'discount', 'menu_id', 'vat', 'service_charge' ];
 
 
     public function billing()
@@ -23,6 +23,12 @@ class FoodSale extends Model
     public function menu()
     {
         return $this->belongsTo('App\FoodMenu', 'menu_id');
+    }
+
+
+    public function date()
+    {
+        return $this->belongsTo('App\Date');
     }
 
 

@@ -150,7 +150,7 @@ trait CustomTrait{
     }
 
 
-    public function updateAIS( $voucher, $data)    /*data[note], data[new_amount]*/
+    public function updateAIS( $voucher, $data)    /* data[note], data[new_amount] */
     {
         $this->neutreCrBl( $voucher, $data['new_amount']);
         $this->voucherHistory( $voucher, $data['note']);
@@ -158,7 +158,7 @@ trait CustomTrait{
     }
 
 
-    public function deleteVoucher( $voucher, $data)
+    public function deleteVoucher( $voucher, $data) /* data[note], data[new_amount] */
     {
         $this->neutreCrBl( $voucher, $data['new_amount']);
         $this->voucherHistory( $voucher, $data['note']);
@@ -168,6 +168,7 @@ trait CustomTrait{
 
     public function computeAIS($ledger, $amount)
     {
+//        return $ledger;
 
         $date = $this->getDate();
 

@@ -16,7 +16,7 @@ class LedgerHeadController extends Controller
      */
     public function index(Request $request)
     {
-        $type_id = $request->type_id != 5 ? 3 : 5;
+        $type_id = $request->type_id != 5 ? 4 : 5;
         $stock_heads = StockHead::where( 'type_id', $type_id)->get();
         return view('admin.mis.stock.index', compact('stock_heads', 'type_id'));
     }

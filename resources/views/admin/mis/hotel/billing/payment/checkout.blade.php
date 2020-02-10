@@ -7,7 +7,7 @@
             <div class="card-header">{{ $bill->guest->name }}</div>
             <div class="card-body">
                 <samp>
-                    <form action="{{ route('payment.bill', $bill->id) }}" method="POST">
+                    <form action="{{ route('payment.store', $bill->id) }}" method="POST">
                         {{ csrf_field() }}
                         <input type="hidden" name="co" value="1">
 

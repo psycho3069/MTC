@@ -64,13 +64,20 @@ Route::get('insert', function (){
 
 
 
-    DB::table('m1_mis_heads')->insert([
-        ['name' => 'Hotel Receipt', 'voucher_type_id' => 10, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
-        ['name' => 'Venue Receipt', 'voucher_type_id' => 10,  'credit_head_id' => 12, 'debit_head_id' => 353, ],
-        ['name' => 'Restaurant Receipt', 'voucher_type_id' => 10, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
-        ['name' => 'Restaurant Payment', 'voucher_type_id' => 11, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
-        ['name' => 'Inventory Payment', 'voucher_type_id' => 11, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
-    ]);
+//    DB::table('m1_mis_heads')->insert([
+//        ['name' => 'Hotel Receipt', 'voucher_type_id' => 10, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+//        ['name' => 'Venue Receipt', 'voucher_type_id' => 10,  'credit_head_id' => 12, 'debit_head_id' => 353, ],
+//        ['name' => 'Restaurant Receipt', 'voucher_type_id' => 10, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+//        ['name' => 'Restaurant Payment', 'voucher_type_id' => 11, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+//        ['name' => 'Inventory Payment', 'voucher_type_id' => 11, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+//    ]);
+//
+//    DB::table('m3_mis_ledger_heads')->insert([
+//        ['mis_head_id' => 1, 'name' => 'Room', 'credit_head_id' => 2, 'debit_head_id' => 2, 'code' => 1000, 'ledgerable_id' => 1, 'ledgerable_type' => 'App\\MISHead', ],
+//        ['mis_head_id' => 2, 'name' => 'Venue', 'credit_head_id' => 2, 'debit_head_id' => 2, 'code' => 1100, 'ledgerable_id' => 2, 'ledgerable_type' => 'App\\MISHead', ],
+//        ['mis_head_id' => 3, 'name' => 'Restaurant', 'credit_head_id' => 2, 'debit_head_id' => 2, 'code' => 1200, 'ledgerable_id' => 3, 'ledgerable_type' => 'App\\MISHead', ],
+//        ['mis_head_id' => 6, 'name' => 'Discount', 'credit_head_id' => 2, 'debit_head_id' => 2, 'code' => 1300, 'ledgerable_id' => 6, 'ledgerable_type' => 'App\\MISHead', ],
+//    ]);
 
 
 //    return \App\MISHead::all();
@@ -97,6 +104,9 @@ Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@
 Route::group(['middleware' => 'auth'], function (){
 
 
+//    Route
+    Route::get('general/configuration/hotel', ['as' => 'configure.hotel', 'uses' => 'ResidualController@hotel']);
+    Route::post('general/configuration/hotel', ['as' => 'update.hotel', 'uses' => 'ResidualController@updateHotel']);
     Route::get('general/configuration/ledger/{type}', ['as' => 'configure.ledger', 'uses' => 'ResidualController@ledger']);
     Route::post('general/configuration/ledger', ['as' => 'update.ledger', 'uses' => 'ResidualController@updateLedger' ]);
 
@@ -146,15 +156,18 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('stock', 'StockController');
     Route::resource('stocks/deliver', 'StockDeliverController');
 
-    Route::resource('receiver', 'ReceiverController');
-    Route::resource('staff', 'StaffController');
-
-    Route::resource('mis/accounts', 'MisAccountController', ['as' => 'mis']);
-//    Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'InventoryPurchaseController@item']);
     Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'PurchaseController@item']);
     Route::resource('purchase','PurchaseController');
-    Route::get('inventory/list', ['as' => 'inventory.list', 'uses' => 'MisInventoryController@list']);
-    Route::resource('mis/inventory', 'MisInventoryController', ['as' => 'mis']);
+
+
+
+
+//    Route::resource('receiver', 'ReceiverController');
+//    Route::resource('staff', 'StaffController');
+//    Route::resource('mis/accounts', 'MisAccountController', ['as' => 'mis']);
+//    Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'InventoryPurchaseController@item']);
+//    Route::get('inventory/list', ['as' => 'inventory.list', 'uses' => 'MisInventoryController@list']);
+//    Route::resource('mis/inventory', 'MisInventoryController', ['as' => 'mis']);
 
 
 

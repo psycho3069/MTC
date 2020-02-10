@@ -136,17 +136,20 @@ class BookingController extends Controller
             $item['room_id'] < 50 || $item['room_id'] > 499  ? $charge['room'] += $item['bill'] : $charge['venue'] += $item['bill'];
         }
 
+
         $hotel_vat = $hotel_bill * $vat / 100;
 
         $input['billing']['total_bill'] = $hotel_bill + $hotel_vat;
         $input['billing']['total_paid'] = $input['billing']['advance_paid'] ? $input['billing']['advance_paid'] : 0;
         $input['billing']['guest_id'] = $guest->id;
 
-        $ledger = $charge['room'] > $charge['venue'] ? MISLedgerHead::where( 'code', 1000)->first() : MISLedgerHead::where( 'code', 1100)->first();
+        $mis_heads = MISHead::all();
+        $ledger = $charge['room'] > $charge['venue'] ? $mis_heads->find(1)->ledger->first() : $mis_heads->find(2)->ledger->first();
 
         $payment['amount'] = $input['billing']['total_paid'];
         $payment['mis_voucher_id'] = $this->computeAIS( $ledger, $payment['amount']);
         $payment['note'] = 'Advance Payment';
+        $payment['payment_type'] = $ledger->mis_head_id == 1 ? 'room' : 'venue';
 
         $input['billing']['mis_voucher_id'] = $payment['mis_voucher_id'];
         $billing = Billing::create( $input['billing']);
@@ -166,25 +169,6 @@ class BookingController extends Controller
     }
 
 
-    public function aisOld( $charge, $amount)
-    {
-        if ( $charge['room'] > $charge['venue']){
-            $data['mis_ac_head_id'] = 1;
-            $data['type'] = 'hotel_rv';
-            $data['payment_type'] = 'room';
-        }else {
-            $data['mis_ac_head_id'] = 2;
-            $data['type'] = 'venue_rv';
-            $data['payment_type'] = 'venue';
-        }
-        $data['amount'] = $amount;
-        $date = Configuration::find(1)->software_start_date;
-        $mis_voucher = $this->computeAISOld( $data, $date);
-        $data['mis_voucher_id'] = $mis_voucher->id;
-        $data['note'] = 'Advance Payment';
-
-        return $data;
-    }
 
 
 

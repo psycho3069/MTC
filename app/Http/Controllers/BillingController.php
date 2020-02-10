@@ -23,13 +23,6 @@ class BillingController extends Controller
      */
 
 
-    public function test()
-    {
-        return view('admin.mis.hotel.billing.test');
-    }
-
-
-
 
     public function index(Request $request)
     {
@@ -138,6 +131,7 @@ class BillingController extends Controller
 
         $x = new NumberFormatter('en', NumberFormatter::SPELLOUT);
         $data['words']['total_bill'] = $x->format( $bill->total_bill);
+        $data['date'] = $this->getDate();
 
         $all['bill'] = $bill; $all['booking'] = $booking; $all['restaurant'] = $restaurant; $all['data'] = $data; $all['info'] = $info;
 
@@ -190,7 +184,10 @@ class BillingController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->except('_token', '_method');
+
         $bill = Billing::find($id);
+
+
 
         $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
 
@@ -202,6 +199,7 @@ class BillingController extends Controller
             $item['room_id'] = $room->room_id;
             $item = $this->getRoomInfo( $item);
 
+            $item['discount'] = $bill->checkout_status ? $room->discount : $item['discount'];
             $old_vat = $room->vat;
             $old_bill += $room->bill;
             $new_bill += $item['bill'];
@@ -216,7 +214,7 @@ class BillingController extends Controller
                 $item = $this->getRoomInfo( $item);
                 $item['guest_id'] = $bill->guest_id;
                 $item['vat'] = $vat;
-//                $bill->booking()->create( $item);
+                $bill->booking()->create( $item);
                 $new_bill += $item['bill'];
             }
 
@@ -225,17 +223,15 @@ class BillingController extends Controller
 
         $input['billing']['total_paid'] = $bill->total_paid - $bill->advance_paid + $input['billing']['advance_paid'];
         $input['billing']['total_bill'] = $bill->total_bill - $old_bill + $new_bill;
-
+        $input['billing']['discount'] = $bill->checkout_status ? $bill->discount : $input['billing']['discount'];
 
         //updating AIS
-
         $data['note'] = 'Edited From MIS Bill- [id: '.$bill->id .']';
-        $amount['old'] = $bill->advance_paid;
-        $amount['new'] = $input['billing']['advance_paid'];
-        $data['note'] = 'Edited From MIS Bill';
-        if ( $amount['old'] != $amount['new'])
-            $this->updateAIS( $bill, $amount, $data);
+        $data['new_amount'] = $input['billing']['advance_paid'];
+        if ( $bill->advance_paid != $input['billing']['advance_paid'])
+            $this->updateAIS( $bill->misVoucher->voucher, $data);
 
+        //updating bill info
         $bill->guest->update( $input['billing']);
         $bill->update( $input['billing']);
         $bill->booking()->update([ 'vat' => $vat]);
@@ -256,19 +252,13 @@ class BillingController extends Controller
     {
         $bill = Billing::find( $id);
 
-        $amount['old'] = $bill->payments->sum('amount');
-        $amount['new'] = 0;
-
-
         foreach ( $bill->payments as $payment) {
-
-            $data['note'] = 'Deleted Bill of Guest '.$bill->guest->name;
-            $amount['old'] = $payment->amount;
-            $amount['new'] = 0;
-            $this->updateAIS( $payment, $amount, $data);
+            $data['new_amount'] = 0; $data['note'] = 'Deleted Payment form MIS Bill  - [payment_id: '.$payment->id. ']';
+            $voucher = $payment->misVoucher->voucher;
+            $this->deleteVoucher( $voucher, $data);
+            $payment->delete();
         }
 
-        $bill->payments()->delete();
         $bill->booking()->delete();
         $bill->restaurant()->delete();
         $bill->delete();

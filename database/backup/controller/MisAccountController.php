@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Configuration;
 use App\MisAccountHead;
+use App\MISHead;
 use App\TransactionHead;
 use Illuminate\Http\Request;
 
@@ -26,10 +27,12 @@ class MisAccountController extends Controller
     public function index()
     {
 //        $type = MisAccountHead::orderBy('id')->get();
-//        $theads = TransactionHead::where('code','!=', 353)->get();
+        $theads = TransactionHead::where('code','!=', 353)->get();
         $conf = Configuration::all();
 //        return view('admin.mis.index', compact('type', 'theads', 'conf'));
-        return view('admin.mis.index', compact('conf'));
+        $mis_heads = MISHead::find([ 1, 2, 3, 6]);
+//        return $mis_heads->first()->ledger[0]->credit_head_id;
+        return view('admin.mis.index', compact('conf', 'mis_heads', 'theads'));
 
     }
 

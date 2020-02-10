@@ -26,7 +26,7 @@
                             @foreach( $data['bill'] as $bill )
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ date('d-m-Y', strtotime( $bill->mis_voucher->date->date)) }}</td>
+                                    <td>{{ date('d-m-Y', strtotime( $bill->misVoucher->voucher->date->date)) }}</td>
                                     <td>{{ $bill->guest->name }}</td>
                                     <td>{{ $bill->booking->sum('discount').' tk.' }}</td>
                                     <td>{{ $bill->restaurant->sum('discount').' tk.' }}</td>

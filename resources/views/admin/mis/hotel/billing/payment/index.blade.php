@@ -20,10 +20,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach( $bill->payments as $item )
+                        @foreach( $bill->payments->where( 'payment_type', '!=', 'discount') as $item )
                             <tr>
                                 <th>{{ $loop->iteration }}</th>
-                                <td>{{ date('d-m-Y', strtotime($item->mis_voucher->date->date)) }}</td>
+                                <td>{{ date('d-m-Y', strtotime( $item->misVoucher->voucher->date->date)) }}</td>
                                 <td>{{ ucfirst( $item->payment_type).' Bill' }}</td>
                                 <td class="text-center">{{ $item->amount }}</td>
                                 <td>{{ $item->note ? $item->note : 'No Notes' }}</td>
@@ -34,7 +34,7 @@
                             <td></td>
                             <td><b>Total</b></td>
                             <td></td>
-                            <td class="text-center">{{ $bill->payments->sum('amount') }}</td>
+                            <td class="text-center">{{ $bill->payments->where( 'payment_type', '!=', 'discount')->sum('amount') }}</td>
                         </tr>
                         </tbody>
                     </table>
