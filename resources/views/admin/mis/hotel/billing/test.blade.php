@@ -5,7 +5,7 @@
     <div class="container text-left">
         <div class="row">
             <div class="well col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1">
-                <button type="button" class="btn btn-i" onclick='window.location="{{ url('export', $bill->id) }}"'>Export PDF</button>
+                <button type="button" class="btn btn-i" data_url="{{'export/'.$bill->id}}" onclick="print( $(this).attr('data_url')); return false;">Print</button>
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <address>
@@ -30,6 +30,20 @@
                 </div>
 
                 <div class="text-center receipt">
+
+                    <address>
+                        <code>
+                            <strong>
+                                {!!  $bill->guest->org_name ? $bill->guest->org_name.'<br>' : '' !!}
+                            </strong>
+                            {!!  $bill->guest->name.'<br>' !!}
+                            {!!  $bill->guest->address ? $bill->guest->address.'<br>' : '' !!}
+                            Phone: {!!  $bill->guest->contact_no !!}
+                        </code>
+                    </address>
+
+
+                    <br>
                     <h3><code>Receipt</code></h3>
                 </div>
 
@@ -40,7 +54,8 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th class="th-down"><code>Date</code></th>
+                                <th class="th-down"><code>Check-In</code></th>
+                                <th class="th-down"><code>Check-Out</code></th>
                                 <th class="th-down"><code>Venue</code></th>
                                 <th class="th-down"><code>Total Days</code></th>
                                 <th class="th-down text-center"><code>Price</code></th>
@@ -52,7 +67,8 @@
                             <tbody>
                                 @foreach( $data['venue'] as $item )
                                     <tr>
-                                        <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $item->start_date )) }}</code></td>
+                                        <td class="bill-top col-md-2"><code>{{ date('d M, Y', strtotime( $item->start_date )) }}</code></td>
+                                        <td class="bill-top col-md-3"><code>{{ date('d M, Y', strtotime( $item->end_date )) }}</code></td>
                                         <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
                                         <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
                                         <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
@@ -63,7 +79,7 @@
 
                                 <tr>
                                     <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
-                                    <td class="bill-down"></td>
+                                    <td class="bill-down"></td><td class="bill-down"></td>
                                     <td class="bill-down">
                                         <strong class="float-right"><code>Sub Total:</code></strong>
                                         <strong class="float-right"><code>Vat({{ $bill->booking[0]->vat }}%):</code></strong>
@@ -74,7 +90,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
+                                    <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
                                     <td class="bill-sub text-right"><b><code>Venue bill:</code></b></td>
                                     <td class="bill-sub text-right"><b><samp>{{ $info['venue']['total'] + $info['venue']['vat'] }}</samp></b></td>
                                 </tr>
@@ -93,7 +109,8 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th class="th-down"><code>Date</code></th>
+                                <th class="th-down"><code>Check-In</code></th>
+                                <th class="th-down"><code>Check-Out</code></th>
                                 <th class="th-down"><code>Room</code></th>
                                 <th class="th-down"><code>Total Days</code></th>
                                 <th class="th-down text-center"><code>Price</code></th>
@@ -105,7 +122,8 @@
                             <tbody>
                             @foreach( $data['room'] as $item )
                                 <tr>
-                                    <td class="bill-top col-md-5"><code>{{ date('d M, Y', strtotime( $item->start_date)) }}</code></td>
+                                    <td class="bill-top col-md-2"><code>{{ date('d M, Y', strtotime( $item->start_date)) }}</code></td>
+                                    <td class="bill-top col-md-3"><code>{{ date('d M, Y', strtotime( $item->end_date)) }}</code></td>
                                     <td class="bill-top col-md-2 no-wrap"><samp>{{ $booking[$item->id]['room_no'] }}</samp></td>
                                     <td class="bill-top col-md-1" style="text-align: center"> <samp>{{ $booking[$item->id]['days'] }} days</samp> </td>
                                     <td class="bill-top col-md-1 text-right no-wrap"><samp>{{ $booking[$item->id]['unit_price'].' tk.' }}</samp></td>
@@ -117,6 +135,7 @@
                             <tr>
                                 <td class="bill-down"></td><td class="bill-down"></td><td class="bill-down"></td>
                                 <td class="bill-down"></td>
+                                <td class="bill-down"></td>
                                 <td class="bill-down">
                                     <strong class="float-right"><code>Sub Total:</code></strong>
                                     <strong class="float-right"><code>Vat({{ $bill->booking[0]->vat }}%):</code></strong>
@@ -127,7 +146,9 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
+                                <td class="bill-sub"></td><td class="bill-sub"></td><td class="bill-sub"></td>
+                                <td class="bill-sub"></td>
+                                <td class="bill-sub"></td>
                                 <td class="bill-sub text-right"><b><code>Room bill:</code></b></td>
                                 <td class="bill-sub text-right"><b><samp>{{ $info['room']['total'] + $info['room']['vat'] }}</samp></b></td>
                             </tr>
@@ -273,5 +294,16 @@
         margin-top: 20px;
     }
 </style>
+
+
+@section('script')
+    <script>
+        function print(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+
+        }
+    </script>
+@endsection
 
 

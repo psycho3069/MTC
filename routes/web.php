@@ -128,7 +128,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('supplier', 'SupplierController');
 
 
-    Route::get('export/{bill_id}', 'BillingController@export');
+    Route::get('billing/export/{bill_id}', 'BillingController@export');
     Route::resource('billing', 'BillingController');
     Route::resource('booking', 'BookingController');
 
@@ -174,6 +174,11 @@ Route::group(['middleware' => 'auth'], function (){
     Route::post('reports/ledger', ['as' => 'report.show.ledger', 'uses' => 'ReportController@showLedger']);
     Route::get('reports/daily', ['as' => 'report.daily', 'uses' => 'ReportController@daily']);
     Route::post('reports/daily', ['as' => 'report.show.daily', 'uses' => 'ReportController@showDaily']);
+
+
+    Route::get('reports/stock/{id}', ['as' => 'report.stock', 'uses' => 'ReportController@stock']);
+//    Route::post('reports/stock/1', ['as' => 'report.show.stock', 'uses' => 'ReportController@showStock']);
+
 
 
 

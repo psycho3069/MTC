@@ -462,6 +462,13 @@ class ReportController extends Controller
 
 
 
+    public function stock($mis_head_id)
+    {
+        return $mis_head_id;
+    }
+
+
+
 
 
 
