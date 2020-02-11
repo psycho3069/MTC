@@ -19,7 +19,7 @@ class CreateVV7VoucherUpdateHistoriesTable extends Migration
             $table->integer('date_id')->unsigned()->index();
             $table->integer('user_id')->unsigned()->index();
             $table->double('amount',14,2)->default(0);
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

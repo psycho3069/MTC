@@ -11,21 +11,22 @@
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    {{ $type->name }}
+                    {{ $data['type']->name }}
                 </div>
+
                 <div class="card-body">
+                    <p class="text-danger">{{ $errors->has('input.*.amount') ? $errors->first('input.*.amount') : '' }}</p>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="type">Voucher type</label>
-                                <input type="text" value="{{ $type->name }}" class="form-control" disabled>
+                                <input type="text" value="{{ $data['type']->name }}" class="form-control" disabled>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="date">Date</label>
-                                <input type="date" class="form-control" name="date" id="date" value="{{ $configuration->software_start_date }}" disabled>
-                                {{--                                <input type="hidden" name="date" value="{{ date('Y-m-d') }}">--}}
+                                <label>Date</label>
+                                <input type="text" class="form-control" value="{{ date('d-m-Y', strtotime( $data['date'])) }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -57,7 +58,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="amount">Amount <span class="required">*</span></label>
-                                <input type="number" class="form-control" id="amount" name="amount" required>
+                                <input type="text" class="form-control" id="amount" name="amount" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -81,6 +82,8 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('vouchers.store') }}">
                         {{ csrf_field() }}
+                        <input type="hidden" name="type_id" value="{{ $data['type']->id }}">
+                        <input type="hidden" name="date" value="{{ $data['date'] }}">
 
                         <table class="table table-striped">
                             <thead>
@@ -99,9 +102,7 @@
 
                         <div class="form-group">
                             <label for="global_note">Global Note</label>
-                            <input type="text" name="global_note" class="form-control" required>
-                            {{--                        <input type="hidden" name="date" value="{{ date('Y-m-d') }}">--}}
-                            <input type="hidden" name="type_id" value="{{ $type->id }}">
+                            <input type="text" name="global_note" class="form-control">
                         </div>
 
                         <button type="submit" class="btn btn-dark">Submit</button>
@@ -144,12 +145,11 @@
 
                 var amount = $('#amount').val()
                 var note = $('#note').val()
-                var date = $('#date').val()
                 var credit_head_id = $('#credit-head :selected').val()
                 var debit_head_id = $('#debit-head :selected').val()
 
 
-                if( !note || !amount )
+                if( !amount )
                     alert('Please Enter all fields')
                 else {
 
@@ -158,7 +158,7 @@
                         '<tr id="row'+i+'">' +
                         '<td><input type="hidden" name="input['+i+'][credit_head_id]" value="'+credit_head_id+'">'+$('#credit-head :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][debit_head_id]" value="'+debit_head_id+'">'+$('#debit-head :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][amount]" value="'+amount+'"><input type="hidden" name="date" value="'+date+'">'+amount+'</td>' +
+                        '<td><input type="hidden" name="input['+i+'][amount]" value="'+amount+'">'+amount+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][note]" value="'+note+'">'+note+'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'

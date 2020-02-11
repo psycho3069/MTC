@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Configuration;
 use App\Date;
+use App\Http\Traits\CustomTrait;
 use App\MisVoucher;
 use App\Process;
 use App\TransactionHead;
@@ -16,6 +17,8 @@ use NumberFormatter;
 
 class VoucherController extends Controller
 {
+
+    use CustomTrait;
     /**
      * Display a listing of the resource.
      *
@@ -73,10 +76,10 @@ class VoucherController extends Controller
 
     public function create(Request $request)
     {
-        $configuration = Configuration::find(1);
-        $type = VoucherType::find( $request->type_id);
+        $data['date'] = Configuration::find(1)->software_start_date;
+        $data['type'] = VoucherType::find( $request->type_id);
         $account = $this->getAccounts( $request->type_id);
-        return view('admin.ais.voucher.create', compact('type', 'account', 'configuration' ));
+        return view('admin.ais.voucher.create', compact('data', 'account' ));
     }
 
 
@@ -92,6 +95,14 @@ class VoucherController extends Controller
 
     public function store(Request $request)
     {
+//        return $request->all();
+        $request->validate([
+            'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
+        ], [
+            'input.*.amount.required' => 'Please Enter Amount',
+            'input.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
+        ]);
+
         $vouchers = $request->input;
         $content['user_id'] = auth()->user()->id;
         $content['note'] = $request->global_note;
@@ -205,6 +216,16 @@ class VoucherController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'voucher.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
+        ], [
+            'voucher.*.amount.required' => 'Please Enter Amount',
+            'voucher.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
+        ]);
+
+
+        $date = $this->getDate();
+
         $input = $request->voucher;
 
         foreach ($input as $key => $item ) {
@@ -216,7 +237,14 @@ class VoucherController extends Controller
             $credit_ac->update([ 'credit' => $credit_ac->credit + $amount ]);
             $debit_ac->update([ 'debit' => $debit_ac->debit + $amount ]);
 
-            $voucher->voucherHistory()->create([ 'amount' => $voucher->amount, 'note' => $voucher->note]);
+            $voucher->voucherHistory()->create([
+                'amount' => $voucher->amount,
+                'note' => $voucher->note,
+                'date_id' => $date->id,
+                'user_id' => auth()->user()->id,
+            ]);
+
+
             $voucher->update( $item );
         }
 
@@ -229,9 +257,17 @@ class VoucherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy( $id)
     {
-        //
+        $v_group = VoucherGroup::find( $id);
+
+        foreach ( $v_group->vouchers as $voucher ) {
+            $data['new_amount'] = 0; $data['note'] = 'Deleted Voucher - [id: '.$voucher->id. ']';
+            $this->deleteVoucher( $voucher, $data);
+        }
+
+        $v_group->delete();
+        session()->flash('success', '<b>Voucher Has Been Deleted Successfully.</b>');
     }
 
 

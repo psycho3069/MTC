@@ -6,6 +6,7 @@
         <div class="card text-left">
             <div class="card-header">{{ $v_group->type->name }}</div>
             <div class="card-body">
+                <p class="text-danger">{{ $errors->has('voucher.*.amount') ? $errors->first('voucher.*.amount') : '' }}</p>
                 <form action="{{ route('vouchers.update', $v_group->id) }}" method="POST">
                     <table class="table table-bordered voucher">
                         <thead>
@@ -43,13 +44,13 @@
                                 <td>
                                     <div class="form-group">
                                         <label for="amount">Amount</label>
-                                        <input type="text" class="form-control" name="voucher[{{ $voucher->id }}][amount]" value="{{ $voucher->amount }}" required>
+                                        <input type="text" class="form-control" name="voucher[{{ $voucher->id }}][amount]" value="{{ $voucher->amount }}" >
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
                                         <label for="note">Note</label>
-                                        <input type="text" class="form-control" name="voucher[{{ $voucher->id }}][note]" value="{{ $voucher->note }}" required>
+                                        <input type="text" class="form-control" name="voucher[{{ $voucher->id }}][note]" value="{{ $voucher->note }}">
                                     </div>
                                 </td>
                             </tr>

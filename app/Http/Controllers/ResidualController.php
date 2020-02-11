@@ -162,7 +162,6 @@ class ResidualController extends Controller
 
         }
 
-
         return back()->with('update', 'Operation Successful!');
 
     }
@@ -178,6 +177,8 @@ class ResidualController extends Controller
         $mis_heads = MISHead::all();
         $data['hotel'] = $mis_heads->find([ 1, 2, 3]);
         $data['discount'] = $mis_heads->find(6);
+
+//        return $data;
 
         return view('admin.configuration.general.hotel', compact('conf', 'data', 'theads'));
 

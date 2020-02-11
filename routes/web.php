@@ -68,6 +68,7 @@ Route::get('insert', function (){
 //        ['name' => 'Restaurant Receipt', 'voucher_type_id' => 10, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
 //        ['name' => 'Restaurant Payment', 'voucher_type_id' => 11, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
 //        ['name' => 'Inventory Payment', 'voucher_type_id' => 11, 'credit_head_id' => 12, 'debit_head_id' => 353, ],
+//        ['name' => 'Discount', 'voucher_type_id' => 10, 'credit_head_id' => 353, 'debit_head_id' => 12, ],
 //    ]);
 //
 //    DB::table('m3_mis_ledger_heads')->insert([
