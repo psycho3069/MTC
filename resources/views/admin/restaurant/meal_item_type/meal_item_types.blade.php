@@ -46,7 +46,7 @@
                         <td>{{$meal_item_type->description}}</td>
                         <td width="15%" align="right">
                           <a href="{{URL::to('edit_meal_item_type/'.$meal_item_type->id)}}" class="btn btn-sm btn-info">Edit</a>
-                          <a href="{{URL::to('delete_meal_item_type/'.$meal_item_type->id)}}" class="btn btn-sm btn-danger" id="delete">Delete</a>
+{{--                          <a href="{{URL::to('delete_meal_item_type/'.$meal_item_type->id)}}" class="btn btn-sm btn-danger" id="delete">Delete</a>--}}
                         </td>
                     </tr>
                   @endforeach
@@ -60,7 +60,7 @@
 @endsection
 
 @section('datatable')
-    
+
 <!-- datatable -->
 {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script> --}}
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>

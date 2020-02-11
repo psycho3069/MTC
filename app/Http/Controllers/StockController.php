@@ -30,11 +30,11 @@ class StockController extends Controller
     {
 
 
-        $x = MISLedgerHead::all();
-        foreach ($x as $key => $item) {
+//        $x = MISLedgerHead::all();
+//        foreach ($x as $key => $item) {
 //            $item->update(['credit_head_id' => 353, 'debit_head_id' => 16, ]);
-            $item->update(['unit_type_id' => 1]);
-        }
+//            $item->update(['unit_type_id' => 1]);
+//        }
 
 
 
@@ -59,6 +59,7 @@ class StockController extends Controller
                     'mis_head_id' => $mis_head->mis_head_id,
                     'credit_head_id' => $mis_head->credit_head_id,
                     'debit_head_id' => $mis_head->debit_head_id,
+                    'unit_type_id' => 1,
                 ]);
                 $ledger->currentStock()->create([ 'date_id' => 0]);
             }
