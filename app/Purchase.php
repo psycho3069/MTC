@@ -12,7 +12,7 @@ class Purchase extends Model
 
     protected $fillable = [
         'purchase_group_id', 'stock_id', 'amount', 'unit_id', 'supplier_id',
-        'receiver_id', 'mis_voucher_id', 'current_stock_id',
+        'receiver_id', 'mis_voucher_id', 'current_stock_id', 'date_id',
         ];
 
 

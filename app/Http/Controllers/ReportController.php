@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\AccountHead;
 use App\AccountHeadChild_II;
 use App\Date;
+use App\MISHead;
+use App\MISHeadChild_I;
 use App\Process;
 use App\TransactionHead;
 use App\Voucher;
@@ -462,9 +464,51 @@ class ReportController extends Controller
 
 
 
-    public function stock($mis_head_id)
+    public function stock( $mis_head_id)
     {
-        return $mis_head_id;
+        $id = $mis_head_id != 1 ? 5 : 4;
+        $mis_head = MISHead::find( $id);
+        return view('admin.mis.report.stock', compact('mis_head'));
+    }
+
+
+    public function showStock(Request $request)
+    {
+//        return $request->all();
+        $from = date( 'Y-m-d', strtotime( $request->from));
+        $to = date( 'Y-m-d', strtotime( $request->to));
+        $category = MISHeadChild_I::find( $request->kate_id);
+
+//        $data['date']['opening'] = Date::whereDate('date', '<=', $from)->get()->pluck('id');
+        $dates = $data['date']['closing'] = Date::whereDate('date', '>=', $from)->whereDate('date', '<=', $to)->get()->sortBy('id');
+        $op_date = $dates->first()->id == 1 ? 1 : $dates->first()->id - 1;
+
+        foreach ($category->ledger as $ledger) {
+            $op_bl = $ledger->currentStock->where('date_id', '<', $op_date);
+
+
+            $data['stock'][$ledger->id]['name'] = $ledger->name;
+            $data['stock'][$ledger->id]['op_bl'] = $op_bl->sum('quantity_dr') - $op_bl->sum('quantity_cr');
+            $data['stock'][$ledger->id]['purchase'] = $op_bl->sum('quantity_dr') - $op_bl->sum('quantity_cr');
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 

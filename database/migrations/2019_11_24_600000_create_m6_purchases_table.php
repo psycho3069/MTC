@@ -16,6 +16,7 @@ class CreateM6PurchasesTable extends Migration
         Schema::create('purchases', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('mis_voucher_id')->unsigned()->index();
+            $table->integer('date_id')->unsigned()->index();
             $table->integer('purchase_group_id')->unsigned()->index();
             $table->integer('current_stock_id')->unsigned()->index();
             $table->integer('stock_id')->unsigned()->index();
