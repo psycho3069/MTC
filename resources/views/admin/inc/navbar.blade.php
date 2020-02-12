@@ -109,6 +109,7 @@
               <a class="dropdown-item" href="{{ route('purchase.index', ['mis_head_id' => 4]) }}">Purchase</a>
               <a class="dropdown-item" href="{{ route('deliver.index') }}">Delivery</a>
               <a class="dropdown-item" href="{{ route('stock.opening', ['mis_head_id' => 4]) }}">Opening Balance</a>
+              <a class="dropdown-item" href="{{ route('report.stock', 4) }}">Report</a>
           </div>
       </li>
 
@@ -124,6 +125,7 @@
               <a class="dropdown-item" href="{{ route('stock.list', ['mis_head_id' => 5]) }}">Stock</a>
               <a class="dropdown-item" href="{{ route('purchase.index', ['mis_head_id' => 5]) }}">Purchase</a>
               <a class="dropdown-item" href="{{ route('stock.opening', ['mis_head_id' => 5]) }}">Opening Balance</a>
+              <a class="dropdown-item" href="{{ route('report.stock', 5) }}">Report</a>
           </div>
       </li>
 

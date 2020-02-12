@@ -176,6 +176,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::post('reports/daily', ['as' => 'report.show.daily', 'uses' => 'ReportController@showDaily']);
 
 
+
     Route::get('reports/stock/{id}', ['as' => 'report.stock', 'uses' => 'ReportController@stock']);
     Route::post('reports/stock', ['as' => 'report.show.stock', 'uses' => 'ReportController@showStock']);
 
