@@ -109,7 +109,6 @@
               <a class="dropdown-item" href="{{ route('purchase.index', ['mis_head_id' => 4]) }}">Purchase</a>
               <a class="dropdown-item" href="{{ route('deliver.index') }}">Delivery</a>
               <a class="dropdown-item" href="{{ route('stock.opening', ['mis_head_id' => 4]) }}">Opening Balance</a>
-              <a class="dropdown-item" href="{{ route('report.stock', 4) }}">Report</a>
           </div>
       </li>
 
@@ -125,7 +124,6 @@
               <a class="dropdown-item" href="{{ route('stock.list', ['mis_head_id' => 5]) }}">Stock</a>
               <a class="dropdown-item" href="{{ route('purchase.index', ['mis_head_id' => 5]) }}">Purchase</a>
               <a class="dropdown-item" href="{{ route('stock.opening', ['mis_head_id' => 5]) }}">Opening Balance</a>
-              <a class="dropdown-item" href="{{ route('report.stock', 5) }}">Report</a>
           </div>
       </li>
 
@@ -163,31 +161,15 @@
         Reports
       </a>
       <div class="dropdown-menu sm-menu">
-{{--        <a class="dropdown-item" href="">Inventory Report</a>--}}
-        <a class="dropdown-item" href="{{ route('report.ledger') }}">Ledger Report</a>
-{{--        <a class="dropdown-item" href="">Chart of Account Report</a>--}}
-        <a class="dropdown-item" href="{{ route('report.daily') }}">Daily Transaction Report</a>
-        <a class="dropdown-item" href="{{ route('report.ledger', 353) }}">Cash Book Report</a>
-{{--        <a class="dropdown-item" href="">Bank Book Report</a>--}}
-{{--        <a class="dropdown-item" href="{{ route('report.cash') }}">Cash Flow Report</a>--}}
-        <a class="dropdown-item" href="{{ route('report.balance') }}">Balance Sheet</a>
-        <a class="dropdown-item" href="{{ route('report.income') }}">Income Statement</a>
+          <a class="dropdown-item" href="{{ route('report.ledger') }}">Ledger Report</a>
+          <a class="dropdown-item" href="{{ route('report.daily') }}">Daily Transaction Report</a>
+          <a class="dropdown-item" href="{{ route('report.ledger', 353) }}">Cash Book Report</a>
+          <a class="dropdown-item" href="{{ route('report.balance') }}">Balance Sheet</a>
+          <a class="dropdown-item" href="{{ route('report.income') }}">Income Statement</a>
+          <a class="dropdown-item" href="{{ route('report.stock', 4) }}">Grocery Report</a>
+          <a class="dropdown-item" href="{{ route('report.stock', 5) }}">Inventory Report</a>
       </div>
     </li>
-    {{-- <li class="nav-item dropdown dmenu">
-      <a class="nav-link" href="{{ route('logout') }}"
-            onclick="event.preventDefault();
-            document.getElementById('logout-form').submit();">
-            {{ __('Logout') }}
-      </a>
-      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-          @csrf
-      </form>
-    </li> --}}
-
-    {{-- <li class="nav-item">
-      <a class="nav-link" href="https://lawmessengerbd.com:2096" target="_blank">Web Mail</a>
-    </li> --}}
   </ul>
 
 </div>

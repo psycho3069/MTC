@@ -106,7 +106,6 @@ Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@
 Route::group(['middleware' => 'auth'], function (){
 
 
-//    Route
     Route::get('general/configuration/hotel', ['as' => 'configure.hotel', 'uses' => 'ResidualController@hotel']);
     Route::post('general/configuration/hotel', ['as' => 'update.hotel', 'uses' => 'ResidualController@updateHotel']);
     Route::get('general/configuration/ledger/{type}', ['as' => 'configure.ledger', 'uses' => 'ResidualController@ledger']);
