@@ -22,9 +22,9 @@
                             <div class="col-md-2">
                                 <label>Type</label>
                                 <select name="category" class="form-control" id="category">
-                                    <option value="0" {!! $input['category'] == 0 ? 'selected="selected"' : '' !!}>All</option>
-                                    <option value="1" {!! $input['category'] == 1 ? 'selected="selected"' : '' !!}>Auto</option>
-                                    <option value="2" {!! $input['category'] == 2 ? 'selected="selected"' : '' !!}>Manual</option>
+                                    <option value="0" {{ $input['category'] == 0 ? 'selected' : '' }}>All</option>
+                                    <option value="1" {{ $input['category'] == 1 ? 'selected' : '' }}>Auto</option>
+                                    <option value="2" {{ $input['category'] == 2 ? 'selected' : '' }}>Manual</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -32,7 +32,7 @@
                                 <select name="type_id" class="form-control" id="type">
                                     <option value="0">All</option>
                                     @foreach( $data['types'] as $item )
-                                        <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} {!! $input['type_id'] == $item->id ? 'selected="selected"' : '' !!}>{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}" class={{ $item->id >4 ? 'auto' : 'manual' }} {{ $input['type_id'] == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -61,25 +61,26 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->code }}</td>
-                                <td>{{ $item->type->name }}</td>
+                                <td>{{ $item->type->name }} Voucher</td>
                                 <td>{{ $item->vouchers->sum('amount') }}</td>
                                 <td>{{ str_limit($item->note, 18) }}</td>
                                 <td>{{ $item->user->name }}</td>
                                 <td>{{ date('d-m-Y', strtotime( $item->date->date)) }}</td>
-                                <td>
 
-                                    <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">
-                                            Vouchers
-                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                        </button>
-                                        <div class="dropdown-content">
-                                            <a href="{{ route('vouchers.show', $item->id) }}">View</a>
-                                            <a href="{{ route('vouchers.edit', $item->id) }}">Edit</a>
-                                        </div>
-                                    </div>
-
+                                <td width="18%" align="">
+                                    <a href="{{ route('vouchers.show', $item->id) }}" class="btn btn-sm btn-i" title="View">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ route('vouchers.edit', $item->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    @if( $item->type_id != 10 && $item->type_id != 11)
+                                        <a href="" class="btn btn-sm btn-danger" data_id="{{ $item->id }}" title="Delete" onclick="destroy( $(this).attr('data_id')); return false;">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </a>
+                                    @endif
                                 </td>
+
                             </tr>
                         @endforeach
                         </tbody>
@@ -135,6 +136,30 @@
                 }
             })
         })
+    </script>
+
+
+    <script>
+        var _token = $('input[name="_token"]').val()
+
+        function destroy(id) {
+            var check = confirm('Are you sure want Delete this?')
+
+
+            if( check){
+                $.ajax({
+                    type: 'DELETE',
+                    url: 'vouchers/'+id,
+                    data:{ _token: _token },
+                    success:function (data) {
+                        // console.log( data)
+                        window.location.href = "{{ route('vouchers.index') }}";
+                    }
+                })
+            }
+
+
+        }
     </script>
 
 @endsection

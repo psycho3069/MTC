@@ -11,7 +11,7 @@
                     <table class="table table-bordered voucher">
                         <thead>
                         <tr>
-                            <th scope="col">Code</th>
+                            <th scope="col"></th>
                             <th scope="col"></th>
                             <th scope="col"></th>
                             <th scope="col"></th>

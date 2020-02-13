@@ -18,59 +18,6 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function indexOld()
-    {
-        $ac_head = AccountHead::find([3,4]);
-
-        foreach ($ac_head as $head) {
-            if ( $head->id == 3 )
-                foreach ( $head->theads as $income)
-                    $data['income'][] = $income->id;
-            if ( $head->id == 4)
-                foreach ( $head->theads as $expense )
-                    $data['expense'][] = $expense->id;
-        }
-
-//        $balance['income'] = Process::whereIn('thead_id', $data['income'])->get()->groupBy('date_id');
-//        $balance['expense'] = Process::whereIn('thead_id', $data['expense'])->get()->groupBy('date_id');
-
-        return view('admin.ais.report.index', compact('all_bl', 'data'));
-    }
-
-
-
-    public function indexOld3()
-    {
-        $head = AccountHead::find(3);
-
-        $current_bl = Process::where( 'date_id', 1)->get();
-
-        foreach ($head->child as $child_i) {
-            if ( $child_i->transaction()->exists())
-                foreach ($child_i->transaction as $thead)
-                    foreach ($thead->currentBalance->where('date_id', 1) as $bl)
-                        echo $bl->debit.'<br>';
-        }
-//        return view('admin.ais.report.index', compact('head'));
-    }
-
-
-    public function incomeOld()
-    {
-
-        $heads = AccountHead::find([3,4]);
-        foreach ($heads as $head){
-            foreach ($head->theads as $thead )
-                if ( count($thead->currentBalance->Where( 'date_id', 0)))
-                    $balance[$head->id][] = $thead->currentBalance->firstWhere( 'date_id', 0);
-        }
-
-        return $balance[3]->first();
-
-
-        return view('admin.ais.report.income', compact('balance'));
-    }
-
 
 
     public function index()
@@ -247,7 +194,7 @@ class ReportController extends Controller
         $data['dates'] = Date::where('id', '>', 1)->get();
         $data['theads'] = TransactionHead::all();
 //        return $data['theads']->where('id', $thead_id);
-        $data['types'] = VoucherType::all();
+        $data['types'] = VoucherType::all()->except([ 5, 6, 7, 8, 9]);
 
         if ( $data['dates']->isEmpty() ){
             $status = 0;
@@ -291,7 +238,7 @@ class ReportController extends Controller
 
         if ( $data['dates']){
             $current_bl = Process::where('date_id', '<=', $data['dates']->max('id'))->where('thead_id', $input['thead_id'] )->get();
-            $data['types'] = VoucherType::all();
+            $data['types'] = VoucherType::all()->except([5,6,7,8,9]);
             $data['theads'] = TransactionHead::all();
             $thead = $data['theads']->find($request->thead_id);
 
@@ -355,7 +302,7 @@ class ReportController extends Controller
     {
         $data['date'] = Date::orderBy('id', 'desc')->where('id', '>', 1)->get();
 //        $data['date'] = Date::orderBy('id', 'desc')->get();
-        $data['types'] = VoucherType::all(['name', 'id']);
+        $data['types'] = VoucherType::all(['name', 'id'])->except([5,6,7,8,9]);
         $theads = TransactionHead::all();
 
         if ( $data['date']->isEmpty() ){
@@ -465,6 +412,80 @@ class ReportController extends Controller
     }
 
 
+    public function repay()
+    {
+        $heads = AccountHead::all();
+        $data = [];
+
+        $theads = TransactionHead::all();
+
+        foreach ( $theads as $thead) {
+            $cr_bl[$thead->id]['debit'] = $thead->currentBalance->sum('debit');
+            $cr_bl[$thead->id]['credit'] = $thead->currentBalance->sum('credit');
+        }
+
+        foreach ($heads as $head) {
+
+            foreach ($head->child as $child_i) {
+                $prefix = 'head_i';
+                $data[] = $this->repayCal($prefix, $child_i, $cr_bl);
+
+                foreach ( $child_i->child as $child_ii) {
+                    $prefix = 'head_ii';
+                    $data[] = $this->repayCal($prefix, $child_ii, $cr_bl);
+
+                    foreach ($child_ii->child as $child_iii) {
+                        $prefix = 'head_iii';
+                        $data[] = $this->repayCal($prefix, $child_iii, $cr_bl);
+                    }
+                }
+            }
+
+//            foreach ($head->child as $child) {
+//                $data['head_i'][$child->id]['debit'] = 0;
+//                $data['head_i'][$child->id]['credit'] = 0;
+//                $data['head_i'][$child->id]['no'] = count( $child->transaction);
+//
+//                foreach ( $child->transaction as $thead) {
+//                    $data['head_i'][$child->id]['debit'] += $cr_bl[$thead->id]['debit'];
+//                    $data['head_i'][$child->id]['credit'] += $cr_bl[$thead->id]['credit'];
+//                }
+//                $total = $data['head_i'][$child->id]['debit'] - $data['head_i'][$child->id]['credit'];
+//                $data['head_i'][$child->id]['total'] = $child->ac_head_id == 1 || $child->ac_head_id == 4 ? round($total, 2) : round(-$total, 2);
+//
+//            }
+
+        }
+
+        foreach ($data as $key => $types) {
+            foreach ($types as $key => $head) {
+                foreach ($head as $id => $value) {
+                    $local[$key][$id] = $value;
+                }
+            }
+        }
+
+//        return $local;
+
+        return view('admin.ais.report.receipt', compact('heads', 'local'));
+    }
+
+
+    public function repayCal( $prefix, $child, $cr_bl)
+    {
+        $data[$prefix][$child->id]['debit'] = 0;
+        $data[$prefix][$child->id]['credit'] = 0;
+        $data[$prefix][$child->id]['no'] = count( $child->transaction);
+
+        foreach ( $child->transaction as $thead) {
+            $data[$prefix][$child->id]['debit'] += $cr_bl[$thead->id]['debit'];
+            $data[$prefix][$child->id]['credit'] += $cr_bl[$thead->id]['credit'];
+        }
+        $total = $data[$prefix][$child->id]['debit'] - $data[$prefix][$child->id]['credit'];
+        $data[$prefix][$child->id]['total'] = $child->ac_head_id == 1 || $child->ac_head_id == 4 ? round($total, 2) : round(-$total, 2);
+
+        return $data;
+    }
 
 
 
@@ -492,7 +513,6 @@ class ReportController extends Controller
         return $data;
     }
 
-
     public function stock( $mis_head_id)
     {
         $id = $mis_head_id != 4 ? 5 : 4;
@@ -503,10 +523,6 @@ class ReportController extends Controller
 
         return view('admin.mis.report.stock', compact('mis_head', 'data'));
     }
-
-
-
-
 
     public function getAllStock( $mis_head, $dates)
     {
@@ -524,10 +540,6 @@ class ReportController extends Controller
 
         return $data;
     }
-
-
-
-
 
     public function getReport( $category, $dates)
     {

@@ -14,6 +14,7 @@ use App\VoucherType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use NumberFormatter;
+use function GuzzleHttp\Promise\all;
 
 class VoucherController extends Controller
 {
@@ -27,21 +28,13 @@ class VoucherController extends Controller
 
     public function index()
     {
-        $data['types'] = VoucherType::all();
+        $data['types'] = VoucherType::all()->except([5,6,7,8,9]);
         $data['v_group'] = VoucherGroup::orderBy('id', 'desc')->get();
 
         return view('admin.ais.voucher.index', compact('data' ));
 //        return view('admin.ais.voucher.test', compact('data' ));
     }
 
-    public function indexOld(Request $request)
-    {
-        $type_id = $request->type_id;
-        $types = VoucherType::all();
-        $v_groups = $type_id !=0 ? VoucherGroup::where( 'type_id', $type_id )->get() : VoucherGroup::all();
-        $mis_vouchers = MisVoucher::all();
-        return view('admin.ais.voucher.index', compact('type_id', 'types', 'v_groups', 'mis_vouchers'));
-    }
 
 
     public function list(Request $request)
@@ -51,7 +44,7 @@ class VoucherController extends Controller
         $input['start_date'] = date('Y-m-d', strtotime( $request->start_date));
         $input['end_date'] = date('Y-m-d', strtotime( $request->end_date));
 
-        $data['types'] = VoucherType::all();
+        $data['types'] = VoucherType::all()->except([5,6,7,8,9]);
         $dates =Date::whereBetween('date', [$input['start_date'], $input['end_date']])->orderBy('id')->get();
 
         $data['v_group'] = VoucherGroup::whereIn('date_id', $dates->pluck('id'))->orderBy('date_id', 'desc')->get();
@@ -66,6 +59,8 @@ class VoucherController extends Controller
 
         return view('admin.ais.voucher.list', compact('data', 'input'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -102,6 +97,7 @@ class VoucherController extends Controller
             'input.*.amount.required' => 'Please Enter Amount',
             'input.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
         ]);
+
 
         $vouchers = $request->input;
         $content['user_id'] = auth()->user()->id;

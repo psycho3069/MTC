@@ -34,7 +34,7 @@
                                 <select name="type_id" class="form-control" id="type">
                                     <option value="0">All</option>
                                     @foreach( $data['types'] as $item )
-                                        <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} >{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}" class={{ $item->id >4 ? 'auto' : 'manual' }} >{{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -46,17 +46,17 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary table-fixed">
+                    <table class="table table-bordered table-hover table-fixed">
                         <thead>
                         <tr>
                             <th width="6%"></th>
                             <th>Code</th>
-                            <th class="">Type</th>
-                            <th class="">Amount</th>
-                            <th class="">Narration/Cheque Details</th>
-                            <th class="">Entry By</th>
-                            <th class="">Date</th>
-                            <th class="">Action</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Narration</th>
+                            <th>Entry By</th>
+                            <th>Date</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -64,12 +64,11 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->code }}</td>
-                                <td>{{ $item->type_id == 8 || $item->type_id == 9 ? 'Auto Payment Voucher' : ( $item->type_id >= 5 ? 'Auto Receipt Voucher' : $item->type->name) }}</td>
+                                <td>{{ $item->type->name }} voucher</td>
                                 <td>{{ $item->vouchers->sum('amount') }}</td>
                                 <td>{{ str_limit($item->note, 18) }}</td>
                                 <td>{{ $item->user->name }}</td>
                                 <td>{{ date('d-m-Y', strtotime($item->date->date)) }}</td>
-
 
                                 <td width="18%" align="">
                                     <a href="{{ route('vouchers.show', $item->id) }}" class="btn btn-sm btn-i" title="View">
@@ -84,7 +83,6 @@
                                         </a>
                                     @endif
                                 </td>
-
 
                             </tr>
                         @endforeach
@@ -122,6 +120,8 @@
             }
 
         })
+
+
         $('.show-button').click(function (e) {
             var end_date = $('input[name="end_date"]').val()
             var start_date = $('input[name="start_date"]').val()
