@@ -82,14 +82,17 @@ Route::get('insert', function (){
 //    return \App\MISHead::all();
 
     $theads = TransactionHead::all();
+    $ledgers = \App\MISLedgerHead::whereIn('mis_head_id', [4,5])->get();
 
     foreach ($theads as $thead) {
-        if ( $thead->currentBalance->isEmpty()){
-            $thead->currentBalance()->create([
-                'debit' => $thead->debit,
-                'credit' => $thead->credit,
-            ]);
-        }
+        if ( $thead->currentBalance->isEmpty())
+            $thead->currentBalance()->create(['debit' => $thead->debit, 'credit' => $thead->credit,]);
+    }
+
+
+    foreach ($ledgers as $ledger) {
+        if ( $ledger->currentStock->isEmpty())
+            $ledger->currentStock()->create([ 'date_id' => 0, 'quantity_dr' => $ledger->amount]);
     }
 
     return redirect('process');

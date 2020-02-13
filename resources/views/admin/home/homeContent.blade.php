@@ -121,14 +121,8 @@
       function drawStuff() {
         var data = new google.visualization.arrayToDataTable([
             ['Opening Move', 'Quantity'],
-          @foreach($stock_heads as $stock_head)
-              @foreach($stocks as $stock)
-                @if($stock_head->type_id == 3)
-                    @if($stock->stock_head_id == $stock_head->id)
-                       ["{{ $stock_head->name }}", {{ $stock->quantity }}],
-                    @endif
-                @endif
-              @endforeach
+          @foreach($ledger_heads as $ledger_head)
+               ["{{ $ledger_head->name }}", {{ $ledger_head->currentStock->sum('quantity_dr') }}],
           @endforeach
         ]);
 
@@ -160,15 +154,9 @@
       function drawStuff() {
         var data = new google.visualization.arrayToDataTable([
             ['Opening Move', 'Quantity'],
-          @foreach($stock_heads as $stock_head)
-              @foreach($stocks as $stock)
-                @if($stock_head->type_id == 5)
-                    @if($stock->stock_head_id == $stock_head->id)
-                       ["{{ $stock_head->name }}", {{ $stock->quantity }}],
-                    @endif
-                @endif
-              @endforeach
-          @endforeach
+          @foreach($ledger_heads as $ledger_head)
+                ["{{ $ledger_head->name }}", {{ $ledger_head->currentStock->sum('quantity_dr') }}],
+            @endforeach
         ]);
 
         var options = {

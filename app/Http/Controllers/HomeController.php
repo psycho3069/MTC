@@ -55,12 +55,13 @@ class HomeController extends Controller
 
         $data = $this->countBooking();
 
-        $stock_heads = DB::table('stock_heads')->get();
-        $stocks = DB::table('stocks')->get();
+//        $stock_heads = DB::table('stock_heads')->get();
+//        $stocks = DB::table('stocks')->get();
 
-        $ledger_heads = MISLedgerHead::all();
 
-        return view('admin.home.homeContent', compact('data','stock_heads', 'stocks', 'ledger_heads','employees','departments','leaves','employees_total'));
+        $ledger_heads = MISLedgerHead::whereIn( 'mis_head_id', [4,5])->get();
+
+        return view('admin.home.homeContent', compact('data','ledger_heads','employees','departments','leaves','employees_total'));
     }
 
     public function countBooking()

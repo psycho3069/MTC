@@ -17,9 +17,9 @@ class CreateA6TransactionHeadsTable extends Migration
             $table->increments('id');
             $table->integer('ac_head_id')->index()->unsigned();
             $table->string('name');
-            $table->bigInteger('debit')->default(0);
-            $table->bigInteger('credit')->default(0);
-            $table->BigInteger('amount')->default(0);
+            $table->decimal('debit',14,2)->default(0);
+            $table->decimal('credit',14,2)->default(0);
+            $table->decimal('amount',14,2)->default(0);
             $table->string('code')->unique();
             $table->integer('transactionable_id');
             $table->string('transactionable_type');
