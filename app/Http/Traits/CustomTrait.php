@@ -209,6 +209,19 @@ trait CustomTrait{
 
 
 
+    public function getBalance($thead_id, $date_id)
+    {
+        $balance = Process::where('date_id', '<=', $date_id)->where('thead_id', $thead_id)->get();
+        $amount = $balance->first()->thead->ac_head_id == 1 || $balance->first()->thead->ac_head_id == 4 ? $balance->sum('debit') - $balance->sum('credit') : $balance->sum('credit') - $balance->sum('debit');
+        return $amount;
+    }
+
+
+
+
+
+
+
 
 
 
@@ -412,12 +425,6 @@ trait CustomTrait{
     }
 
 
-    public function getBalance($thead_id, $date_id)
-    {
-        $balance = Process::where('date_id', '<=', $date_id)->where('thead_id', $thead_id)->get();
-        $amount = $balance->first()->thead->ac_head_id == 1 || $balance->first()->thead->ac_head_id == 4 ? $balance->sum('debit') - $balance->sum('credit') : $balance->sum('credit') - $balance->sum('debit');
-        return $amount;
-    }
 
 
 
