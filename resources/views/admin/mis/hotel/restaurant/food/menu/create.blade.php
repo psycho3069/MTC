@@ -153,7 +153,9 @@
 
             function itemPrice(){
                 var price = $('#item :selected').text()
-                price = parseFloat(price.split('-')[1].split('tk.')[0]).toFixed(2)
+                var p = [];
+                p = price.split('-');
+                price = parseFloat(p[p.length - 1].split('tk.')).toFixed(2)
                 return price;
             }
 
