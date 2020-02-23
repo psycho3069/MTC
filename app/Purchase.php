@@ -48,7 +48,7 @@ class Purchase extends Model
 
     public function currentStock()
     {
-        return $this->belongsTo('App\MisCurrentSTock', 'current_stock_id');
+        return $this->belongsTo('App\MisCurrentStock', 'current_stock_id');
     }
 
 

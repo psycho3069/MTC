@@ -98,7 +98,7 @@
                                         <div style="width: 20%; margin-left: 2.5%;">
                                             <div class="form-group">
                                                 <label>Room</label>
-                                                <input type="text" class="form-control" value="{{ $book->room_id < 50 ? $book->room->room_no.'-'.$book->room->roomCat->name : $book->venue->name }}" disabled>
+                                                <input type="text" class="form-control" value="{{ $book->room_id > 50 ? $book->room->room_no.'-'.$book->room->roomCat->name : $book->venue->name }}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
