@@ -8,7 +8,7 @@
                 <div class="card-header">
                     {{ $type_id != 5 ? 'Grocerie\'s' : 'Inventorie\'s' }} Purchase List
                     <code>
-                        <button type="button" class="btn btn-sm btn-i float-right" onclick='window.location="{{ route('purchase.create', ['type_id' => $type_id]) }}"'>New Purchase</button>
+                        <button type="button" class="btn btn-sm btn-i float-right" onclick='window.location="{{ route('purchase.create', ['mis_head_id' => $type_id]) }}"'>New Purchase</button>
                     </code>
                 </div>
 
