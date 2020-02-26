@@ -96,7 +96,12 @@ class StockDeliverController extends Controller
      */
     public function edit($id)
     {
-        //
+        $delivery = Delivery::find($id);
+        $data['units'] = Unit::all();
+
+        if ( $delivery)
+            return view('admin.mis.stock.deliver.edit', compact('delivery', 'data'));
+
     }
 
     /**
@@ -108,7 +113,20 @@ class StockDeliverController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+//        return $request->all();
+        $input = $request->all();
+        $delivery = Delivery::find( $id);
+        $unit = $delivery->ledger->unitType->units->find( $input['unit_id']);
+        $quantity_cr = $input['quantity'] / $unit->multiply_by;
+        $total = $delivery->ledger->currentStock->sum('quantity_dr') - $delivery->ledger->currentStock->sum('quantity_cr') + $delivery->quantity / $delivery->unit->multiply_by;
+
+        $input['quantity'] = $quantity_cr > $total ? $total * $unit->multiply_by : $input['quantity'];
+        $delivery->update( $input);
+        $delivery->currentStock->update([ 'quantity_cr' => $input['quantity'] / $unit->multiply_by ]);
+
+
+        return redirect('stocks/deliver')->with('update', '<b>Operation successful</b>');
+
     }
 
     /**
@@ -119,6 +137,11 @@ class StockDeliverController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delivery = Delivery::find( $id);
+        $delivery->currentStock->delete();
+        $delivery->delete();
+
+        session()->flash('success', '<b>Operation successful.</b> Delivery has been deleted');
+        return 200;
     }
 }

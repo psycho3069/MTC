@@ -3,6 +3,7 @@
 
 @section('content')
     <div class="col-md-8">
+        {{ csrf_field() }}
         <br><br><br>
         <samp>
             <div class="card text-left">
@@ -26,19 +27,15 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ date('d-m-Y', strtotime($item->date->date)) }}</td>
-                                <td>{{ $item->ledgerHead->name }}</td>
+                                <td>{{ $item->ledger->name }}</td>
                                 <td>{{ $item->quantity.' '.$item->unit->name }}</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            Action
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item font-color" href="">Edit</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item font-color" href="#">Delete</a>
-                                        </div>
-                                    </div>
+                                <td width="18%" align="right">
+                                    <a href="{{ route('deliver.edit', $item->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="" class="btn btn-sm btn-danger" title="Delete" onclick="destroy({{$item->id}}); return false;">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
@@ -51,6 +48,29 @@
     </div>
 
 @endsection
+
+
+@section('script')
+    <script>
+        var _token = $('input[name="_token"]').val()
+
+        function destroy(id){
+            var check = confirm('Are you sure want Delete this?')
+            if( check)
+                $.ajax({
+                    type: 'DELETE',
+                    url: 'deliver/'+id,
+                    data: {_token: _token},
+                    success: function (data) {
+                        console.log(data)
+                        window.location.href = "deliver";
+                    }
+                })
+        }
+
+    </script>
+@endsection
+
 
 @section('datatable')
 

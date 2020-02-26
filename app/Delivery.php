@@ -12,17 +12,10 @@ class Delivery extends Model
     protected $fillable = [ 'stock_id', 'date_id', 'quantity', 'unit_id', 'current_stock_id', ];
 
 
-    public function stock()
-    {
-        return $this->belongsTo('App\Stock');
-    }
-
-
-    public function ledgerHead()
+    public function ledger()
     {
         return $this->belongsTo('App\MISLedgerHead', 'stock_id');
     }
-
 
     public function unit()
     {
