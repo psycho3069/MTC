@@ -149,7 +149,7 @@
             if( check){
                 $.ajax({
                     type: 'DELETE',
-                    url: 'vouchers/'+id,
+                    url: '/vouchers/'+id,
                     data:{ _token: _token },
                     success:function (data) {
                         // console.log( data)

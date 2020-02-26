@@ -59,11 +59,11 @@
             if( check)
                 $.ajax({
                     type: 'DELETE',
-                    url: 'deliver/'+id,
+                    url: '/stocks/deliver/'+id,
                     data: {_token: _token},
                     success: function (data) {
                         console.log(data)
-                        window.location.href = "deliver";
+                        window.location.href = "{{ route('deliver.index') }}";
                     }
                 })
         }

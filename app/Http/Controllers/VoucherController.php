@@ -50,8 +50,8 @@ class VoucherController extends Controller
         $data['v_group'] = VoucherGroup::whereIn('date_id', $dates->pluck('id'))->orderBy('date_id', 'desc')->get();
         if ($request->category == 1)
             $data['v_group'] = $data['v_group']->where('type_id', '>', 4);
-        if ( $request->category == 2)
-            $data['v_group'] = $data['v_group']->where('type_id', '<', 4);
+        if ($request->category == 2)
+            $data['v_group'] = $data['v_group']->where('type_id', '<', 5);
         if ($request->type_id)
             $data['v_group'] = $data['v_group']->where('type_id', $request->type_id);
 

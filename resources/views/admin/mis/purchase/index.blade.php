@@ -70,11 +70,11 @@
             if( check)
                 $.ajax({
                     type: 'DELETE',
-                    url: 'purchase/'+id,
+                    url: '/purchase/'+id,
                     data: {_token: _token},
                     success: function (data) {
                         console.log(data)
-                        window.location.href = "purchase?mis_head_id="+data;
+                        window.location.href = "/purchase?mis_head_id="+data;
                     }
                 })
         }
