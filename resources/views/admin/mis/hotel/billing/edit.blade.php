@@ -148,13 +148,13 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-In*</label>
-                                            <input type="date" class="form-control date check_in_date" value="{{ date('Y-m-d') }}" id="start_date">
+                                            <input type="date" class="form-control date check_in_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" id="start_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-Out*</label>
-                                            <input type="date" class="form-control date check_out_date" value="{{ date('Y-m-d') }}" id="end_date">
+                                            <input type="date" class="form-control date check_out_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" id="end_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">

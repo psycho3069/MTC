@@ -13,11 +13,11 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label>Start Date</label>
-                                <input type="date" class="form-control date" name="start_date" value="{{ date('Y-m-d') }}" >
+                                <input type="date" class="form-control date" name="start_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" >
                             </div>
                             <div class="col-md-3">
                                 <label>End Date</label>
-                                <input type="date" class="form-control date" name="end_date"  value="{{ date('Y-m-d') }}">
+                                <input type="date" class="form-control date" name="end_date"  value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}">
                             </div>
 
                             <div class="col-md-2">
