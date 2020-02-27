@@ -25,7 +25,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
+{{--    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 {{--    <link href="{{asset('css')}}/treeview.css" rel="stylesheet">--}}
@@ -87,7 +87,7 @@
     </div>
 
     <!-- jQuery -->
-    <script src="{{asset('bs4')}}/js/jquery.js"></script>
+{{--    <script src="{{asset('bs4')}}/js/jquery.js"></script>--}}
     <script src="{{asset('bs4')}}/js/bootstrap.min.js"></script>
     <script src="{{asset('bs4')}}/js/bootstrap.js"></script>
 
@@ -141,8 +141,8 @@
     @yield('script')
     <!-- treeview end -->
 </body>
-{{--  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />--}}
-{{--  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>--}}
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 </html>
 
 @yield('customscript')

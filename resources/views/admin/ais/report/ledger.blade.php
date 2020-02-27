@@ -2,6 +2,17 @@
 
 @extends('admin.master')
 
+<style>
+    .select2-selection__rendered {
+        line-height: 36px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+    }
+    .select2-selection__arrow {
+        height: 34px !important;
+    }
+</style>
 
 @section('content')
     <div class="col-md-9">
@@ -14,7 +25,8 @@
                             <div class="row">
                                 <div class="col-md-2" >
                                     <label>Select a account</label>
-                                    <select name="thead_id" class="form-control">
+                                    <select name="thead_id" class="form-control thead_id">
+                                        <option value=""></option>
                                         @if( isset($thead))
                                             <option value="{{ $thead->id }}" >{{ str_limit( $thead->name, 15) }} [{{ $thead->code }}]</option>
                                         @else
@@ -108,6 +120,15 @@
 @endsection
 
 @section('script')
+
+    <script>
+        $(document).ready(function() {
+            $('.thead_id').select2({
+                placeholder: 'Select an account'
+            });
+        });
+    </script>
+
     <script>
         $('#category').on('change',function () {
             var x = $(this).val()
