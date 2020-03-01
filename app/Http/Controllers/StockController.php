@@ -218,11 +218,11 @@ class StockController extends Controller
         $request->validate([
             'name' => 'required',
             'input.*.name' => 'required',
-            'input.*.unit_type_id' => 'required',
+//            'input.*.unit_type_id' => 'required',
         ],[
             'name.required' => 'Please Enter Category Name',
             'input.*.name.required' => 'Please Enter Item Name',
-            'input.*.unit_type_id.required' => 'Please Select A Unit',
+//            'input.*.unit_type_id.required' => 'Please Select A Unit',
         ]);
 //        return $request->all();
         $input = $request->input ? $request->input : [];

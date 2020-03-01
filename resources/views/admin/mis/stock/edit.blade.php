@@ -33,7 +33,7 @@
                             <div class="col-md-7">
                                 <h4>Items</h4>
                                 <p class="text-danger">{{ $errors->has('input.*.name') ? $errors->first('input.*.name') : '' }}</p>
-                                <p class="text-danger">{{ $errors->has('input.*.unit_type_id') ? $errors->first('input.*.unit_type_id') : '' }}</p>
+{{--                                <p class="text-danger">{{ $errors->has('input.*.unit_type_id') ? $errors->first('input.*.unit_type_id') : '' }}</p>--}}
                                 @foreach( $mis_head->ledger as $item )
                                     <div class="row">
                                         <div class="col-md-4">
@@ -44,7 +44,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label>Unit</label>
-                                            <select class="form-control" name="input[{{$item->id}}][unit_type_id]">
+                                            <select class="form-control" name="input[{{$item->id}}][unit_type_id]" {{ count( $item->currentStock->where('date_id', '!=', 0)) > 0 ? 'disabled' : ''}}>
                                                 @foreach( $units as $unit )
                                                     <option value="{{ $unit->id }}" {{ $item->unit_type_id == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
                                                 @endforeach
