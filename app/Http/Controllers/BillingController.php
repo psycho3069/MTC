@@ -107,7 +107,7 @@ class BillingController extends Controller
             if ( $item->room_id > 49 && $item->room_id < 500)
                 $data['venue'][$item->id] = $item;
 
-             $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
+            $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
             $booking[$item->id]['days'] = $item->room_id < 50 || $item->room_id > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
             $booking[$item->id]['room_no'] = $item->room_id < 50 || $item->room_id > 499 ? 'Room No-'.$item->room->room_no : $item->venue->name;
             $booking[$item->id]['unit_price'] = ( $item->room_id < 50 || $item->room_id > 499 ? $item->room->price : $item->venue->price);

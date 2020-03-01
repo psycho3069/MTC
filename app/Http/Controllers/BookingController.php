@@ -78,7 +78,7 @@ class BookingController extends Controller
     public function create(Request $request)
     {
         $date = Configuration::find( 1)->software_start_date;
-        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->get()->pluck('room_id');
+        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->where('booking_status', '!=', 0)->get()->pluck('room_id');
 //        return $booked;
         $data['room'] = Room::get()->except($booked->toArray());
         $data['venue'] = Venue::get()->except($booked->toArray());

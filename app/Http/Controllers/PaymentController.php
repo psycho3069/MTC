@@ -60,23 +60,22 @@ class PaymentController extends Controller
 //        return $request->all();
         $input = $request->except('_token');
         $input['co'] = $request->co ? $request->co : 0;
-
         $bill = Billing::find( $bill_id);
 
         if ( $input['co'] != true || $bill->checkout_status != true ){
+
+            $total_paid = 0;
             $total_paid = $this->getPayment( $input, $bill);
+            if ( $input['co'])
+                $bill->discount = $input['discount'];
 
             if ( $input['co'] || $request->checkout_status)
                 $bill->checkout_status = 1;
 
-            if ( $input['co'])
-                $bill->discount = $input['discount'];
-
             $bill->reserved = 0;
             $bill->total_paid += $total_paid;
             $bill->save();
-            $bill->booking()->update(['booking_status' => 2]);
-
+            $bill->checkout_status == 1 ? $bill->booking()->update(['booking_status' => 0]) : $bill->booking()->update(['booking_status' => 2]);
 
             if ( $input['co'])
                 return redirect('billing/'.$bill->id)->with('success', '<b>'.$bill->guest->name.'</b> has been successfully Checked-Out');
@@ -152,7 +151,7 @@ class PaymentController extends Controller
 
 
 
-    public function ais( $data, $bill) /*data[ledger], data[amount], data[payment_type]*/
+    public function ais( $data, $bill) /*data[ledger, amount, payment_type]*/
     {
         $data['mis_voucher_id'] = $this->computeAIS( $data['ledger'], $data['amount']);
         $bill->payments()->create( $data);

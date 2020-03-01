@@ -18,7 +18,7 @@ class CreateBookingsTable extends Migration
             $table->integer('guest_id')->unsigned()->index();
             $table->integer('billing_id')->unsigned()->index();
             $table->integer('room_id')->unsigned()->index();
-            $table->tinyInteger('booking_status')->unsigned()->default(2);
+            $table->tinyInteger('booking_status')->unsigned()->default(2); /*booked = 2, reserved = 1, open = 0*/
             $table->tinyInteger('no_of_visitors')->unsigned()->default(0);
             $table->double('bill',14,2)->default(0);
             $table->tinyInteger('vat')->unsigned()->default(0);
