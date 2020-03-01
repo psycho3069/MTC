@@ -45,7 +45,7 @@ class VoucherController extends Controller
         $input['end_date'] = date('Y-m-d', strtotime( $request->end_date));
 
         $data['types'] = VoucherType::all()->except([5,6,7,8,9]);
-        $dates =Date::whereBetween('date', [$input['start_date'], $input['end_date']])->orderBy('id')->get();
+        $dates = Date::whereBetween('date', [$input['start_date'], $input['end_date']])->orderBy('id')->get();
 
         $data['v_group'] = VoucherGroup::whereIn('date_id', $dates->pluck('id'))->orderBy('date_id', 'desc')->get();
         if ($request->category == 1)
@@ -269,7 +269,7 @@ class VoucherController extends Controller
 
     public function getAccounts($type_id)
     {
-        $code = [1751,1802,1803,1804,1805,1806,1807,1808,1872,1873,1874,1880,1899];
+        $code = [1751,1802,1803,1804,1805,1806,1807,1808,1872,1873,1874,1875,1876,1880,1899];
 
         if ( $type_id == 1 ){
             $account['credit'] = TransactionHead::whereIn( 'code', $code )->get();
