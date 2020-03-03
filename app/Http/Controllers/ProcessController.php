@@ -155,14 +155,15 @@ class ProcessController extends Controller
 
     public function store(Request $request)
     {
-        $day_end = Date::find( $request->date_id);
-        $day_end->status = 1;
-        $day_end->save();
+        $dates = Date::all();
+        $dates->find( $request->date_id)->update([ 'status' => 1]);
+
         $x = Configuration::find(1);
         $x->software_start_date = date('Y-m-d', strtotime('+1 day', strtotime($x->software_start_date)));;
         $x->save();
-        $day_end->create([ 'date' => $x->software_start_date]);
 
+        if ( count($dates->where('date', $x->software_start_date)) == 0 )
+            $dates[0]->create([ 'date' => $x->software_start_date]);
         return redirect('process/list')->with('success', 'Operation Successful!');
     }
 
