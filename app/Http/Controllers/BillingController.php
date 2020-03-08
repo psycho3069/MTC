@@ -9,10 +9,9 @@ use App\Guest;
 use App\Http\Traits\CustomTrait;
 use App\Room;
 use App\Venue;
+use NumberFormatter;
 use PDF;
 use Illuminate\Http\Request;
-use NumberFormatter;
-
 class BillingController extends Controller
 {
     use CustomTrait;
@@ -150,9 +149,12 @@ class BillingController extends Controller
      */
     public function edit($id)
     {
+        $date = $this->getDate();
+        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date->date)))->where( 'booking_status', '!=', 0)->get()->pluck('room_id')->toArray();
+
         $bill = Billing::find($id);
-        $data['room'] = Room::get();
-        $data['venue'] = Venue::all();
+        $data['room'] = Room::get()->except($booked);
+        $data['venue'] = Venue::get()->except($booked);
 
         foreach ($bill->booking as $key => $book) {
 //            return $key;

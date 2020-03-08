@@ -29,7 +29,7 @@ trait CustomTrait{
     public function checkBooking( $input)
     {
         $date = Configuration::find( 1)->software_start_date;
-        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->get();
+        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->where( 'booking_status', '!=', 0)->get();
 
         $room_id = collect( $input)->pluck('room_id');
         return count( $booked->whereIn('room_id', $room_id));
