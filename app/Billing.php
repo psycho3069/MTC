@@ -52,7 +52,7 @@ class Billing extends Model
 
     public function date()
     {
-        return $this->belongsTo('App\date');
+        return $this->belongsTo('App\Date');
     }
 
 }
