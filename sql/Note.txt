@@ -1,1 +1,0 @@
-Bhiya The SQL file has two tables( guests, r11_food_sales). You can follow the same approach ( first back up then insert after importing the new tables) or you can use the terminal to migrate these two table.
