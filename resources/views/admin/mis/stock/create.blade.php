@@ -14,7 +14,7 @@
                         <div class="row">
                             <div class="col-md-7">
                                 <div class="form-group">
-                                    <label>Name*</label>
+                                    <label>Name<span class="required">*</span></label>
                                     <input type="text" class="form-control" name="name" value="{{ old('name') }}">
                                     <p class="text-danger">{{ $errors->has('name') ? 'Please Enter Name' : '' }}</p>
                                 </div>
@@ -25,7 +25,7 @@
 
                                 <div class="col-md-5">
                                     <div class="form-group">
-                                        <label>Unit*</label>
+                                        <label>Unit<span class="required">*</span></label>
                                         <select class="form-control" name="unit_type_id">
                                             @foreach( $units as $unit )
                                                 <option value="{{ $unit->id }}">{{ ucwords($unit->name) }}</option>

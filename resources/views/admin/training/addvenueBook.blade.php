@@ -99,7 +99,7 @@
       </div>
 
       <div class="form-group row">
-        <label for="name" class="col-md-4 col-form-label text-md-left">Person Name*</label>
+        <label for="name" class="col-md-4 col-form-label text-md-left">Person Name<span class="required">*</span></label>
         <div class="col-md-6">
             <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="name" value="{{ old('name') }}" name="name" required>
               @if ($errors->has('name'))

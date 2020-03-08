@@ -6,9 +6,11 @@ use App\Billing;
 use App\Configuration;
 use App\FoodMenu;
 use App\FoodSale;
+use App\Guest;
 use App\Http\Traits\CustomTrait;
 use App\Menu;
 use App\MenuType;
+use App\MISHead;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -72,39 +74,118 @@ class FoodSaleController extends Controller
      */
     public function store(Request $request)
     {
+        $food_sale_flag = 0;
         $input = $request->input;
 
         $vat = $request->vat ? Configuration::where('name', 'vat_food')->first()->value : 0;
         $service_charge = $request->service_charge ? Configuration::where('name', 'vat_service')->first()->value : 0;
         $date = $this->getDate();
 
+        if ($input[1]['billing_id'] == '0'){
+            $guest_info['name'] = $input[1]['guest_name'];
+            $guest_info['contact_no'] = $input[1]['guest_contact'];
+
+            $check_guest = Guest::where( 'contact_no', $input[1]['guest_contact'])->get()->last();
+            $guest = Guest::create($guest_info);
+
+            if ( $check_guest)
+                $guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
+
+            $input_bill['billing']['code'] = $this->code();
+            $input_bill['billing']['date_id'] = $date->id;
+
+            $hotel_bill = 0;
+            $hotel_vat = $hotel_bill * $vat / 100;
+
+            $input_bill['billing']['total_bill'] = $hotel_bill + $hotel_vat;
+            $input_bill['billing']['guest_id'] = $guest->id;
+            $input_bill['billing']['checkout_status'] = 2;
+
+            $billing = Billing::create( $input_bill['billing']);
+        }
 //        return $item;
         foreach ( $input as $item ) {
-            $bill = Billing::find( $item['billing_id']);
-            $old_bill[$bill->id] = 0;
-            $new_bill[$bill->id] = 0;
-            if ( $bill->restaurant->isNotEmpty()){
-                foreach ( $bill->restaurant as $val ) {
-                    $old_bill[$bill->id] += $val->bill + $val->bill * ( $val->vat + $val->service_charge) / 100;
-                    $new_bill[$bill->id] += $val->bill + $val->bill * ( $vat + $service_charge) / 100;
+
+            if ($item['billing_id'] == '0'){
+                $food_sale_flag = 1;
+
+                $bill = Billing::find($billing->id);
+
+                $old_bill[$bill->id] = 0;
+                $new_bill[$bill->id] = 0;
+                if ( $bill->restaurant->isNotEmpty()){
+                    foreach ( $bill->restaurant as $val ) {
+                        $old_bill[$bill->id] += $val->bill + $val->bill * ( $val->vat + $val->service_charge) / 100;
+                        $new_bill[$bill->id] += $val->bill + $val->bill * ( $vat + $service_charge) / 100;
+                    }
                 }
+
+                $item['date_id'] = $date->id;
+                $item['discount'] = $item['quantity'] * $item['discount'];
+                $item['bill'] = ( FoodMenu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
+                $item['billing_id'] = $billing->id;
+                $food_bill = FoodSale::create( $item);
+
+                $new_bill[$bill->id] += $food_bill->bill + $food_bill->bill * ( $vat + $service_charge) / 100;
+
+                $bill->total_bill = $bill->total_bill - $old_bill[$bill->id] + $new_bill[$bill->id];
+                $bill->save();
+                $bill->restaurant()->update([ 'vat' => $vat, 'service_charge' => $service_charge]);
+
+            } else{
+                $bill = Billing::find( $item['billing_id']);
+
+                $old_bill[$bill->id] = 0;
+                $new_bill[$bill->id] = 0;
+                if ( $bill->restaurant->isNotEmpty()){
+                    foreach ( $bill->restaurant as $val ) {
+                        $old_bill[$bill->id] += $val->bill + $val->bill * ( $val->vat + $val->service_charge) / 100;
+                        $new_bill[$bill->id] += $val->bill + $val->bill * ( $vat + $service_charge) / 100;
+                    }
+                }
+
+                $item['date_id'] = $date->id;
+                $item['discount'] = $item['quantity'] * $item['discount'];
+                $item['bill'] = ( FoodMenu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
+                $food_bill = FoodSale::create( $item);
+
+                $new_bill[$bill->id] += $food_bill->bill + $food_bill->bill * ( $vat + $service_charge) / 100;
+
+                $bill->total_bill = $bill->total_bill - $old_bill[$bill->id] + $new_bill[$bill->id];
+                $bill->save();
+                $bill->restaurant()->update([ 'vat' => $vat, 'service_charge' => $service_charge]);
             }
-
-            $item['date_id'] = $date->id;
-            $item['discount'] = $item['quantity'] * $item['discount'];
-            $item['bill'] = ( FoodMenu::find($item['menu_id'])->price * $item['quantity']) - $item['discount'];
-            $food_bill = FoodSale::create( $item);
-
-            $new_bill[$bill->id] += $food_bill->bill + $food_bill->bill * ( $vat + $service_charge) / 100;
-
-            $bill->total_bill = $bill->total_bill - $old_bill[$bill->id] + $new_bill[$bill->id];
-            $bill->save();
-            $bill->restaurant()->update([ 'vat' => $vat, 'service_charge' => $service_charge]);
         }
 
-        $request->session()->flash('create', '<b>Food has been sold And added to the bill</b>');
+        if ($food_sale_flag){
+            $request->session()->flash('create', '<b>Food has been sold And added to the food-sales</b>');
+            return redirect()->back();
+        } else{
+            $request->session()->flash('create', '<b>Food has been sold And added to the bill</b>');
+            return redirect('billing/'.$bill->id );
+        }
+    }
 
-        return redirect('billing/'.$bill->id );
+    public function code()
+    {
+        $bill = Billing::whereDate('created_at', date('Y-m-d'))->get()->last();
+        $preds = 'aspada_'.date('d_m_y');
+        $slice_num = 0;
+        if ( $bill )
+            $slice_num = substr( $bill->code, -3);
+        $slice_num += 1;
+        $last_pad = str_pad( $slice_num, 3, '0', STR_PAD_LEFT);
+        $code = $preds.'_'.$last_pad;
+
+        return $code;
+    }
+
+    public function saleFoodForNewGuest($guest){
+        $check_guest = Guest::where( 'contact_no', $guest->guest_contact)->get()->last();
+        $new_guest = Guest::create($guest);
+
+        if ( $check_guest)
+            $new_guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
     }
 
     /**

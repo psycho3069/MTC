@@ -26,7 +26,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Total Cost <small>(tk)</small>*</label>
+                                <label>Total Cost <small>(tk)</small><span class="required">*</span></label>
                                 <input type="text" class="form-control" id="amount" value="0" min="0">
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Quantity*</label>
+                                <label>Quantity<span class="required">*</span></label>
                                 <input type="text" class="form-control" id="quantity" value="0">
                             </div>
                         </div>
@@ -49,7 +49,7 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="form-group list-supplier">
-                                    <label>Supplier*</label>
+                                    <label>Supplier<span class="required">*</span></label>
                                     <select class="form-control" id="supplier" data-check="list">
                                         @foreach( $data['supplier'] as $item )
                                             <option value="{{ $item->id }}">{{ $item->name }} </option>
@@ -60,11 +60,11 @@
 
 
                                 <div class="form-group add-supplier">
-                                    <label>Supplier *</label>
+                                    <label>Supplier <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="sup_name">
                                 </div>
                                 <div class="form-group add-supplier">
-                                    <label>Contact No. *</label>
+                                    <label>Contact No. <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="sup_contact">
                                 </div>
                                 <div>
@@ -78,14 +78,14 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Unit*</label>
+                                        <label>Unit<span class="required">*</span></label>
                                         <select class="form-control" id="unit">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Receiver*</label>
+                                        <label>Receiver<span class="required">*</span></label>
                                         <select class="form-control" id="receiver">
                                             @foreach( $data['receiver'] as $item )
                                                 <option value="{{ $item->id }}">{{ $item->name }} </option>

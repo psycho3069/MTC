@@ -12,7 +12,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Name*</label>
+                                    <label>Name<span class="required">*</span></label>
                                     <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                                     <p class="text-danger">{{ $errors->has('name') ? $errors->first('name') : '' }}</p>
                                 </div>
@@ -23,7 +23,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Contact No.*</label>
+                                    <label>Contact No.<span class="required">*</span></label>
                                     <input type="text" name="contact_no" class="form-control" value="{{ old('contact_no') }}">
                                     <p class="text-danger">{{ $errors->has('contact_no') ? $errors->first('contact_no') : '' }}</p>
                                 </div>

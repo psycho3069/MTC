@@ -28,7 +28,10 @@ class BillingController extends Controller
     {
         $data['reserved'] = $request->res ? 1 : 0;
         $data['checkout'] = $request->chk ? 1 : 0;
-        $billing = Billing::where('reserved', 0)->orderBy('id','desc')->get();
+        $billing = Billing::where('reserved', 0)
+                            ->where('checkout_status','!=', 2)
+                            ->orderBy('id','desc')
+                            ->get();
         $billing = $data['checkout'] ? $billing->where('checkout_status', 1) : $billing->where('checkout_status', 0);
 
         if ( $request->res){

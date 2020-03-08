@@ -64,7 +64,7 @@
                     </p>
 
                     <div class="form-group row">
-                        <label for="start_date" class="col-md-4 col-form-label text-md-left">Start Date*</label>
+                        <label for="start_date" class="col-md-4 col-form-label text-md-left">Start Date<span class="required">*</span></label>
                         <div class="col-md-6">
                             <input class="form-control{{ $errors->has('start_date') ? ' is-invalid' : '' }}" id="check_in_date" name="start_date" value="{{ old('start_date') }}" autocomplete="off" required>
                         </div>
@@ -72,7 +72,7 @@
 
 
                     <div class="form-group row">
-                        <label for="end_date" class="col-md-4 col-form-label text-md-left">End Date*</label>
+                        <label for="end_date" class="col-md-4 col-form-label text-md-left">End Date<span class="required">*</span></label>
                         <div class="col-md-6">
                             <input class="form-control{{ $errors->has('end_date') ? ' is-invalid' : '' }}" id="check_out_date" autocomplete="off" value="{{ old('end_date') }}" name="end_date" >
                         </div>
@@ -89,7 +89,7 @@
                     </div>
 
                     <div class="form-group row">
-                        <label for="guest_name" class="col-md-4 col-form-label text-md-left">Guest Name*</label>
+                        <label for="guest_name" class="col-md-4 col-form-label text-md-left">Guest Name<span class="required">*</span></label>
                         <div class="col-md-6">
                             <input type="text" class="form-control{{ $errors->has('guest_name') ? ' is-invalid' : '' }}" id="guest_name" value="{{ old('guest_name') }}" name="guest_name" required>
                         </div>
@@ -106,7 +106,7 @@
                     </div>
 
                     <div class="form-group row">
-                        <label for="guest_contact" class="col-md-4 col-form-label text-md-left">Contact No*</label>
+                        <label for="guest_contact" class="col-md-4 col-form-label text-md-left">Contact No<span class="required">*</span></label>
                         <div class="col-md-6">
                             <input type="number" class="form-control{{ $errors->has('guest_contact') ? ' is-invalid' : '' }}" id="guest_contact" value="{{ old('guest_contact') }}" name="guest_contact" required>
                         </div>
