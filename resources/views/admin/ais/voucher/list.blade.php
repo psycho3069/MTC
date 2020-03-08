@@ -103,7 +103,7 @@
     <script>
         $(document).ready(function () {
             var y = $('#category').val()
-            y == 1 ? $('.auto').show() : $('.manual').show()
+            y == 1 ? $('.manual').hide() : ( y == 2 ? $('.auto').hide() : '')
 
             $('#category').on('change',function () {
                 var x = $(this).val()
@@ -117,8 +117,8 @@
                     $('.auto').hide()
                 }else{
                     $('#type').val(0)
-                    $('.auto').hide()
-                    $('.manual').hide()
+                    $('.auto').show()
+                    $('.manual').show()
                     }
 
             })

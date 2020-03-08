@@ -115,8 +115,8 @@
                 $('.auto').hide()
             }else{
                 $('#type').val(0)
-                $('.auto').hide()
-                $('.manual').hide()
+                $('.auto').show()
+                $('.manual').show()
             }
 
         })

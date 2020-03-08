@@ -191,12 +191,11 @@ class ReportController extends Controller
     {
 //        return $thead_id;
         $data['start_date'] = Date::find(1)->date;
-        $data['dates'] = Date::where('id', '>', 1)->get();
+        $data['dates'] = Date::get();
         $data['theads'] = TransactionHead::all();
-//        return $data['theads']->where('id', $thead_id);
         $data['types'] = VoucherType::all()->except([ 5, 6, 7, 8, 9]);
 
-        if ( $data['dates']->isEmpty() ){
+        if ( count($data['dates']) == 0  ){
             $status = 0;
             return view('admin.ais.report.daily', compact('status'));
         }
@@ -246,7 +245,7 @@ class ReportController extends Controller
             if ($request->category == 1)
                 $vgroups = $vgroups->where('type_id', '>', 4);
             if ( $request->category == 2)
-                $vgroups = $vgroups->where('type_id', '<', 4);
+                $vgroups = $vgroups->where('type_id', '<', 5);
             if ($request->type_id)
                 $vgroups = $vgroups->where('type_id', $request->type_id);
 
@@ -300,12 +299,11 @@ class ReportController extends Controller
 
     public function daily()
     {
-        $data['date'] = Date::orderBy('id', 'desc')->where('id', '>', 1)->get();
-//        $data['date'] = Date::orderBy('id', 'desc')->get();
+        $data['date'] = Date::orderBy('id', 'desc')->get();
         $data['types'] = VoucherType::all(['name', 'id'])->except([5,6,7,8,9]);
         $theads = TransactionHead::all();
 
-        if ( $data['date']->isEmpty() ){
+        if ( count($data['date']) == 0 ){
             $status = 0;
             return view('admin.ais.report.daily', compact('status'));
         }else{
@@ -339,7 +337,6 @@ class ReportController extends Controller
                 }
             }
 
-
             return view('admin.ais.report.daily', compact('data', 'record', 'info'));
         }
 
@@ -352,7 +349,7 @@ class ReportController extends Controller
         $input = $request->all();
 
         $data['date'] = Date::whereBetween('date', [ $input['start_date'], $input['end_date'] ])->orderBy('id', 'desc')->get();
-        $data['types'] = VoucherType::all(['name', 'id']);
+        $data['types'] = VoucherType::all(['name', 'id'])->except([5,6,7,8,9]);
         $theads = TransactionHead::all();
 
         if ( $data['date']->isEmpty() ){
@@ -369,7 +366,7 @@ class ReportController extends Controller
             if ($request->category == 1)
                 $vgroups = $vgroups->where('type_id', '>', 4);
             if ( $request->category == 2)
-                $vgroups = $vgroups->where('type_id', '<', 4);
+                $vgroups = $vgroups->where('type_id', '<', 5);
             if ($request->type_id)
                 $vgroups = $vgroups->where('type_id', $request->type_id);
 
