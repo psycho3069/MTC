@@ -12,9 +12,9 @@
         "barryvdh/laravel-dompdf": "^0.8.5",
         "fideloper/proxy": "^4.0",
         "laravel-admin-ext/daterangepicker": "^1.0",
-        "laravel/framework": "5.7.*",
+        "laravel/framework": "^5.8.0",
         "laravel/tinker": "^1.0",
-      "ext-intl": "*"
+        "ext-intl": "*"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -31,7 +31,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+				"laravel/dusk"
+			]
         }
     },
     "autoload": {
