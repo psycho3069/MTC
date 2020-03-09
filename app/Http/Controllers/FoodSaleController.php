@@ -28,9 +28,11 @@ class FoodSaleController extends Controller
         $billing = Billing::where('reserved', 0)->orderBy('id', 'desc')->get();
         $data = [];
 
-        foreach ($billing as $item) {
-            $food_bill = $item->restaurant->sum('bill');
-            $data[$item->id]['bill'] = $food_bill + $food_bill*10 / 100;
+        foreach ($billing as $bill) {
+            $data[$bill->id]['bill'] = 0;
+            $food_bill = $bill->restaurant->sum('bill');
+            if ( $bill->restaurant->isNotEmpty())
+                $data[$bill->id]['bill'] = $food_bill + $food_bill * ( $bill->restaurant[0]->vat + $bill->restaurant[0]->service_charge) / 100;
         }
 
         return view('admin.mis.hotel.restaurant.sale.index', compact('billing', 'data'));
