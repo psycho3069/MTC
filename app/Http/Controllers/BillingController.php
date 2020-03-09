@@ -28,7 +28,6 @@ class BillingController extends Controller
         $data['reserved'] = $request->res ? 1 : 0;
         $data['checkout'] = $request->chk ? 1 : 0;
         $billing = Billing::where('reserved', 0)
-                            ->where('checkout_status','!=', 2)
                             ->orderBy('id','desc')
                             ->get();
         $billing = $data['checkout'] ? $billing->where('checkout_status', 1) : $billing->where('checkout_status', 0);
@@ -101,6 +100,7 @@ class BillingController extends Controller
 //        return $id;
         $bill = Billing::find( $id);
 
+        $vat = 0; //for "only food-sale"
         foreach ($bill->booking as $item ) {
             $vat = $item->vat;
             if ( $item->room_id < 50 || $item->room_id > 499)

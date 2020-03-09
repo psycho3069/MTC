@@ -101,7 +101,7 @@ class FoodSaleController extends Controller
 
             $input_bill['billing']['total_bill'] = $hotel_bill + $hotel_vat;
             $input_bill['billing']['guest_id'] = $guest->id;
-            $input_bill['billing']['checkout_status'] = 2;
+            $input_bill['billing']['checkout_status'] = 1;
 
             $billing = Billing::create( $input_bill['billing']);
         }
