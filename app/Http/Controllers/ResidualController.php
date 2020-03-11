@@ -169,16 +169,12 @@ class ResidualController extends Controller
 
     public function hotel()
     {
-
-//        return 55;
-
         $theads = TransactionHead::where('code','!=', 353)->get();
         $conf = Configuration::all();
         $mis_heads = MISHead::all();
         $data['hotel'] = $mis_heads->find([ 1, 2, 3]);
         $data['discount'] = $mis_heads->find(6);
-
-//        return $data;
+        $data['res'] = $mis_heads->find(3);
 
         return view('admin.configuration.general.hotel', compact('conf', 'data', 'theads'));
 
@@ -199,18 +195,43 @@ class ResidualController extends Controller
         $configurations = Configuration::get();
         $mis_heads = MISHead::all();
 
+//        return $input['res'];
+
         $configurations->find(1)->update([ 'software_start_date' => $request->software_start_date]);
 
         foreach ( $request->conf as $key => $val) {
             $configurations->where( 'name', $key)->first()->update([ 'value' => $val]);
         }
 
-        foreach ( $input as $accounts) {
-            foreach ($accounts as $key => $item) {
-             $mis_head = $mis_heads->find( $key);
-             $mis_head->ledger()->update( $item);
-             $mis_head->update( $item);
-            }
+//        return $input['res'];
+
+//        foreach ( $input as $accounts) {
+//            foreach ($accounts as $key => $item) {
+//                $mis_head = $mis_heads->find( $key);
+//                $mis_head->ledger()->update( $item);
+//                $mis_head->update( $item);
+//            }
+//        }
+
+
+        //
+        foreach ($input['hotel'] as $key => $item) {
+            $mis_head = $mis_heads->find( $key);
+            $mis_head->ledger()->update( $item);
+            $mis_head->update( $item);
+        }
+
+        foreach ($input['discount'] as $key => $item) {
+            $mis_head = $mis_heads->find( $key);
+            $mis_head->ledger()->update( $item);
+            $mis_head->update( $item);
+        }
+
+        foreach ($input['res'] as $key => $item) {
+            $mis_head = $mis_heads->find( $key);
+//            return $mis_head->ledger->last();
+            $mis_head->ledger->last()->update( $item);
+            $mis_head->update( $item);
         }
 
         return redirect()->back()->with('update', '<b>Configuration updated successfully</b>');

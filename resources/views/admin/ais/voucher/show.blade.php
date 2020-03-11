@@ -7,7 +7,7 @@
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    <button type="button" class="btn btn-i" onclick='window.location="{{ URL::previous() }}"'>Back</button>
+                    <button type="button" class="btn btn-i" onclick='window.location="{{ route('vouchers.index') }}"'>Back</button>
                 </div>
                 <div class="card-body">
                     <h5 class="text-center">ASPADA Paribesh Unnayan Foundation</h5>

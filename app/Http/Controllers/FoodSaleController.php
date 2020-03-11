@@ -76,6 +76,7 @@ class FoodSaleController extends Controller
      */
     public function store(Request $request)
     {
+//        dd($request->input);
         $food_sale_flag = 0;
         $input = $request->input;
 
@@ -101,7 +102,7 @@ class FoodSaleController extends Controller
 
             $input_bill['billing']['total_bill'] = $hotel_bill + $hotel_vat;
             $input_bill['billing']['guest_id'] = $guest->id;
-            $input_bill['billing']['checkout_status'] = 1;
+            $input_bill['billing']['checkout_status'] = 0;
 
             $billing = Billing::create( $input_bill['billing']);
         }
@@ -160,6 +161,15 @@ class FoodSaleController extends Controller
         }
 
         if ($food_sale_flag){
+
+//             restautant (personal)
+//            $food['amount'] = $input['amount'];
+//            if ( isset( $food['amount']) && $food['amount'] != 0 ){
+//                $food['ledger'] = $mis_heads->find(3)->ledger->last();
+//                $food['payment_type'] = 'food';
+//                $total_paid += $this->ais( $food, $bill);
+//            }
+
             $request->session()->flash('create', '<b>Food has been sold And added to the food-sales</b>');
             return redirect()->back();
         } else{

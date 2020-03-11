@@ -61,6 +61,7 @@
                                 <p class="config-label"><b>Room</b></p>
                                 <p class="config-label"><b>Venue</b></p>
                                 <p class="config-label"><b>Restaurant</b></p>
+                                <p class="config-label"><b>Restaurant (Personal)</b></p>
                                 <p class="config-label"><b>Discount</b></p>
                             </div>
                             <div class="col-md-5">
@@ -78,6 +79,16 @@
 
                                     <div class="form-group">
                                         <label>Receipt Account</label>
+                                        <input type="hidden" name="input[res][{{$data['res']->id}}][debit_head_id]" value="{{ 353 }}">
+                                        <select class="form-control ufat" name="input[res][{{$data['res']->id}}][credit_head_id]">
+                                            @foreach( $theads as $thead )
+                                                <option value="{{ $thead->id }}" {{ $data['res']->ledger->last()->credit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Receipt Account</label>
                                         <input type="hidden" name="input[discount][{{$data['discount']->id}}][credit_head_id]" value="{{ 353 }}">
                                         <select class="form-control ufat" name="input[discount][{{$data['discount']->id}}][debit_head_id]">
                                             @foreach( $theads as $thead )
@@ -85,6 +96,7 @@
                                             @endforeach
                                         </select>
                                     </div>
+
 
                             </div>
                         </div>

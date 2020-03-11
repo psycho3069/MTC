@@ -160,7 +160,7 @@ class VoucherController extends Controller
     {
         $v_group = VoucherGroup::find($id);
         $vouchers = $v_group->vouchers;
-
+        $data = [];
         foreach ( $vouchers as $item) {
 
             if ( !isset( $data[$item->debit_head_id] ['debit']) )
