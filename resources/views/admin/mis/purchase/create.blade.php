@@ -7,7 +7,10 @@
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    <b>Purchase {{ $cat_id != 4 ? 'Inventory' : 'Grocery' }} Item</b>
+                    <div class="col-md-6">
+                        <b>Purchase {{ $cat_id != 4 ? 'Inventory' : 'Grocery' }} Item</b>
+                    </div>
+
                 </div>
                 <div class="card-body">
                     <p class="text-danger">{{ $errors->has('mis_head_id') ? $errors->first('mis_head_id') : '' }}</p>
@@ -97,7 +100,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="card-footer">
                     <button type="button" id="add-button" class="btn btn-info btn-block">Add</button>
@@ -135,6 +137,13 @@
                         <div class="form-group">
                             <label>Note</label>
                             <textarea name="note" class="form-control" cols="3" rows="2"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Cumulative Total Cost</label>
+                                <b class="no-wrap" id="total_cost">0</b> Tk.
+                            </div>
+                            <div class="col-md-3"></div>
                         </div>
                         <button type="submit" class="btn btn-dark">Submit</button>
 
@@ -277,10 +286,9 @@
             }
 
 
+            var total_cost = $('#total_cost').text();
             function appendItems(){
                 add += 1;
-
-
 
                 var item_id = parseInt($('#item').val())
                 var quantity = parseFloat($('#quantity').val()).toFixed(3)
@@ -324,12 +332,19 @@
                         // '<td>'+$('#category :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][stock_id]" value="'+item_id+'">'+$('#item :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][quantity_dr]" value="'+quantity+'"> <input type="hidden" name="input['+i+'][unit_id]" value="'+unit_id+'">'+quantity+' '+ $('#unit :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][amount]" value="'+amount+'">'+amount+' tk.'+'</td>' +
+                        '<td><input type="hidden" id="cost'+i+'" name="input['+i+'][amount]" value="'+amount+'">'+amount+' tk.'+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][supplier_id]" value="'+supplier+'">'+$('#supplier :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][receiver_id]" value="'+receiver+'">'+$('#receiver :selected').text()+'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
                     )
+
+                    // CALCULATING CUMULATIVE TOTAL COST
+                    var cost = $('#amount').val();
+                    total_cost = parseFloat(total_cost)
+                    total_cost += parseFloat(cost)
+                    // console.log(total_cost)
+                    $('#total_cost').text( total_cost)
                 }
             }
 
@@ -367,6 +382,12 @@
 
             $(document).on('click', '.remove', function(){
                 var button_id = $(this).attr('id')
+
+                var cost = $('#cost'+button_id).val()
+                total_cost = parseFloat(total_cost) - cost
+                // console.log(total_cost);
+                $('#total_cost').text( total_cost)
+
                 $('#row'+button_id).remove()
                 i--
             })
