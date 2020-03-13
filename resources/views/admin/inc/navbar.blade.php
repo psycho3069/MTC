@@ -163,7 +163,8 @@
       <div class="dropdown-menu sm-menu">
           <a class="dropdown-item" href="{{ route('report.ledger') }}">Ledger Report</a>
           <a class="dropdown-item" href="{{ route('report.daily') }}">Daily Transaction Report</a>
-          <a class="dropdown-item" href="{{ route('report.ledger', 353) }}">Cash Book Report</a>
+          <a class="dropdown-item" href="{{ route('report.cash-book') }}">Cash Book Report</a>
+          <a class="dropdown-item" href="{{ route('report.bank-book') }}">Bank Book Report</a>
           <a class="dropdown-item" href="{{ route('report.balance') }}">Balance Sheet</a>
           <a class="dropdown-item" href="{{ route('report.income') }}">Income Statement</a>
           <a class="dropdown-item" href="{{ route('report.stock', 4) }}">Grocery Report</a>

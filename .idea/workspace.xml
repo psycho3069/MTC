@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="7f4eca0f-a76d-45e9-9e2a-46c59fbda302" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/mis/purchase/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/mis/purchase/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/inc/navbar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/inc/navbar.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,6 +119,9 @@
     </include_path>
   </component>
   <component name="ProjectId" id="1YHwBppcw4f1Keq24DeKjoyVQLe" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -164,6 +168,8 @@
       <workItem from="1583903262023" duration="5043000" />
       <workItem from="1583916137402" duration="3281000" />
       <workItem from="1583981149191" duration="6957000" />
+      <workItem from="1584072458301" duration="3953000" />
+      <workItem from="1584119788721" duration="3561000" />
     </task>
     <servers />
   </component>

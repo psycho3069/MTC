@@ -296,6 +296,127 @@ class ReportController extends Controller
 
     }
 
+    public function cashBook(Request $request)
+    {
+        $input = $request->all();
+
+        $data['start_date'] = Date::find(1)->date;
+        $data['end_date'] = Date::all()->last();
+
+        if ($request->start_date && $request->end_date){
+            $data['dates'] = Date::whereBetween('date', [$input['start_date'], $input['end_date']])->get();
+        } else if(!$request->start_date && $request->end_date){
+            $data['dates'] = Date::whereBetween('date', [$data['start_date'], $input['end_date']])->get();
+        } else if($request->start_date && !$request->end_date){
+            $data['dates'] = Date::whereBetween('date', [$data['start_date'], $data['end_date']])->get();
+        } else {
+            $data['dates'] = Date::get();
+        }
+        $data['theads'] = TransactionHead::all();
+        $data['types'] = VoucherType::all()->except([ 5, 6, 7, 8, 9]);
+        $thead = $data['theads']->find(353);
+        $current_bl = Process::where('date_id', '<=', $data['dates']->max('id'))->where('thead_id', $thead->id )->get();
+
+        $vgroups = VoucherGroup::whereIn('date_id', $data['dates']->pluck('id'))->orderBy('date_id', 'desc')->get();
+        if ($request->category == 1)
+            $vgroups = $vgroups->where('type_id', '>', 4);
+        if ( $request->category == 2)
+            $vgroups = $vgroups->where('type_id', '<', 5);
+        if ($request->type_id)
+            $vgroups = $vgroups->where('type_id', $request->type_id);
+
+        $data['opening_bl'] = $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
+        $data['prev_bl'] = $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('credit') - $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('debit');
+
+        if ( ($thead->ac_head_id == 1 || $thead->ac_head_id == 4)){
+            if( $data['opening_bl'])
+                $data['opening_bl'] = - $data['opening_bl'];
+            if ( $data['prev_bl'])
+                $data['prev_bl'] = - $data['prev_bl'];
+        }
+
+        $data['vouchers'] = Voucher::where('credit_head_id', $thead->id)->orWhere('debit_head_id', $thead->id)->get()->whereIn('v_group_id', $vgroups->pluck('id'));
+
+        $amount=[];
+        foreach ($data['vouchers']->groupBy('date_id') as $key => $items) {
+            $balance = $current_bl->where('date_id', '<=', $key-1);
+            $credit = 0; $debit =0;
+
+            foreach ($items as $item) {
+                if ( $item->credit_head_id == $thead->id)
+                    $credit += $item->amount;
+                if ( $item->debit_head_id == $thead->id)
+                    $debit += $item->amount;
+                $y = $balance->sum('debit') + $debit - $balance->sum('credit') - $credit ;
+                $amount[$item->id] = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4) ? $y  : -$y;
+            }
+        }
+        return view('admin.ais.report.cash-book', compact('data', 'amount', 'thead' ));
+
+    }
+
+    public function bankBook(Request $request)
+    {
+        $input = $request->all();
+
+        $data['start_date'] = Date::find(1)->date;
+        $data['end_date'] = Date::all()->last();
+
+        if ($request->start_date && $request->end_date){
+            $data['dates'] = Date::whereBetween('date', [$input['start_date'], $input['end_date']])->get();
+        } else if(!$request->start_date && $request->end_date){
+            $data['dates'] = Date::whereBetween('date', [$data['start_date'], $input['end_date']])->get();
+        } else if($request->start_date && !$request->end_date){
+            $data['dates'] = Date::whereBetween('date', [$data['start_date'], $data['end_date']])->get();
+        } else {
+            $data['dates'] = Date::get();
+        }
+        $data['theads'] = TransactionHead::all();
+        $data['types'] = VoucherType::all()->except([ 5, 6, 7, 8, 9]);
+
+        $request->thead_id ? $thead = $data['theads']->find($request->thead_id) : $thead = $data['theads']->find(432);
+
+
+        $current_bl = Process::where('date_id', '<=', $data['dates']->max('id'))->where('thead_id', $thead->id )->get();
+
+        $vgroups = VoucherGroup::whereIn('date_id', $data['dates']->pluck('id'))->orderBy('date_id', 'desc')->get();
+        if ($request->category == 1)
+            $vgroups = $vgroups->where('type_id', '>', 4);
+        if ( $request->category == 2)
+            $vgroups = $vgroups->where('type_id', '<', 5);
+        if ($request->type_id)
+            $vgroups = $vgroups->where('type_id', $request->type_id);
+
+        $data['opening_bl'] = $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
+        $data['prev_bl'] = $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('credit') - $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('debit');
+
+        if ( ($thead->ac_head_id == 1 || $thead->ac_head_id == 4)){
+            if( $data['opening_bl'])
+                $data['opening_bl'] = - $data['opening_bl'];
+            if ( $data['prev_bl'])
+                $data['prev_bl'] = - $data['prev_bl'];
+        }
+
+        $data['vouchers'] = Voucher::where('credit_head_id', $thead->id)->orWhere('debit_head_id', $thead->id)->get()->whereIn('v_group_id', $vgroups->pluck('id'));
+
+        $amount=[];
+        foreach ($data['vouchers']->groupBy('date_id') as $key => $items) {
+            $balance = $current_bl->where('date_id', '<=', $key-1);
+            $credit = 0; $debit =0;
+
+            foreach ($items as $item) {
+                if ( $item->credit_head_id == $thead->id)
+                    $credit += $item->amount;
+                if ( $item->debit_head_id == $thead->id)
+                    $debit += $item->amount;
+                $y = $balance->sum('debit') + $debit - $balance->sum('credit') - $credit ;
+                $amount[$item->id] = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4) ? $y  : -$y;
+            }
+        }
+        return view('admin.ais.report.bank-book', compact('data', 'amount', 'thead' ));
+
+    }
+
 
     public function daily()
     {
