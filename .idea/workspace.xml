@@ -3,9 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="7f4eca0f-a76d-45e9-9e2a-46c59fbda302" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/admin/inc/navbar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/inc/navbar.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Purchase.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Purchase.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/ais/voucher/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/ais/voucher/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/mis/purchase/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/mis/purchase/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/mis/purchase/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/mis/purchase/index.blade.php" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,9 +175,13 @@
       <workItem from="1583893859258" duration="7046000" />
       <workItem from="1583903262023" duration="5043000" />
       <workItem from="1583916137402" duration="3281000" />
+<<<<<<< Updated upstream
       <workItem from="1583981149191" duration="6957000" />
       <workItem from="1584072458301" duration="3953000" />
       <workItem from="1584119788721" duration="3561000" />
+=======
+      <workItem from="1583981149191" duration="20230000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
@@ -193,10 +205,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="390" y="196" key="com.intellij.ide.util.TipDialog/0.0.1366.738@0.0.1366.738" timestamp="1583981149899" />
-    <state x="390" y="125" width="709" height="546" key="find.popup" timestamp="1583746311521">
+    <state x="390" y="125" width="709" height="546" key="find.popup" timestamp="1584002980390">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="390" y="125" width="709" height="546" key="find.popup/0.0.1366.738@0.0.1366.738" timestamp="1583746311521" />
+    <state x="390" y="125" width="709" height="546" key="find.popup/0.0.1366.738@0.0.1366.738" timestamp="1584002980390" />
     <state x="339" y="165" key="run.anything.popup" timestamp="1583662788658">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

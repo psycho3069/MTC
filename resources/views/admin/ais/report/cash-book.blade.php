@@ -15,7 +15,7 @@
 </style>
 
 @section('content')
-    <div class="col-md-9">
+    <div class="col-md-12">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -28,9 +28,9 @@
                                 <div class="col-md-2">
                                     <label>Type</label>
                                     <select name="category" class="form-control" id="category">
-                                        <option value="0">All</option>
-                                        <option value="1">Auto</option>
-                                        <option value="2">Manual</option>
+                                        <option value="0" @if(0 == $data['category']) {{ 'Selected' }}  @endif>All</option>
+                                        <option value="1" @if(1 == $data['category']) {{ 'Selected' }}  @endif>Auto</option>
+                                        <option value="2" @if(2 == $data['category']) {{ 'Selected' }}  @endif>Manual</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -38,7 +38,7 @@
                                     <select name="type_id" class="form-control" id="type">
                                         <option value="0">All</option>
                                         @foreach( $data['types'] as $item )
-                                            <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} >{{ $item->name }}</option>
+                                            <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} @if($item->id == $data['type']) {{ 'Selected' }}  @endif >{{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -51,28 +51,27 @@
                                 <div class="col-md-2">
                                     <label>End Date</label>
                                     <div>
-                                        <input type="date" class="form-control date" name="end_date" value="{{ date('Y-m-d') }}">
+                                        <input type="date" class="form-control date" name="end_date" value="{{ $data['end_date'] }}">
                                     </div>
                                 </div>
                                 <div class="col-md-1">
                                     <button class="btn btn-dark btn-sm show-button pull-right">Show</button>
                                 </div>
-
                             </div>
                         </form>
                     </small>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary table-fixed">
+                    <table class="table table-bordered table-hover table-primary table-chart table-responsive">
                         <thead>
                         <tr>
-                            <th class="">Date</th>
-                            <th class="">Voucher Code</th>
-                            <th class="">Account head</th>
-                            <th class="">Narration/Cheque Details</th>
-                            <th class="">Credit Amount</th>
-                            <th class="">Debit Amount</th>
-                            <th class="">Balance</th>
+                            <th class="" style='width: 5%;'>Date</th>
+                            <th class="" style='width: 5%;'>Voucher Code</th>
+                            <th class="" style='width: 25%;'>Account head</th>
+                            <th class="" style='width: 20%;'>Narration/Cheque Details</th>
+                            <th class="" style='width: 15%;'>Credit Amount</th>
+                            <th class="" style='width: 15%;'>Debit Amount</th>
+                            <th class="" style='width: 15%;'>Balance</th>
                             {{--                    <th class="">Dr/Cr</th>--}}
                         </tr>
                         </thead>

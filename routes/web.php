@@ -176,6 +176,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::post('reports/ledger', ['as' => 'report.show.ledger', 'uses' => 'ReportController@showLedger']);
     Route::get('reports/cash-book', ['as' => 'report.cash-book', 'uses' => 'ReportController@cashBook']);
     Route::get('reports/bank-book', ['as' => 'report.bank-book', 'uses' => 'ReportController@bankBook']);
+    Route::get('reports/cash-bank-book', ['as' => 'report.cash-bank-book', 'uses' => 'ReportController@cashBankBook']);
     Route::get('reports/daily', ['as' => 'report.daily', 'uses' => 'ReportController@daily']);
     Route::post('reports/daily', ['as' => 'report.show.daily', 'uses' => 'ReportController@showDaily']);
 

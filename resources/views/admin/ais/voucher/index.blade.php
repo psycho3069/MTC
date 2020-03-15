@@ -39,7 +39,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-1" style="margin-top: 2%;">
+                            <div class="col-md-1" style="margin-top: 1%;">
                                 <button class="btn btn-dark btn-sm show-button">Show</button>
                             </div>
                         </div>

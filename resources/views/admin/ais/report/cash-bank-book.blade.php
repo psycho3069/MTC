@@ -20,21 +20,21 @@
             <div class="card text-left">
                 <div class="card-header">
                     <small>
-                        <form action="{{ route('report.bank-book') }}">
+                        <form action="{{ route('report.cash-bank-book') }}">
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-md-2" >
-                                    <label>Select a account</label>
-                                    <select name="thead_id" class="form-control thead_id">
-                                        <option value=""></option>
-                                        @if( isset($thead))
-                                            <option value="{{ $thead->id }}" >{{ str_limit( $thead->name, 15) }} [{{ $thead->code }}]</option>
-                                        @else
-                                            @foreach( $data['theads'] as $item )
-                                                <option value="{{ $item->id }}" >{{ str_limit( $item->name, 15) }} [{{ $item->code }}]</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
+{{--                                    <label>Select a account</label>--}}
+{{--                                    <select name="thead_id" class="form-control thead_id">--}}
+{{--                                        <option value=""></option>--}}
+{{--                                        @if( isset($thead))--}}
+{{--                                            <option value="{{ $thead->id }}" >{{ str_limit( $thead->name, 15) }} [{{ $thead->code }}]</option>--}}
+{{--                                        @else--}}
+{{--                                            @foreach( $data['theads'] as $item )--}}
+{{--                                                <option value="{{ $item->id }}" >{{ str_limit( $item->name, 15) }} [{{ $item->code }}]</option>--}}
+{{--                                            @endforeach--}}
+{{--                                        @endif--}}
+{{--                                    </select>--}}
                                 </div>
                                 <div class="col-md-2">
                                     <label>Type</label>
@@ -87,33 +87,36 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @if( isset($thead))
+                        @if( isset($theads))
                             <tr>
                                 <td></td><td></td>
                                 <td>Opening balance</td>
                                 <td></td><td></td><td></td>
                                 <td>{{ $data['opening_bl'] }}</td>
                             </tr>
-                            @foreach( $data['vouchers'] as $voucher )
-                                <tr>
-                                    <td>{{ date('d-m-Y', strtotime( $voucher->date->date)) }}</td>
-                                    <td>{{ $voucher->voucherGroup->code }}</td>
-                                    <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->debitAccount->name : $voucher->creditAccount->name }}</td>
-                                    <td>{{ $voucher->note }}</td>
-                                    <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>
-                                    <td>{{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '' }}</td>
-                                    <td>{{ $amount[$voucher->id] }}</td>
-                                </tr>
-                            @endforeach
+                            @for ($i=0; $i<count($data['vouchers']); $i++)
+                                @foreach( $data['vouchers'][$i] as $voucher )
+                                    @foreach($theads as $thead)
+                                        @if($thead->id == $voucher->credit_head_id || $thead->id == $voucher->debit_head_id)
+                                            <tr>
+                                                <td>{{ date('d-m-Y', strtotime( $voucher->date->date)) }}</td>
+                                                <td>{{ $voucher->voucherGroup->code }}</td>
+                                                <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->debitAccount->name : $voucher->creditAccount->name }}</td>
+                                                <td> {{$voucher->note }}</td>
+                                                <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>
+                                                <td>{{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '' }}</td>
+                                                <td>{{ $amount[$voucher->id] }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endforeach
+                            @endfor
                         @endif
                         </tbody>
                     </table>
                 </div>
             </div>
         </samp>
-
-
-
     </div>
 
 @endsection

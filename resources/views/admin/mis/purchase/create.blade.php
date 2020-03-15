@@ -34,7 +34,6 @@
                             </div>
                         </div>
 
-
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Item</label>
@@ -48,7 +47,6 @@
                             </div>
                         </div>
 
-
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="form-group list-supplier">
@@ -59,8 +57,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-
-
 
                                 <div class="form-group add-supplier">
                                     <label>Supplier <span class="required">*</span></label>
@@ -74,11 +70,9 @@
                                     <button type="button" class="btn btn-sm btn-i list-sup-btn">New</button>
                                     <button type="button" class="btn btn-sm btn-i add-sup-btn">List</button>
                                 </div>
-
                             </div>
 
                             <div class="row">
-
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Unit<span class="required">*</span></label>
@@ -96,7 +90,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -139,21 +132,18 @@
                             <textarea name="note" class="form-control" cols="3" rows="2"></textarea>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <label>Cumulative Total Cost</label>
-                                <b class="no-wrap" id="total_cost">0</b> Tk.
+                            <div class="col-md-10">
+                                <label  style="color: #0f3e68; font-size: larger;">Cumulative Total Cost
+                                    <b class="no-wrap" id="total_cost" style="color: #0000FF; font-size: larger;">0</b> Tk.
+                                </label>
                             </div>
-                            <div class="col-md-3"></div>
                         </div>
                         <button type="submit" class="btn btn-dark">Submit</button>
-
                     </form>
                 </div>
             </div>
         </samp>
     </div>
-
-
 
 @endsection
 
