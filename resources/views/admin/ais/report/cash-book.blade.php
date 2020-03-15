@@ -83,12 +83,18 @@
                                 <td></td><td></td><td></td>
                                 <td>{{ $data['opening_bl'] }}</td>
                             </tr>
+                            <tr>
+                                <td></td><td></td>
+                                <td>Previous balance</td>
+                                <td></td><td></td><td></td>
+                                <td >{{ $data['prev_bl'] }}</td>
+                            </tr>
                             @foreach( $data['vouchers'] as $voucher )
                                 <tr>
                                     <td>{{ date('d-m-Y', strtotime( $voucher->date->date)) }}</td>
                                     <td>{{ $voucher->voucherGroup->code }}</td>
                                     <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->debitAccount->name : $voucher->creditAccount->name }}</td>
-                                    <td> {{ $voucher->note }}</td>
+                                    <td>{{ $voucher->note }}</td>
                                     <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>
                                     <td>{{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '' }}</td>
                                     <td>{{ $amount[$voucher->id] }}</td>

@@ -23,18 +23,7 @@
                         <form action="{{ route('report.cash-bank-book') }}">
                             {{ csrf_field() }}
                             <div class="row">
-                                <div class="col-md-2" >
-{{--                                    <label>Select a account</label>--}}
-{{--                                    <select name="thead_id" class="form-control thead_id">--}}
-{{--                                        <option value=""></option>--}}
-{{--                                        @if( isset($thead))--}}
-{{--                                            <option value="{{ $thead->id }}" >{{ str_limit( $thead->name, 15) }} [{{ $thead->code }}]</option>--}}
-{{--                                        @else--}}
-{{--                                            @foreach( $data['theads'] as $item )--}}
-{{--                                                <option value="{{ $item->id }}" >{{ str_limit( $item->name, 15) }} [{{ $item->code }}]</option>--}}
-{{--                                            @endforeach--}}
-{{--                                        @endif--}}
-{{--                                    </select>--}}
+                                <div class="col-md-1" >
                                 </div>
                                 <div class="col-md-2">
                                     <label>Type</label>
@@ -76,14 +65,25 @@
                     <table class="table table-bordered table-hover table-primary table-chart table-responsive">
                         <thead>
                         <tr>
-                            <th class="" style='width: 5%;'>Date</th>
-                            <th class="" style='width: 5%;'>Voucher Code</th>
-                            <th class="" style='width: 25%;'>Account head</th>
-                            <th class="" style='width: 20%;'>Narration/Cheque Details</th>
-                            <th class="" style='width: 15%;'>Credit Amount</th>
-                            <th class="" style='width: 15%;'>Debit Amount</th>
-                            <th class="" style='width: 15%;'>Balance</th>
+                            <th class="" style='width: 5%;' rowspan="2">Date</th>
+                            <th class="" style='width: 5%;' rowspan="2">Voucher Code</th>
+                            <th class="" style='width: 25%;' rowspan="2">Account head</th>
+                            <th class="" style='width: 20%;' rowspan="2">Narration/Cheque Details</th>
+                            <th class="" style='width: 15%;' colspan="2">Credit Amount</th>
+                            <th class="" style='width: 15%;' colspan="2">Debit Amount</th>
+                            <th class="" style='width: 15%;' colspan="2">Balance</th>
+{{--                            <th class="" style='width: 15%;'>Credit (Bank)</th>--}}
+{{--                            <th class="" style='width: 15%;'>Debit (Bank)</th>--}}
+{{--                            <th class="" style='width: 15%;'>Balance (Bank)</th>--}}
                             {{--                    <th class="">Dr/Cr</th>--}}
+                        </tr>
+                        <tr>
+                            <th>Cash</th>
+                            <th>Bank</th>
+                            <th>Cash</th>
+                            <th>Bank</th>
+                            <th>Cash</th>
+                            <th>Bank</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -91,8 +91,14 @@
                             <tr>
                                 <td></td><td></td>
                                 <td>Opening balance</td>
-                                <td></td><td></td><td></td>
-                                <td>{{ $data['opening_bl'] }}</td>
+                                <td></td><td></td><td></td><td></td><td></td>
+                                <td>{{ $data['opening_bl'] }}</td><td></td>
+                            </tr>
+                            <tr>
+                                <td></td><td></td>
+                                <td>Previous balance</td>
+                                <td></td><td></td><td></td><td></td><td></td>
+                                <td >{{ $data['prev_bl'] }}</td><td></td>
                             </tr>
                             @for ($i=0; $i<count($data['vouchers']); $i++)
                                 @foreach( $data['vouchers'][$i] as $voucher )
@@ -102,10 +108,41 @@
                                                 <td>{{ date('d-m-Y', strtotime( $voucher->date->date)) }}</td>
                                                 <td>{{ $voucher->voucherGroup->code }}</td>
                                                 <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->debitAccount->name : $voucher->creditAccount->name }}</td>
-                                                <td> {{$voucher->note }}</td>
-                                                <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>
-                                                <td>{{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '' }}</td>
-                                                <td>{{ $amount[$voucher->id] }}</td>
+                                                <td>{{$voucher->note }}</td>
+                                                <td>
+                                                    @if($voucher->creditAccount->transactionable_id == 1)
+                                                        {{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '-' }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($voucher->creditAccount->transactionable_id == 2)
+                                                        {{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '-' }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($voucher->debitAccount->transactionable_id == 1)
+                                                        {{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '-' }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($voucher->debitAccount->transactionable_id == 2)
+                                                        {{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '-' }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($voucher->debitAccount->transactionable_id == 1)
+                                                        {{ $amount[$voucher->id] }}
+                                                    @elseif($voucher->creditAccount->transactionable_id == 1)
+                                                        {{ $amount[$voucher->id] }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($voucher->debitAccount->transactionable_id == 2)
+                                                        {{ $amount[$voucher->id] }}
+                                                    @elseif($voucher->creditAccount->transactionable_id == 2)
+                                                        {{ $amount[$voucher->id] }}
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endif
                                     @endforeach

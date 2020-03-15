@@ -27,13 +27,9 @@
                                     <label>Select a account</label>
                                     <select name="thead_id" class="form-control thead_id">
                                         <option value=""></option>
-                                        @if( isset($thead))
-                                            <option value="{{ $thead->id }}" >{{ str_limit( $thead->name, 15) }} [{{ $thead->code }}]</option>
-                                        @else
                                             @foreach( $data['theads'] as $item )
-                                                <option value="{{ $item->id }}" >{{ str_limit( $item->name, 15) }} [{{ $item->code }}]</option>
+                                                <option value="{{ $item->id }}" @if(isset($thead)) @if($item->id == $thead->id) {{ 'Selected' }}  @endif @endif>{{ str_limit( $item->name, 15) }} [{{ $item->code }}]</option>
                                             @endforeach
-                                        @endif
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -93,6 +89,12 @@
                                 <td>Opening balance</td>
                                 <td></td><td></td><td></td>
                                 <td>{{ $data['opening_bl'] }}</td>
+                            </tr>
+                            <tr>
+                                <td></td><td></td>
+                                <td>Previous balance</td>
+                                <td></td><td></td><td></td>
+                                <td >{{ $data['prev_bl'] }}</td>
                             </tr>
                             @foreach( $data['vouchers'] as $voucher )
                                 <tr>
