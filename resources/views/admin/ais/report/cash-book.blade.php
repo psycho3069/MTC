@@ -69,8 +69,8 @@
                             <th class="" style='width: 5%;'>Voucher Code</th>
                             <th class="" style='width: 25%;'>Account head</th>
                             <th class="" style='width: 20%;'>Narration/Cheque Details</th>
-                            <th class="" style='width: 15%;'>Credit Amount</th>
-                            <th class="" style='width: 15%;'>Debit Amount</th>
+                            <th class="" style='width: 15%;'>Receipt (Debit)</th>
+                            <th class="" style='width: 15%;'>Payment (Credit)</th>
                             <th class="" style='width: 15%;'>Balance</th>
                             {{--                    <th class="">Dr/Cr</th>--}}
                         </tr>
@@ -79,14 +79,14 @@
                         @if( isset($thead))
                             <tr>
                                 <td></td><td></td><td>Opening balance</td><td></td>
-                                <td>{{ $data['opening_credit'] }}</td>
                                 <td>{{ $data['opening_debit'] }}</td>
+                                <td>{{ $data['opening_credit'] }}</td>
                                 <td>{{ $data['opening_bl'] }}</td>
                             </tr>
                             <tr>
                                 <td></td><td></td><td>Previous balance</td><td></td>
-                                <td>{{ $data['prev_credit'] }}</td>
                                 <td>{{ $data['prev_debit'] }}</td>
+                                <td>{{ $data['prev_credit'] }}</td>
                                 <td >{{ $data['prev_bl'] }}</td>
                             </tr>
                             @foreach( $data['vouchers'] as $voucher )
@@ -95,8 +95,8 @@
                                     <td>{{ $voucher->voucherGroup->code }}</td>
                                     <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->debitAccount->name : $voucher->creditAccount->name }}</td>
                                     <td>{{ $voucher->note }}</td>
-                                    <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>
                                     <td>{{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '' }}</td>
+                                    <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>
                                     <td>{{ $amount[$voucher->id] }}</td>
                                 </tr>
                             @endforeach

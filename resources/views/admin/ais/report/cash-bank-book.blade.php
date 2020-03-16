@@ -69,8 +69,8 @@
                             <th class="" style='width: 5%;' rowspan="2">Voucher Code</th>
                             <th class="" style='width: 25%;' rowspan="2">Account head</th>
                             <th class="" style='width: 20%;' rowspan="2">Narration/Cheque Details</th>
-                            <th class="" style='width: 15%;' colspan="2">Credit Amount</th>
-                            <th class="" style='width: 15%;' colspan="2">Debit Amount</th>
+                            <th class="" style='width: 15%;' colspan="2">Receipt (Debit)</th>
+                            <th class="" style='width: 15%;' colspan="2">Payment (Credit)</th>
                             <th class="" style='width: 15%;' colspan="2">Balance</th>
 {{--                            <th class="" style='width: 15%;'>Credit (Bank)</th>--}}
 {{--                            <th class="" style='width: 15%;'>Debit (Bank)</th>--}}
@@ -90,19 +90,19 @@
                         @if( isset($theads))
                             <tr>
                                 <td></td><td></td><td>Opening balance</td><td></td>
-                                <td>{{ $data['opening_credit_cash'] }}</td>
-                                <td>{{ $data['opening_credit_bank'] }}</td>
                                 <td>{{ $data['opening_debit_cash'] }}</td>
                                 <td>{{ $data['opening_debit_bank'] }}</td>
+                                <td>{{ $data['opening_credit_cash'] }}</td>
+                                <td>{{ $data['opening_credit_bank'] }}</td>
                                 <td>{{ $data['opening_bl_cash'] }}</td>
                                 <td>{{ $data['opening_bl_bank'] }}</td>
                             </tr>
                             <tr>
                                 <td></td><td></td><td>Previous balance</td><td></td>
-                                <td>{{ $data['prev_credit_cash'] }}</td>
-                                <td>{{ $data['prev_credit_bank'] }}</td>
                                 <td>{{ $data['prev_debit_cash'] }}</td>
                                 <td>{{ $data['prev_debit_bank'] }}</td>
+                                <td>{{ $data['prev_credit_cash'] }}</td>
+                                <td>{{ $data['prev_credit_bank'] }}</td>
                                 <td>{{ $data['prev_bl_cash'] }}</td>
                                 <td>{{ $data['prev_bl_bank'] }}</td>
                             </tr>
@@ -116,16 +116,6 @@
                                                 <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->debitAccount->name : $voucher->creditAccount->name }}</td>
                                                 <td>{{$voucher->note }}</td>
                                                 <td>
-                                                    @if($voucher->creditAccount->transactionable_id == 1)
-                                                        {{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '-' }}
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($voucher->creditAccount->transactionable_id == 2)
-                                                        {{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '-' }}
-                                                    @endif
-                                                </td>
-                                                <td>
                                                     @if($voucher->debitAccount->transactionable_id == 1)
                                                         {{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '-' }}
                                                     @endif
@@ -133,6 +123,16 @@
                                                 <td>
                                                     @if($voucher->debitAccount->transactionable_id == 2)
                                                         {{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '-' }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($voucher->creditAccount->transactionable_id == 1)
+                                                        {{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '-' }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($voucher->creditAccount->transactionable_id == 2)
+                                                        {{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '-' }}
                                                     @endif
                                                 </td>
                                                 <td>

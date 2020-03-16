@@ -151,7 +151,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <h4><b class="pull-left" style="color: #007bff;">Revenue</b> <b class="float-right">{{ $bl[3] -$bl[4] }}</b></h4>
+                    <h4><b class="pull-left" style="color: #007bff;">Revenue</b> <b class="float-right">{{ $bl[3] +$bl[4] }}</b></h4>
                 </div>
             </div>
 

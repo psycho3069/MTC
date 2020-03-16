@@ -351,10 +351,12 @@ class ReportController extends Controller
 
         $amount=[];
         foreach ($data['vouchers']->groupBy('date_id') as $key => $items) {
+//            return $items;
             $balance = $current_bl->where('date_id', '<=', $key-1);
             $credit = 0; $debit = 0;
 
             foreach ($items as $item) {
+
                 if ( $item->credit_head_id == $thead->id)
                     $credit += $item->amount;
                 if ( $item->debit_head_id == $thead->id)
