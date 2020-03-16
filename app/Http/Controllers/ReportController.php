@@ -332,14 +332,19 @@ class ReportController extends Controller
         if ($request->type_id)
             $vgroups = $vgroups->where('type_id', $request->type_id);
 
+        $data['opening_credit'] = $current_bl->where('date_id', 0)->sum('credit');
+        $data['opening_debit'] = $current_bl->where('date_id', 0)->sum('debit');
         $data['opening_bl'] = $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
-        $data['prev_bl'] = $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('credit') - $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('debit');
+
+        $data['prev_credit'] = $current_bl->where('date_id','<=', $data['dates']->min('id')-1)->sum('credit');
+        $data['prev_debit'] = $current_bl->where('date_id','<=', $data['dates']->min('id')-1)->sum('debit');
+        $data['prev_bl'] = $current_bl->where('date_id','<=', $data['dates']->min('id')-1)->sum('debit') - $current_bl->where('date_id','<=', $data['dates']->min('id')-1)->sum('credit');
 
         if ( ($thead->ac_head_id == 1 || $thead->ac_head_id == 4)){
             if( $data['opening_bl'])
                 $data['opening_bl'] = - $data['opening_bl'];
-            if ( $data['prev_bl'])
-                $data['prev_bl'] = - $data['prev_bl'];
+//            if ( $data['prev_bl'])
+//                $data['prev_bl'] = - $data['prev_bl'];
         }
 
         $data['vouchers'] = Voucher::where('credit_head_id', $thead->id)->orWhere('debit_head_id', $thead->id)->get()->whereIn('v_group_id', $vgroups->pluck('id'));
@@ -347,7 +352,7 @@ class ReportController extends Controller
         $amount=[];
         foreach ($data['vouchers']->groupBy('date_id') as $key => $items) {
             $balance = $current_bl->where('date_id', '<=', $key-1);
-            $credit = 0; $debit =0;
+            $credit = 0; $debit = 0;
 
             foreach ($items as $item) {
                 if ( $item->credit_head_id == $thead->id)
@@ -355,7 +360,7 @@ class ReportController extends Controller
                 if ( $item->debit_head_id == $thead->id)
                     $debit += $item->amount;
                 $y = $balance->sum('debit') + $debit - $balance->sum('credit') - $credit ;
-                $amount[$item->id] = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4) ? $y  : -$y;
+                $amount[$item->id] = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4) ? $y : -$y;
             }
         }
         return view('admin.ais.report.cash-book', compact('data', 'amount', 'thead' ));
@@ -403,14 +408,19 @@ class ReportController extends Controller
             if ($request->type_id)
                 $vgroups = $vgroups->where('type_id', $request->type_id);
 
+            $data['opening_credit'] = $current_bl->where('date_id', 0)->sum('credit');
+            $data['opening_debit'] = $current_bl->where('date_id', 0)->sum('debit');
             $data['opening_bl'] = $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
-            $data['prev_bl'] = $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('credit') - $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('debit');
+
+            $data['prev_credit'] = $current_bl->where('date_id','<=', $data['dates']->min('id')-1)->sum('credit');
+            $data['prev_debit'] = $current_bl->where('date_id','<=', $data['dates']->min('id')-1)->sum('debit');
+            $data['prev_bl'] = $current_bl->where('date_id','<=', $data['dates']->min('id')-1)->sum('debit') - $current_bl->where('date_id','<=', $data['dates']->min('id')-1)->sum('credit');
 
             if ( ($thead->ac_head_id == 1 || $thead->ac_head_id == 4)){
                 if( $data['opening_bl'])
                     $data['opening_bl'] = - $data['opening_bl'];
-                if ( $data['prev_bl'])
-                    $data['prev_bl'] = - $data['prev_bl'];
+//                if ( $data['prev_bl'])
+//                    $data['prev_bl'] = - $data['prev_bl'];
             }
 
             $data['vouchers'] = Voucher::where('credit_head_id', $thead->id)->orWhere('debit_head_id', $thead->id)->get()->whereIn('v_group_id', $vgroups->pluck('id'));
@@ -465,13 +475,28 @@ class ReportController extends Controller
                                 ->where('transactionable_type','App\AccountHeadChild_III')
                                 ->get();
 
-        $data['opening_bl']=0; $data['prev_bl']=0; $y=0; $amount=[]; $total_balance = 0;
+        $data['prev_credit_cash']=0;
+        $data['prev_debit_cash']=0;
+        $data['prev_bl_cash']=0;
+        $data['opening_credit_cash']=0;
+        $data['opening_debit_cash']=0;
+        $data['opening_bl_cash']=0;
+
+        $data['prev_credit_bank']=0;
+        $data['prev_debit_bank']=0;
+        $data['prev_bl_bank']=0;
+        $data['opening_credit_bank']=0;
+        $data['opening_debit_bank']=0;
+        $data['opening_bl_bank']=0;
+
+        $y=0; $amount=[]; $total_balance = 0;
         $data['vouchers'][] = array();
 
         $i = 0;
         foreach ($theads as $thead){
             $thead_size = count($theads);
             $current_bl = Process::where('date_id', '<=', $data['dates']->max('id'))->where('thead_id', $thead->id )->get();
+            $current_balance = Process::where('date_id','<=', $data['dates']->min('id')-1)->where('thead_id', $thead->id )->get();
 
             $vgroups = VoucherGroup::whereIn('date_id', $data['dates']->pluck('id'))->orderBy('date_id', 'desc')->get();
             if ($request->category == 1)
@@ -481,15 +506,32 @@ class ReportController extends Controller
             if ($request->type_id)
                 $vgroups = $vgroups->where('type_id', $request->type_id);
 
-            $data['opening_bl'] += $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
-            $data['prev_bl'] += $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('credit') - $current_bl->where('date_id', $data['dates']->min('date_id'))->sum('debit');
+            foreach ($current_balance as $item){
+                if ($item->thead->transactionable_id == 1){
+                    $data['prev_credit_cash'] += $item->credit;
+                    $data['prev_debit_cash'] += $item->debit;
+                    $data['prev_bl_cash'] += $item->debit - $item->credit;
 
-            if ( ($thead->ac_head_id == 1 || $thead->ac_head_id == 4)){
-                if( $data['opening_bl'])
-                    $data['opening_bl'] = - $data['opening_bl'];
-                if ( $data['prev_bl'])
-                    $data['prev_bl'] = - $data['prev_bl'];
+                    $data['opening_credit_cash'] += $current_bl->where('date_id', 0)->sum('credit');
+                    $data['opening_debit_cash'] += $current_bl->where('date_id', 0)->sum('debit');
+                    $data['opening_bl_cash'] += $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
+                } else {
+                    $data['prev_credit_bank'] += $item->credit;
+                    $data['prev_debit_bank'] += $item->debit;
+                    $data['prev_bl_bank'] += $item->debit - $item->credit;
+
+                    $data['opening_credit_bank'] += $current_bl->where('date_id', 0)->sum('credit');
+                    $data['opening_debit_bank'] += $current_bl->where('date_id', 0)->sum('debit');
+                    $data['opening_bl_bank'] += $current_bl->where('date_id', 0)->sum('credit') - $current_bl->where('date_id', 0)->sum('debit');
+                }
             }
+
+//            if ( ($thead->ac_head_id == 1 || $thead->ac_head_id == 4)){
+//                if( $data['opening_bl'])
+//                    $data['opening_bl'] = - $data['opening_bl'];
+//                if ( $data['prev_bl'])
+//                    $data['prev_bl'] = - $data['prev_bl'];
+//            }
 
             $data['vouchers'][$i] = Voucher::where('credit_head_id', $thead->id)->orWhere('debit_head_id', $thead->id)->get()->whereIn('v_group_id', $vgroups->pluck('id'));
 

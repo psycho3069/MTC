@@ -89,16 +89,22 @@
                         <tbody>
                         @if( isset($theads))
                             <tr>
-                                <td></td><td></td>
-                                <td>Opening balance</td>
-                                <td></td><td></td><td></td><td></td><td></td>
-                                <td>{{ $data['opening_bl'] }}</td><td></td>
+                                <td></td><td></td><td>Opening balance</td><td></td>
+                                <td>{{ $data['opening_credit_cash'] }}</td>
+                                <td>{{ $data['opening_credit_bank'] }}</td>
+                                <td>{{ $data['opening_debit_cash'] }}</td>
+                                <td>{{ $data['opening_debit_bank'] }}</td>
+                                <td>{{ $data['opening_bl_cash'] }}</td>
+                                <td>{{ $data['opening_bl_bank'] }}</td>
                             </tr>
                             <tr>
-                                <td></td><td></td>
-                                <td>Previous balance</td>
-                                <td></td><td></td><td></td><td></td><td></td>
-                                <td >{{ $data['prev_bl'] }}</td><td></td>
+                                <td></td><td></td><td>Previous balance</td><td></td>
+                                <td>{{ $data['prev_credit_cash'] }}</td>
+                                <td>{{ $data['prev_credit_bank'] }}</td>
+                                <td>{{ $data['prev_debit_cash'] }}</td>
+                                <td>{{ $data['prev_debit_bank'] }}</td>
+                                <td>{{ $data['prev_bl_cash'] }}</td>
+                                <td>{{ $data['prev_bl_bank'] }}</td>
                             </tr>
                             @for ($i=0; $i<count($data['vouchers']); $i++)
                                 @foreach( $data['vouchers'][$i] as $voucher )

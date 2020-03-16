@@ -78,15 +78,15 @@
                         <tbody>
                         @if( isset($thead))
                             <tr>
-                                <td></td><td></td>
-                                <td>Opening balance</td>
-                                <td></td><td></td><td></td>
+                                <td></td><td></td><td>Opening balance</td><td></td>
+                                <td>{{ $data['opening_credit'] }}</td>
+                                <td>{{ $data['opening_debit'] }}</td>
                                 <td>{{ $data['opening_bl'] }}</td>
                             </tr>
                             <tr>
-                                <td></td><td></td>
-                                <td>Previous balance</td>
-                                <td></td><td></td><td></td>
+                                <td></td><td></td><td>Previous balance</td><td></td>
+                                <td>{{ $data['prev_credit'] }}</td>
+                                <td>{{ $data['prev_debit'] }}</td>
                                 <td >{{ $data['prev_bl'] }}</td>
                             </tr>
                             @foreach( $data['vouchers'] as $voucher )
