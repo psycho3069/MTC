@@ -85,8 +85,6 @@ class ReportController extends Controller
 
     public function income(Request $request)
     {
-//        return $this->test();
-
         $dates = Date::all();
         $date_id = $request->date_id ? $request->date_id : Date::max('id');
 
@@ -104,10 +102,15 @@ class ReportController extends Controller
                 foreach ( $head->theads as $expense )
                     $data['expense'][] = $expense->id;
         }
+        $year = explode("-",Date::find($date_id)->date)[0];
+        $start_date = $year.'-'.explode("-",Date::find($date_id)->date)[1].'-01';
+        $start_date_year = $year.'-01-01';
+        $date_id_min = Date::min('id');
+        $all_bl = Process::whereIn('thead_id', collect($data)->flatten())->whereBetween('date_id', [ Date::where('date',$start_date)->first() ? Date::where('date',$start_date)->first()->id : Date::find($date_id_min)->id , Date::find($date_id)->id])->get();
+        $all_bl_year = Process::whereIn('thead_id', collect($data)->flatten())->whereBetween('date_id', [Date::where('date',$start_date_year)->first() ? Date::where('date',$start_date_year)->first()->id : Date::find($date_id_min)->id, Date::find($date_id)->id])->get();
 
-        $all_bl = Process::whereIn('thead_id', collect($data)->flatten())->where( 'date_id', '<=', $date_id)->get();
+        return view('admin.ais.report.income', compact('heads', 'all_bl','all_bl_year', 'dates', 'date_id'));
 
-        return view('admin.ais.report.income', compact('heads', 'all_bl', 'dates', 'date_id'));
     }
 
 

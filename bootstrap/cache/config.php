@@ -10,7 +10,7 @@
     'locale' => 'en',
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
-    'key' => 'base64:dPezcM7tBiDpESc+5fMsW6WNva40Q3Flqna6I7zEo7k=',
+    'key' => 'base64:QbUQRVy1EkZEfLK4Nd7YjfioXHwEV3xRQR3EuiH3Ku0=',
     'cipher' => 'AES-256-CBC',
     'providers' => 
     array (
@@ -331,10 +331,10 @@
       's3' => 
       array (
         'driver' => 's3',
-        'key' => NULL,
-        'secret' => NULL,
-        'region' => NULL,
-        'bucket' => NULL,
+        'key' => '',
+        'secret' => '',
+        'region' => 'us-east-1',
+        'bucket' => '',
         'url' => NULL,
       ),
     ),
@@ -428,8 +428,8 @@
     'port' => '2525',
     'from' => 
     array (
-      'address' => 'hello@example.com',
-      'name' => 'Example',
+      'address' => NULL,
+      'name' => 'Laravel',
     ),
     'encryption' => NULL,
     'username' => NULL,
@@ -560,7 +560,7 @@
     array (
       'font_dir' => 'C:\\xampp\\htdocs\\MTC\\storage\\fonts/',
       'font_cache' => 'C:\\xampp\\htdocs\\MTC\\storage\\fonts/',
-      'temp_dir' => 'C:\\Users\\User\\AppData\\Local\\Temp',
+      'temp_dir' => 'C:\\Users\\DOLPHIN\\AppData\\Local\\Temp',
       'chroot' => 'C:\\xampp\\htdocs\\MTC',
       'enable_font_subsetting' => false,
       'pdf_backend' => 'CPDF',
