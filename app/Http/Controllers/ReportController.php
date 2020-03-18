@@ -137,11 +137,6 @@ class ReportController extends Controller
         return $data;
     }
 
-
-
-
-
-
     public function balance(Request $request)
     {
         $dates = Date::all();
@@ -568,7 +563,6 @@ class ReportController extends Controller
         return view('admin.ais.report.cash-bank-book', compact('data', 'amount', 'theads' ));
     }
 
-
     public function daily()
     {
         $data['date'] = Date::orderBy('id', 'desc')->get();
@@ -668,16 +662,10 @@ class ReportController extends Controller
                     $info[$i]['type'] = $v_group->type->name;
 
 //                    return $record;
-
-
                 }
             }
         }
-
-
-
         return view('admin.ais.report.daily', compact('data', 'record', 'info', 'input'));
-
     }
 
 
@@ -755,15 +743,6 @@ class ReportController extends Controller
 
         return $data;
     }
-
-
-
-
-
-
-
-
-
 
     public function showStock(Request $request)
     {
@@ -847,12 +826,4 @@ class ReportController extends Controller
 
         return $data;
     }
-
-
-
-
-
-
-
-
 }
