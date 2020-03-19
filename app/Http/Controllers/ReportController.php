@@ -86,7 +86,7 @@ class ReportController extends Controller
     public function income(Request $request)
     {
         $dates = Date::all();
-        $date = $request->date_id;
+        $date = $request->date;
         $date_id = Date::where('date',$date)->get()->first() ? Date::where('date',$date)->get()->first()->id : Date::max('id');
 
         if ( $dates->isEmpty() ){
@@ -112,7 +112,7 @@ class ReportController extends Controller
         $all_bl = Process::whereIn('thead_id', collect($data)->flatten())->whereBetween('date_id', [ Date::where('date',$start_date)->first() ? Date::where('date',$start_date)->first()->id : Date::find($date_id_min)->id , Date::find($date_id)->id])->get();
         $all_bl_year = Process::whereIn('thead_id', collect($data)->flatten())->whereBetween('date_id', [Date::where('date',$start_year)->first() ? Date::where('date',$start_year)->first()->id : Date::find($date_id_min)->id, Date::find($date_id)->id])->get();
 
-        return view('admin.ais.report.income', compact('heads', 'all_bl','all_bl_year', 'dates', 'date_id'));
+        return view('admin.ais.report.income', compact('heads', 'all_bl','all_bl_year', 'dates', 'date'));
 
     }
 

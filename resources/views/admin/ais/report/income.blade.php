@@ -33,10 +33,22 @@
 {{--                                <option value="{{ $date->id }}" {!! $date->id == $date_id ? 'selected="selected"': '' !!}>{{ $date->date }}</option>--}}
 {{--                            @endforeach--}}
 {{--                        </select>--}}
-                        <input type="date" class="date" name="date_id" value="{{ date('d-m-Y') }}">
+                        <input type="date" class="date" name="date" value="{{ date('d-m-Y') }}">
                         <button class="btn btn-dark btn-sm">Show</button>
                     </form>
 
+                </div>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">Head</div>
+                        <div class="col-md-1 text-right">Month</div>
+                        <div class="col-md-1 text-right">Year</div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">Head</div>
+                        <div class="col-md-1 text-right">Month</div>
+                        <div class="col-md-1 text-right">Year</div>
+                    </div>
                 </div>
                 <div class="card-body">
 
@@ -44,8 +56,12 @@
 
                         <ul>
                             <div class="row">
-                                <div style="border-left: 3px #5897fb5e solid; position: absolute; z-index: 5; top: 80px; left: 43%; bottom: 143px;"></div>
+
+
                                 @foreach( $heads as $head)
+                                    <div style="border-left: 2px #5897fb5e solid; position: absolute; z-index: 1; top: 145px; left: 43%; bottom: 143px;"></div>
+                                    <div style="border-left: 2px #5897fb5e solid; position: absolute; z-index: 1; top: 145px; left: 92%; bottom: 143px;"></div>
+
                                     <div class="col-md-6" style="border-left: 1px solid rgba(45, 130, 200, 0.5); border-right: 1px solid rgba(45, 130, 200, 0.5);">
                                         <li>
                                             <span>
@@ -357,26 +373,26 @@
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-md-5">
-                            <h4><b class="pull-left" style="color: rgba(46, 204, 113, 0.7);">Total Income</b> <b class="float-right">{{ $bl[3] }}</b></h4>
+                            <h5><b class="pull-left" style="color: rgba(46, 204, 113, 0.7);">Total Income</b> <b class="float-right">{{ $bl[3] }}</b></h5>
                         </div>
                         <div class="col-md-1">
-                            <h4><b class="float-right">{{ $bl_year[3] }}</b></h4>
+                            <h5><b class="float-right">{{ $bl_year[3] }}</b></h5>
                         </div>
                         <div class="col-md-5">
-                            <h4><b class="pull-left" style="color: rgba(217, 30, 24, 0.7);">Total Expense</b> <b class="float-right">{{ $bl[4] }}</b></h4>
+                            <h5><b class="pull-left" style="color: rgba(217, 30, 24, 0.7);">Total Expense</b> <b class="float-right">{{ $bl[4] }}</b></h5>
                         </div>
                         <div class="col-md-1">
-                            <h4><b class="float-right">{{ $bl_year[4] }}</b></h4>
+                            <h5><b class="float-right">{{ $bl_year[4] }}</b></h5>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-md-11">
-                            <h4><b class="" style="color: #007bff;">SURPLUS/DEFICIT</b> <b class="float-right">{{ $bl[3] + $bl[4] }}</b></h4>
+                            <h5><b class="" style="color: #007bff;">SURPLUS/DEFICIT</b> <b class="float-right">{{ $bl[3] + $bl[4] }}</b></h5>
                         </div>
                         <div class="col-md-1">
-                            <h4> <b class="">{{ $bl_year[3] + $bl_year[4] }}</b></h4>
+                            <h5> <b class="">{{ $bl_year[3] + $bl_year[4] }}</b></h5>
                         </div>
                     </div>
                 </div>
