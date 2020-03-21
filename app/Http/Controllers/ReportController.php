@@ -85,9 +85,15 @@ class ReportController extends Controller
 
     public function income(Request $request)
     {
+//        return Date::first()->date;
         $dates = Date::all();
         $date = $request->date;
-        $date_id = Date::where('date',$date)->get()->first() ? Date::where('date',$date)->get()->first()->id : Date::max('id');
+        if ($date <= Date::first()->date){
+            $date_id = Date::min('id');
+        } else{
+            $date_id = Date::where('date',$date)->get()->first() ? Date::where('date',$date)->get()->first()->id : Date::max('id');
+        }
+
 
         if ( $dates->isEmpty() ){
             $status = 0;
