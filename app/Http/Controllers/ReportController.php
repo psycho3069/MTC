@@ -682,81 +682,6 @@ class ReportController extends Controller
     }
 
 
-    public function repay()
-    {
-        $heads = AccountHead::all();
-        $data = [];
-
-        $theads = TransactionHead::all();
-
-        foreach ( $theads as $thead) {
-            $cr_bl[$thead->id]['debit'] = $thead->currentBalance->sum('debit');
-            $cr_bl[$thead->id]['credit'] = $thead->currentBalance->sum('credit');
-        }
-
-        foreach ($heads as $head) {
-
-            foreach ($head->child as $child_i) {
-                $prefix = 'head_i';
-                $data[] = $this->repayCal($prefix, $child_i, $cr_bl);
-
-                foreach ( $child_i->child as $child_ii) {
-                    $prefix = 'head_ii';
-                    $data[] = $this->repayCal($prefix, $child_ii, $cr_bl);
-
-                    foreach ($child_ii->child as $child_iii) {
-                        $prefix = 'head_iii';
-                        $data[] = $this->repayCal($prefix, $child_iii, $cr_bl);
-                    }
-                }
-            }
-
-//            foreach ($head->child as $child) {
-//                $data['head_i'][$child->id]['debit'] = 0;
-//                $data['head_i'][$child->id]['credit'] = 0;
-//                $data['head_i'][$child->id]['no'] = count( $child->transaction);
-//
-//                foreach ( $child->transaction as $thead) {
-//                    $data['head_i'][$child->id]['debit'] += $cr_bl[$thead->id]['debit'];
-//                    $data['head_i'][$child->id]['credit'] += $cr_bl[$thead->id]['credit'];
-//                }
-//                $total = $data['head_i'][$child->id]['debit'] - $data['head_i'][$child->id]['credit'];
-//                $data['head_i'][$child->id]['total'] = $child->ac_head_id == 1 || $child->ac_head_id == 4 ? round($total, 2) : round(-$total, 2);
-//
-//            }
-
-        }
-
-        foreach ($data as $key => $types) {
-            foreach ($types as $key => $head) {
-                foreach ($head as $id => $value) {
-                    $local[$key][$id] = $value;
-                }
-            }
-        }
-
-//        return $local;
-
-        return view('admin.ais.report.receipt', compact('heads', 'local'));
-    }
-
-
-    public function repayCal( $prefix, $child, $cr_bl)
-    {
-        $data[$prefix][$child->id]['debit'] = 0;
-        $data[$prefix][$child->id]['credit'] = 0;
-        $data[$prefix][$child->id]['no'] = count( $child->transaction);
-
-        foreach ( $child->transaction as $thead) {
-            $data[$prefix][$child->id]['debit'] += $cr_bl[$thead->id]['debit'];
-            $data[$prefix][$child->id]['credit'] += $cr_bl[$thead->id]['credit'];
-        }
-        $total = $data[$prefix][$child->id]['debit'] - $data[$prefix][$child->id]['credit'];
-        $data[$prefix][$child->id]['total'] = $child->ac_head_id == 1 || $child->ac_head_id == 4 ? round($total, 2) : round(-$total, 2);
-
-        return $data;
-    }
-
     public function showStock(Request $request)
     {
 //        return $request->all();
@@ -802,45 +727,6 @@ class ReportController extends Controller
         return $data;
     }
 
-    public function getReport( $category, $dates)
-    {
-        if ( !count( $dates))
-            return 220;
-
-        $op_date = $dates->first()->id == 1 ? 1 : $dates->first()->id;
-
-        foreach ( $category->ledger as $ledger) {
-
-            $data['stock'][$ledger->id]['purchase'] = 0;
-            $data['stock'][$ledger->id]['delivery'] = 0;
-            $data['stock'][$ledger->id]['cost'] = 0;
-
-            $data['stock'][$ledger->id]['name'] = $ledger->name;
-            $data['stock'][$ledger->id]['category'] = $ledger->ledgerable->name;
-            $data['stock'][$ledger->id]['unit'] = $ledger->unitType->name;
-
-            $cr_stock = $ledger->currentStock->where('date_id', '<', $op_date);
-            $purchases = $ledger->purchases->whereIn('date_id', $dates->pluck('id'));
-            $deliveries = $ledger->deliveries->whereIn('date_id', $dates->pluck('id'));
-
-            $data['stock'][$ledger->id]['op_bl'] = $cr_stock->sum('quantity_dr') - $cr_stock->sum('quantity_cr');
-
-            foreach ( $purchases as $purchase) {
-                $data['stock'][$ledger->id]['purchase'] += $purchase->currentStock->quantity_dr;
-                $data['stock'][$ledger->id]['cost'] += $purchase->amount;
-            }
-
-            foreach ( $deliveries as $delivery) {
-                $data['stock'][$ledger->id]['delivery'] += $delivery->currentStock->quantity_cr;
-            }
-
-            $data['stock'][$ledger->id]['cl_bl'] = $data['stock'][$ledger->id]['op_bl'] + $data['stock'][$ledger->id]['purchase'] - $data['stock'][$ledger->id]['delivery'];
-        }
-
-        return $data;
-    }
-
-
 
     public function fixThead()
     {
@@ -879,17 +765,17 @@ class ReportController extends Controller
             $given_date = Carbon::parse($date);
             $present_date = Carbon::parse($item->date);
 
-            if ($given_date->month >= 1 && $given_date->month < 6){
-                if ($present_date->month >=1 && $present_date->month < 6 && $present_date->year == $given_date->year)
+            if ($given_date->month >= 1 && $given_date->month < 7){
+                if ($present_date->month >= 1 && $present_date->month < 7 && $present_date->year == $given_date->year)
                     return $item->id;
-                if ($present_date->month >=6 && $present_date->month <= 12 && $present_date->year == $given_date->year - 1)
+                if ($present_date->month >= 7 && $present_date->month <= 12 && $present_date->year == $given_date->year - 1)
                     return $item->id;
             }
 
-            if ($given_date->month >= 6 && $given_date->month <= 12){
-                if ($present_date->month >=6 && $present_date->month <= 12 && $present_date->year == $given_date->year)
+            if ($given_date->month >= 7 && $given_date->month <= 12){
+                if ($present_date->month >= 7 && $present_date->month <= 12 && $present_date->year == $given_date->year)
                     return $item->id;
-                if ($present_date->month >=1 && $present_date->month < 6 && $present_date->year == $given_date->year + 1)   //Not necessary
+                if ($present_date->month >= 1 && $present_date->month < 7 && $present_date->year == $given_date->year + 1)   //Not necessary
                     return $item->id;
             }
 
@@ -954,8 +840,6 @@ class ReportController extends Controller
 
         asort($data['receipt']);
         asort($data['payment']);
-//        return $data;
-//        return $data['payment'];
 
 //        foreach ($data['payment'] as $key => $item_i) {
 //            return $key;
