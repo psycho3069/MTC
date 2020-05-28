@@ -2,6 +2,17 @@
 
 @extends('admin.master')
 
+<style>
+    .select2-selection__rendered {
+        line-height: 36px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+    }
+    .select2-selection__arrow {
+        height: 34px !important;
+    }
+</style>
 
 @section('content')
     <div class="col-md-9">
@@ -13,7 +24,7 @@
                         <div class="row">
                             <div class="col-md-2">
                                 <label>Select a account</label>
-                                <select name="thead_id" class="form-control">
+                                <select name="thead_id" class="form-control thead_id">
                                     @foreach( $data['theads'] as $thead )
                                         <option value="{{ $thead->id }}" {!! $input['thead_id'] == $thead->id ? 'selected="selected"' : '' !!}>{{ str_limit( $thead->name, 20) }} [{{ $thead->code }}]</option>
                                     @endforeach
@@ -23,9 +34,9 @@
                             <div class="col-md-2">
                                 <label>Type</label>
                                 <select name="category" class="form-control" id="category">
-                                    <option value="0" {!! $input['category'] == 0 ? 'selected="selected"' : '' !!}>All</option>
-                                    <option value="1" {!! $input['category'] == 1 ? 'selected="selected"' : '' !!}>Auto</option>
-                                    <option value="2" {!! $input['category'] == 2 ? 'selected="selected"' : '' !!}>Manual</option>
+                                    <option value="0" {!! $input['category'] == 0 ? 'selected' : '' !!}>All</option>
+                                    <option value="1" {!! $input['category'] == 1 ? 'selected' : '' !!}>Auto</option>
+                                    <option value="2" {!! $input['category'] == 2 ? 'selected' : '' !!}>Manual</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -33,7 +44,7 @@
                                 <select name="type_id" class="form-control" id="type">
                                     <option value="0">All</option>
                                     @foreach( $data['types'] as $item )
-                                        <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} {!! $input['type_id'] == $item->id ? 'selected="selected"' : '' !!}>{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} {!! $input['type_id'] == $item->id ? 'selected' : '' !!}>{{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -117,9 +128,18 @@
 
 @section('script')
     <script>
+        $(document).ready(function() {
+            $('.thead_id').select2({
+                placeholder: 'Select an account'
+            });
+        });
+    </script>
+
+    <script>
         $(document).ready(function () {
             var y = $('#category').val()
-            y == 1 ? $('.auto').show() : $('.manual').show()
+            // y == 1 ? $('.auto').show() : $('.manual').show()
+            y == 1 ? $('.manual').hide() : ( y == 2 ? $('.auto').hide() : '')
 
             $('#category').on('change',function () {
                 var x = $(this).val()
@@ -133,8 +153,8 @@
                     $('.auto').hide()
                 } else {
                     $('#type').val(0)
-                    $('.auto').hide()
-                    $('.manual').hide()
+                    $('.auto').show()
+                    $('.manual').show()
                 }
 
             })

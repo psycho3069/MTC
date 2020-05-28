@@ -24,25 +24,27 @@
                         </thead>
                         <tbody>
                         @foreach( $billing as $bill )
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d-m-Y', strtotime( $bill->date->date)) }}</td>
-                                <td><a href="{{ route('sales.show', $bill->id) }}">{{ $bill->guest->name }}</a></td>
-                                <td class="text-center"><code>{{ $data[$bill->id]['bill'] }} tk.</code></td>
-                                <td class="text-center"><code>{{ $bill->checkout_status ? 'Yes' : 'No' }}</code></td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">
-                                            Bill
-                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                        </button>
-                                        <div class="dropdown-content">
-                                            <a href="{{ route('billing.show', $bill->id) }}">View</a>
-                                            <a href="{{ route('sales.edit', $bill->id) }}">Edit</a>
+                            @if($data[$bill->id]['bill'] != 0 )
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ date('d-m-Y', strtotime( $bill->date->date)) }}</td>
+                                    <td><a href="{{ route('sales.show', $bill->id) }}">{{ $bill->guest->name }}</a></td>
+                                    <td class="text-center"><code>{{ $data[$bill->id]['bill'] }} tk.</code></td>
+                                    <td class="text-center"><code>{{ $bill->checkout_status ? 'Yes' : 'No' }}</code></td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-i" for="btnControl">
+                                                Bill
+                                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                            </button>
+                                            <div class="dropdown-content">
+                                                <a href="{{ route('billing.show', $bill->id) }}">View</a>
+                                                <a href="{{ route('sales.edit', $bill->id) }}">Edit</a>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

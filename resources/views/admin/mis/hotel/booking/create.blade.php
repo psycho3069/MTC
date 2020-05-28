@@ -13,14 +13,14 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Guest Name*</label>
+                            <label>Guest Name<span class="required">*</span></label>
                             <input type="text" class="form-control" id="name" value="{{ old('guest.name') }}">
                             <p class="text-danger">{{ $errors->has('guest.name') ? 'Please Enter Guest Name' : '' }}</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Contact No*</label>
+                            <label>Contact No<span class="required">*</span></label>
                             <input type="text" class="form-control" id="contact_no" value="{{ old('guest.contact_no') }}">
                             <p class="text-danger">{{ $errors->has('guest.contact_no') ? 'Please Enter Guest Contact' : '' }}</p>
                         </div>
@@ -51,13 +51,13 @@
                 <div class="row">
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Check-In*</label>
+                            <label>Check-In<span class="required">*</span></label>
                             <input type="date" class="form-control date check_in_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" id="start_date">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Check-Out*</label>
+                            <label>Check-Out<span class="required">*</span></label>
                             <input type="date" class="form-control date check_out_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" id="end_date">
                         </div>
                     </div>

@@ -7,6 +7,7 @@ use App\Date;
 use App\Employee;
 use App\Http\Traits\CustomTrait;
 use App\MisCurrentStock;
+use App\MISHead;
 use App\MISHeadChild_I;
 use App\MISLedgerHead;
 use App\Process;
@@ -30,6 +31,45 @@ class PurchaseController extends Controller
 
     public function index(Request $request)
     {
+//        return $request->all();
+//        $type_id = $request->mis_head_id != 5 ? 4 : 5;
+//        $mis_ledger_heads = MISLedgerHead::where('mis_head_id',$request->mis_head_id)->get();
+//        if (!$request->start_date && !$request->end_date && $request->type_id == 0){
+//            $p_groups = PurchaseGroup::where( 'mis_head_id', $type_id)
+//                ->orderBy('id', 'desc')
+//                ->get();
+//            return view('admin.mis.purchase.index', compact('p_groups', 'type_id','mis_ledger_heads'));
+//        } else if ($request->category_id != 0){
+//            $data['type_id'] = $request->type_id;
+//            $data['category_id'] = $request->category_id;
+//            $data['mis_ledger_heads'] = MISLedgerHead::all();
+//            return $mis_ledger_head = MISLedgerHead::find($request->category_id);
+//            $data['purchaseGroup'] = [];
+//
+//            $i = 0;
+//            return $purchases = $mis_ledger_head->purchases;
+//            foreach ($purchases as $purchase){
+//                $data['purchaseGroup'][$i++] = $purchase->purchaseGroup;
+//            }
+//
+//
+//            return $data['purchaseGroup'];
+////            $data['p_groups'] = PurchaseGroup::where( 'mis_head_id', $type_id)
+////                ->orderBy('id', 'desc')
+////                ->get();
+////            return view('admin.mis.purchase.index', $data);
+//        } else if ($request->category_id == 0){
+//            $p_groups = PurchaseGroup::where( 'mis_head_id', $type_id)
+//                ->orderBy('id', 'desc')
+//                ->get();
+//            return view('admin.mis.purchase.index', compact('p_groups', 'type_id','mis_ledger_heads'));
+//        } else {
+//            $p_groups = PurchaseGroup::where( 'mis_head_id', $type_id)
+//                ->orderBy('id', 'desc')
+//                ->get();
+//            return view('admin.mis.purchase.index', compact('p_groups', 'type_id','mis_ledger_heads'));
+//        }
+
         $type_id = $request->mis_head_id != 5 ? 4 : 5;
         $p_groups = PurchaseGroup::where( 'mis_head_id', $type_id)->orderBy('id', 'desc')->get();
         return view('admin.mis.purchase.index', compact('p_groups', 'type_id'));

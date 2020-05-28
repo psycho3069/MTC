@@ -13,18 +13,30 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>Guest</label>
+
+                                <label id="guest_list">Booking Guest<span class="required">*</span></label>
+
+                                <button type="button" class="btn btn-sm btn-i new-guest float-right"> <i class="fa fa-plus-circle"></i> </button>
+                                <button type="button" class="btn btn-sm btn-i guest-list float-right">List</button>
+
                                 <select class="form-control" id="bill">
                                     <option value="">Choose One</option>
                                     @foreach( $billing as $bill )
                                         <option value="{{ $bill->id }}" {{ $data['bill_id'] == $bill->id ? 'selected' : '' }}>{{ $bill->guest->name }} </option>
                                     @endforeach
                                 </select>
+
+                                <label id="new_guest">Guest Name<span class="required">*</span></label>
+                                <input type="text" class="form-control" id="guest_name" name="guest_name">
+                                <label id="guest_contact_label">Guest Contact<span class="required">*</span></label>
+                                <input type="text" class="form-control" id="guest_contact" name="guest_contact">
+
+
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label>Menu Type</label>
+                                <label>Menu Type<span class="required">*</span></label>
                                 <select class="form-control" id="menu_type">
                                     <option></option>
                                     @foreach( $data['menu_type'] as $item )
@@ -35,20 +47,20 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>Menu</label>
+                                <label>Menu<span class="required">*</span></label>
                                 <select class="form-control" id="menu">
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label>Quantity</label>
+                                <label>Quantity<span class="required">*</span></label>
                                 <input type="text" class="form-control" id="quantity" min="1" max="100" value="1">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label>Discount <small>(tk.)</small></label>
+                                <label>Discount <small>(tk.)</small><span class="required">*</span></label>
                                 <input type="text" class="form-control" id="discount" value="0">
                             </div>
                         </div>
@@ -59,8 +71,7 @@
                 </div>
             </div>
         </samp>
-        <br><br>
-
+        <br>
 
 
         <samp>
@@ -112,6 +123,50 @@
 
     <script>
         $(document).ready(function () {
+
+            //default
+            displayList('list')
+
+            $('.guest-list').click(function () {
+                displayList('list')
+            });
+
+            $('.new-guest').click(function () {
+                displayList('new')
+            });
+
+            function displayList( flag){
+                if( flag == 'new'){
+                    $('#bill').val('')
+                    $('#bill').hide()
+                    $('.guest-list').show()
+                    $('.new-guest').hide()
+                    $('#new_guest').show()
+                    $('#guest_list').hide()
+                    $('#guest_contact').show()
+                    $('#guest_name').show()
+                    $('#guest_contact_label').show()
+                }
+
+                if ( flag == 'list'){
+                    $('#bill').show()
+                    $('.guest-list').hide()
+                    $('.new-guest').show()
+                    $('#new_guest').hide()
+                    $('#guest_list').show()
+                    $('#guest_contact').hide()
+                    $('#guest_name').hide()
+                    $('#guest_contact_label').hide()
+
+                    // $('.list-supplier').show()
+                    // $('.list-sup-btn').show()
+                    // $('#supplier').data('check', 'list')
+                    //
+                    // $('.add-supplier').hide()
+                    // $('.add-sup-btn').hide()
+                }
+            }
+
             var _token = $('input[name="_token"]').val(); var all_menu = [];
 
             $('#menu_type').on('change', function () {
@@ -170,6 +225,8 @@
     <script>
         $(document).ready(function () {
             var i = 0;
+
+
             // alert(55)
             var bill_id = {!! json_encode($data['bill_id']) !!}
 
@@ -182,30 +239,56 @@
                 }
             })
 
-
             $('#add-button').click(function () {
+
                 var total = $('#total').text()
                 var bill = $('#bill').val()
-                // var room = $('#room').val()
                 var menu = $('#menu').val()
                 var quantity = $('#quantity').val()
                 var discount = $('#discount').val()
+                var guest_name = $('#guest_name').val()
+                var guest_contact = $('#guest_contact').val()
 
-                if( !bill || !menu || !quantity)
+                if( !(bill || (guest_name && guest_contact)) || !menu || !quantity)
                     alert('Please Enter all fields')
                 else {
+
                     i++
-                    $('#list').append(
-                        '<tr id="row'+i+'">' +
-                        '<td><input type="hidden" name="input['+i+'][billing_id]" value="'+bill+'">'+$('#bill :selected').text()+'</td>' +
-                        // '<td><input type="hidden" name="input['+i+'][booking_id]" value="'+room+'">'+$('#room :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][menu_id]" value="'+menu+'">'+$('#menu :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity+'</td>' +
-                        '<td>'+total+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][discount]" value="'+discount+'">'+discount+'</td>' +
-                        '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
-                        '</tr>'
-                    )
+
+                    if( i > 0 ){
+                        document.getElementById('guest_name').readOnly = true;
+                        document.getElementById('guest_contact').readOnly = true;
+                    }
+
+                    if(!bill){
+                        $('#list').append(
+                            '<tr id="row'+i+'">' +
+                            //billing hidden value '0'
+                            '<input type="hidden" name="input['+i+'][billing_id]" value="'+0+'">' +
+                            //guest name
+                            '<td><input type="hidden" name="input['+i+'][guest_name]" value="'+guest_name+'">'+$('#guest_name').val()+'</td>' +
+                            //guest contact
+                            '<input type="hidden" name="input['+i+'][guest_contact]" value="'+guest_contact+'">' +
+
+                            '<td><input type="hidden" name="input['+i+'][menu_id]" value="'+menu+'">'+$('#menu :selected').text()+'</td>' +
+                            '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity+'</td>' +
+                            '<td>'+total+'</td>' +
+                            '<td><input type="hidden" name="input['+i+'][discount]" value="'+discount+'">'+discount+'</td>' +
+                            '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
+                            '</tr>'
+                        )
+                    } else {
+                        $('#list').append(
+                            '<tr id="row'+i+'">' +
+                            '<td><input type="hidden" name="input['+i+'][billing_id]" value="'+bill+'">'+$('#bill :selected').text()+'</td>' +
+                            '<td><input type="hidden" name="input['+i+'][menu_id]" value="'+menu+'">'+$('#menu :selected').text()+'</td>' +
+                            '<td><input type="hidden" name="input['+i+'][quantity]" value="'+quantity+'">'+quantity+'</td>' +
+                            '<td>'+total+'</td>' +
+                            '<td><input type="hidden" name="input['+i+'][discount]" value="'+discount+'">'+discount+'</td>' +
+                            '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
+                            '</tr>'
+                        )
+                    }
                 }
             })
 

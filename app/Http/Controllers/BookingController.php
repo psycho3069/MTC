@@ -77,7 +77,7 @@ class BookingController extends Controller
      */
     public function create(Request $request)
     {
-        $date = Configuration::find( 1)->software_start_date;
+        $date = Configuration::find(1)->software_start_date;
         $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->where('booking_status', '!=', 0)->get()->pluck('room_id');
 //        return $booked;
         $data['room'] = Room::get()->except($booked->toArray());
@@ -136,7 +136,6 @@ class BookingController extends Controller
             $item['room_id'] < 50 || $item['room_id'] > 499  ? $charge['room'] += $item['bill'] : $charge['venue'] += $item['bill'];
         }
 
-
         $hotel_vat = $hotel_bill * $vat / 100;
 
         $input['billing']['total_bill'] = $hotel_bill + $hotel_vat;
@@ -167,10 +166,6 @@ class BookingController extends Controller
 
         return redirect('billing/'.$billing->id );
     }
-
-
-
-
 
     public function code()
     {

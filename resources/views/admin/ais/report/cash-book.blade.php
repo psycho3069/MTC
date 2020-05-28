@@ -15,33 +15,22 @@
 </style>
 
 @section('content')
-    <div class="col-md-9">
+    <div class="col-md-12">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
                     <small>
-                        <form class="" action="{{ route('report.show.ledger') }}" method="POST" >
+                        <form action="{{ route('report.cash-book') }}">
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-md-2" >
-                                    <label>Select a account</label>
-                                    <select name="thead_id" class="form-control thead_id">
-                                        <option value=""></option>
-                                        @if( isset($thead))
-                                            <option value="{{ $thead->id }}" >{{ str_limit( $thead->name, 15) }} [{{ $thead->code }}]</option>
-                                        @else
-                                            @foreach( $data['theads'] as $item )
-                                                <option value="{{ $item->id }}" >{{ str_limit( $item->name, 15) }} [{{ $item->code }}]</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
                                 </div>
                                 <div class="col-md-2">
                                     <label>Type</label>
                                     <select name="category" class="form-control" id="category">
-                                        <option value="0">All</option>
-                                        <option value="1">Auto</option>
-                                        <option value="2">Manual</option>
+                                        <option value="0" @if(0 == $data['category']) {{ 'Selected' }}  @endif>All</option>
+                                        <option value="1" @if(1 == $data['category']) {{ 'Selected' }}  @endif>Auto</option>
+                                        <option value="2" @if(2 == $data['category']) {{ 'Selected' }}  @endif>Manual</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -49,7 +38,7 @@
                                     <select name="type_id" class="form-control" id="type">
                                         <option value="0">All</option>
                                         @foreach( $data['types'] as $item )
-                                            <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} >{{ $item->name }}</option>
+                                            <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} @if($item->id == $data['type']) {{ 'Selected' }}  @endif >{{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -62,47 +51,52 @@
                                 <div class="col-md-2">
                                     <label>End Date</label>
                                     <div>
-                                        <input type="date" class="form-control date" name="end_date" value="{{ date('Y-m-d') }}">
+                                        <input type="date" class="form-control date" name="end_date" value="{{ $data['end_date'] }}">
                                     </div>
                                 </div>
                                 <div class="col-md-1">
                                     <button class="btn btn-dark btn-sm show-button pull-right">Show</button>
                                 </div>
-
                             </div>
                         </form>
                     </small>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary table-fixed">
+                    <table class="table table-bordered table-hover table-primary table-chart table-responsive">
                         <thead>
                         <tr>
-                            <th class="">Date</th>
-                            <th class="">Voucher Code</th>
-                            <th class="">Account head</th>
-                            <th class="">Narration/Cheque Details</th>
-                            <th class="">Credit Amount</th>
-                            <th class="">Debit Amount</th>
-                            <th class="">Balance</th>
+                            <th class="" style='width: 5%;'>Date</th>
+                            <th class="" style='width: 5%;'>Voucher Code</th>
+                            <th class="" style='width: 25%;'>Account head</th>
+                            <th class="" style='width: 20%;'>Narration/Cheque Details</th>
+                            <th class="" style='width: 15%;'>Receipt (Debit)</th>
+                            <th class="" style='width: 15%;'>Payment (Credit)</th>
+                            <th class="" style='width: 15%;'>Balance</th>
                             {{--                    <th class="">Dr/Cr</th>--}}
                         </tr>
                         </thead>
                         <tbody>
                         @if( isset($thead))
                             <tr>
-                                <td></td><td></td>
-                                <td>Opening balance</td>
-                                <td></td><td></td><td></td>
+                                <td></td><td></td><td>Opening balance</td><td></td>
+                                <td>{{ $data['opening_debit'] }}</td>
+                                <td>{{ $data['opening_credit'] }}</td>
                                 <td>{{ $data['opening_bl'] }}</td>
+                            </tr>
+                            <tr>
+                                <td></td><td></td><td>Previous balance</td><td></td>
+                                <td>{{ $data['prev_debit'] }}</td>
+                                <td>{{ $data['prev_credit'] }}</td>
+                                <td >{{ $data['prev_bl'] }}</td>
                             </tr>
                             @foreach( $data['vouchers'] as $voucher )
                                 <tr>
                                     <td>{{ date('d-m-Y', strtotime( $voucher->date->date)) }}</td>
                                     <td>{{ $voucher->voucherGroup->code }}</td>
                                     <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->debitAccount->name : $voucher->creditAccount->name }}</td>
-                                    <td> {{ $voucher->note }}</td>
-                                    <td class="float-right">{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>
-                                    <td class="float-right">{{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '' }}</td>
+                                    <td>{{ $voucher->note }}</td>
+                                    <td>{{ $voucher->debit_head_id == $thead->id ? $voucher->amount : '' }}</td>
+                                    <td>{{ $voucher->credit_head_id == $thead->id ? $voucher->amount : '' }}</td>
                                     <td>{{ $amount[$voucher->id] }}</td>
                                 </tr>
                             @endforeach
@@ -112,9 +106,6 @@
                 </div>
             </div>
         </samp>
-
-
-
     </div>
 
 @endsection

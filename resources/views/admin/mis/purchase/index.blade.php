@@ -11,6 +11,34 @@
                         <button type="button" class="btn btn-sm btn-i float-right" onclick='window.location="{{ route('purchase.create', ['mis_head_id' => $type_id]) }}"'>New Purchase</button>
                     </code>
                 </div>
+{{--                <div class="card-header">--}}
+{{--                    <form>--}}
+{{--                        <div class="row">--}}
+{{--                            <div class="col-md-4">--}}
+{{--                                <label>Start Date</label>--}}
+{{--                                <input type="date" class="form-control date" name="start_date" value="{{ date('Y-m-d', strtotime(\App\Date::find(1)->date)) }}" >--}}
+{{--                            </div>--}}
+{{--                            <div class="col-md-4">--}}
+{{--                                <label>End Date</label>--}}
+{{--                                <input type="date" class="form-control date" name="end_date"  value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}">--}}
+{{--                            </div>--}}
+{{--                            <input type="hidden" name="type_id" value="{{ $type_id }}">--}}
+{{--                            <div class="col-md-3">--}}
+{{--                                <label>Category</label>--}}
+{{--                                <select name="category_id" class="form-control" id="type">--}}
+{{--                                    <option value="0">All</option>--}}
+{{--                                    @foreach( $mis_ledger_heads as $item )--}}
+{{--                                        <option value="{{ $item->id }}" class="" >{{ $item->name }}</option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+
+{{--                            <div class="col-md-1" style="margin-top: 1.5%;">--}}
+{{--                                <button class="btn btn-dark btn-sm show-button">Show</button>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </form>--}}
+{{--                </div>--}}
 
                 <div class="card-body">
                     <table class="table table-hover table-bordered blue">

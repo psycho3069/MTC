@@ -17,7 +17,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Name*</label>
+                                <label>Name<span class="required">*</span></label>
                                 <input type="text" class="form-control" id="name">
                             </div>
                         </div>

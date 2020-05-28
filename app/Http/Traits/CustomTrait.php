@@ -29,7 +29,7 @@ trait CustomTrait{
     public function checkBooking( $input)
     {
         $date = Configuration::find( 1)->software_start_date;
-        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->get();
+        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->where( 'booking_status', '!=', 0)->get();
 
         $room_id = collect( $input)->pluck('room_id');
         return count( $booked->whereIn('room_id', $room_id));
@@ -43,8 +43,11 @@ trait CustomTrait{
         $charge['venue']['total'] = $bill->booking->whereBetween('room_id', [50, 499])->sum('bill');
         $charge['food']['total'] = $bill->restaurant->sum('bill');
 
-        $charge['room']['total'] += $charge['room']['total'] * $bill->booking[0]->vat / 100;
-        $charge['venue']['total'] += $charge['venue']['total'] * $bill->booking[0]->vat / 100;
+        if ($bill->mis_voucher_id){ //if mis_voucher_id not null
+            $charge['room']['total'] += $charge['room']['total'] * $bill->booking[0]->vat / 100;
+            $charge['venue']['total'] += $charge['venue']['total'] * $bill->booking[0]->vat / 100;
+        }
+
         if ( $bill->restaurant->isNotEmpty())
             $charge['food']['total'] += $charge['food']['total'] * ( $bill->restaurant[0]->vat + $bill->restaurant[0]->service_charge ) / 100;
 

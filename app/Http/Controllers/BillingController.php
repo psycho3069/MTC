@@ -9,10 +9,9 @@ use App\Guest;
 use App\Http\Traits\CustomTrait;
 use App\Room;
 use App\Venue;
+use NumberFormatter;
 use PDF;
 use Illuminate\Http\Request;
-use NumberFormatter;
-
 class BillingController extends Controller
 {
     use CustomTrait;
@@ -28,7 +27,9 @@ class BillingController extends Controller
     {
         $data['reserved'] = $request->res ? 1 : 0;
         $data['checkout'] = $request->chk ? 1 : 0;
-        $billing = Billing::where('reserved', 0)->orderBy('id','desc')->get();
+        $billing = Billing::where('reserved', 0)
+                            ->orderBy('id','desc')
+                            ->get();
         $billing = $data['checkout'] ? $billing->where('checkout_status', 1) : $billing->where('checkout_status', 0);
 
         if ( $request->res){
@@ -99,12 +100,13 @@ class BillingController extends Controller
 //        return $id;
         $bill = Billing::find( $id);
 
+        $vat = 0; //for "only food-sale"
         foreach ($bill->booking as $item ) {
             $vat = $item->vat;
             if ( $item->room_id < 50 || $item->room_id > 499)
                 $data['room'][$item->id] = $item;
 
-            if ( $item->room_id > 49 && $item->room_id < 500)
+            if ( $item->room_id > 49 && $item->room_id <= 500)
                 $data['venue'][$item->id] = $item;
 
             $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
@@ -150,9 +152,12 @@ class BillingController extends Controller
      */
     public function edit($id)
     {
+        $date = $this->getDate();
+        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date->date)))->where( 'booking_status', '!=', 0)->get()->pluck('room_id')->toArray();
+
         $bill = Billing::find($id);
-        $data['room'] = Room::get();
-        $data['venue'] = Venue::all();
+        $data['room'] = Room::get()->except($booked);
+        $data['venue'] = Venue::get()->except($booked);
 
         foreach ($bill->booking as $key => $book) {
 //            return $key;

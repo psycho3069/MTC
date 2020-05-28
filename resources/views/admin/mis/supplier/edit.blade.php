@@ -14,7 +14,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Name*</label>
+                                    <label>Name<span class="required">*</span></label>
                                     <input type="text" name="name" class="form-control" value="{{ $supplier->name }}" required>
                                 </div>
                                 <div class="form-group">
@@ -24,7 +24,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Contact No.*</label>
+                                    <label>Contact No.<span class="required">*</span></label>
                                     <input type="text" name="contact_no" class="form-control" value="{{ $supplier->contact_no }}" required>
                                 </div>
                                 <div class="form-group">

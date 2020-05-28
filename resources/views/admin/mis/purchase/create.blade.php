@@ -7,7 +7,10 @@
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    <b>Purchase {{ $cat_id != 4 ? 'Inventory' : 'Grocery' }} Item</b>
+                    <div class="col-md-6">
+                        <b>Purchase {{ $cat_id != 4 ? 'Inventory' : 'Grocery' }} Item</b>
+                    </div>
+
                 </div>
                 <div class="card-body">
                     <p class="text-danger">{{ $errors->has('mis_head_id') ? $errors->first('mis_head_id') : '' }}</p>
@@ -26,11 +29,10 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Total Cost <small>(tk)</small>*</label>
+                                <label>Total Cost <small>(tk)</small><span class="required">*</span></label>
                                 <input type="text" class="form-control" id="amount" value="0" min="0">
                             </div>
                         </div>
-
 
                         <div class="col-md-3">
                             <div class="form-group">
@@ -40,16 +42,15 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Quantity*</label>
+                                <label>Quantity<span class="required">*</span></label>
                                 <input type="text" class="form-control" id="quantity" value="0">
                             </div>
                         </div>
 
-
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="form-group list-supplier">
-                                    <label>Supplier*</label>
+                                    <label>Supplier<span class="required">*</span></label>
                                     <select class="form-control" id="supplier" data-check="list">
                                         @foreach( $data['supplier'] as $item )
                                             <option value="{{ $item->id }}">{{ $item->name }} </option>
@@ -57,35 +58,31 @@
                                     </select>
                                 </div>
 
-
-
                                 <div class="form-group add-supplier">
-                                    <label>Supplier *</label>
+                                    <label>Supplier <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="sup_name">
                                 </div>
                                 <div class="form-group add-supplier">
-                                    <label>Contact No. *</label>
+                                    <label>Contact No. <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="sup_contact">
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-sm btn-i list-sup-btn">New</button>
                                     <button type="button" class="btn btn-sm btn-i add-sup-btn">List</button>
                                 </div>
-
                             </div>
 
                             <div class="row">
-
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Unit*</label>
+                                        <label>Unit<span class="required">*</span></label>
                                         <select class="form-control" id="unit">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Receiver*</label>
+                                        <label>Receiver<span class="required">*</span></label>
                                         <select class="form-control" id="receiver">
                                             @foreach( $data['receiver'] as $item )
                                                 <option value="{{ $item->id }}">{{ $item->name }} </option>
@@ -93,11 +90,9 @@
                                         </select>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="card-footer">
                     <button type="button" id="add-button" class="btn btn-info btn-block">Add</button>
@@ -136,15 +131,19 @@
                             <label>Note</label>
                             <textarea name="note" class="form-control" cols="3" rows="2"></textarea>
                         </div>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label  style="color: #0f3e68; font-size: larger;">Cumulative Total Cost
+                                    <b class="no-wrap" id="total_cost" style="color: #0000FF; font-size: larger;">0</b> Tk.
+                                </label>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-dark">Submit</button>
-
                     </form>
                 </div>
             </div>
         </samp>
     </div>
-
-
 
 @endsection
 
@@ -277,10 +276,9 @@
             }
 
 
+            var total_cost = $('#total_cost').text();
             function appendItems(){
                 add += 1;
-
-
 
                 var item_id = parseInt($('#item').val())
                 var quantity = parseFloat($('#quantity').val()).toFixed(3)
@@ -324,12 +322,19 @@
                         // '<td>'+$('#category :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][stock_id]" value="'+item_id+'">'+$('#item :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][quantity_dr]" value="'+quantity+'"> <input type="hidden" name="input['+i+'][unit_id]" value="'+unit_id+'">'+quantity+' '+ $('#unit :selected').text()+'</td>' +
-                        '<td><input type="hidden" name="input['+i+'][amount]" value="'+amount+'">'+amount+' tk.'+'</td>' +
+                        '<td><input type="hidden" id="cost'+i+'" name="input['+i+'][amount]" value="'+amount+'">'+amount+' tk.'+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][supplier_id]" value="'+supplier+'">'+$('#supplier :selected').text()+'</td>' +
                         '<td><input type="hidden" name="input['+i+'][receiver_id]" value="'+receiver+'">'+$('#receiver :selected').text()+'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
                     )
+
+                    // CALCULATING CUMULATIVE TOTAL COST
+                    var cost = $('#amount').val();
+                    total_cost = parseFloat(total_cost)
+                    total_cost += parseFloat(cost)
+                    // console.log(total_cost)
+                    $('#total_cost').text( total_cost)
                 }
             }
 
@@ -367,6 +372,12 @@
 
             $(document).on('click', '.remove', function(){
                 var button_id = $(this).attr('id')
+
+                var cost = $('#cost'+button_id).val()
+                total_cost = parseFloat(total_cost) - cost
+                // console.log(total_cost);
+                $('#total_cost').text( total_cost)
+
                 $('#row'+button_id).remove()
                 i--
             })

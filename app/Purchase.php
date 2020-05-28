@@ -21,6 +21,11 @@ class Purchase extends Model
         return $this->belongsTo('App\MISLedgerHead', 'stock_id');
     }
 
+    public function purchaseGroup()
+    {
+        return $this->belongsTo('App\PurchaseGroup','purchase_group_id');
+    }
+
 
     public function supplier()
     {

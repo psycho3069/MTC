@@ -43,7 +43,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Discount</label>
-                                    <input type="number" class="form-control" name="discount" id="discount" min="0" value="{{ $bill->discount }}">
+                                    <input type="number" step="0.01" class="form-control" name="discount" id="discount" min="0" value="{{ $bill->discount }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
