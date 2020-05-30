@@ -727,6 +727,44 @@ class ReportController extends Controller
         return $data;
     }
 
+    public function getReport( $category, $dates)
+    {
+        if ( !count( $dates))
+            return 220;
+
+        $op_date = $dates->first()->id == 1 ? 1 : $dates->first()->id;
+
+        foreach ( $category->ledger as $ledger) {
+
+            $data['stock'][$ledger->id]['purchase'] = 0;
+            $data['stock'][$ledger->id]['delivery'] = 0;
+            $data['stock'][$ledger->id]['cost'] = 0;
+
+            $data['stock'][$ledger->id]['name'] = $ledger->name;
+            $data['stock'][$ledger->id]['category'] = $ledger->ledgerable->name;
+            $data['stock'][$ledger->id]['unit'] = $ledger->unitType->name;
+
+            $cr_stock = $ledger->currentStock->where('date_id', '<', $op_date);
+            $purchases = $ledger->purchases->whereIn('date_id', $dates->pluck('id'));
+            $deliveries = $ledger->deliveries->whereIn('date_id', $dates->pluck('id'));
+
+            $data['stock'][$ledger->id]['op_bl'] = $cr_stock->sum('quantity_dr') - $cr_stock->sum('quantity_cr');
+
+            foreach ( $purchases as $purchase) {
+                $data['stock'][$ledger->id]['purchase'] += $purchase->currentStock->quantity_dr;
+                $data['stock'][$ledger->id]['cost'] += $purchase->amount;
+            }
+
+            foreach ( $deliveries as $delivery) {
+                $data['stock'][$ledger->id]['delivery'] += $delivery->currentStock->quantity_cr;
+            }
+
+            $data['stock'][$ledger->id]['cl_bl'] = $data['stock'][$ledger->id]['op_bl'] + $data['stock'][$ledger->id]['purchase'] - $data['stock'][$ledger->id]['delivery'];
+        }
+
+        return $data;
+    }
+
 
     public function fixThead()
     {
