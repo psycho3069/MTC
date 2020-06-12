@@ -45,12 +45,12 @@
                     <table class="table top-auto table-bordered">
                         <thead>
                         <tr>
-                            <th class="text-center col-md-3 border1">Particular</th>
-                            <th class="text-cnter border1">This Month</th>
-                            <th class="text-cnter border1">This Year</th>
-                            <th class="text-center col-md-3 border1">Particular</th>
-                            <th class="text-cnter border1">This Month</th>
-                            <th class="text-cnter border1">This Year</th>
+                            <th class="text-center border1 H1">Particular</th>
+                            <th class="text-cnter border1 H2">This Month</th>
+                            <th class="text-cnter border1 H3">This Year</th>
+                            <th class="text-center border1 H1">Particular</th>
+                            <th class="text-cnter border1 H2">This Month</th>
+                            <th class="text-cnter border1 H3">This Year</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -61,138 +61,75 @@
 
 
                         <tr>
-                            <td colspan="3" class="no-pad border3">
-                                <table class="nested">
-                                    @foreach( $data['receipt'] as $key_i => $item_i )
-                                        <tr>
-                                            <td class="col-md-6 A">
-                                                <i class="fa {{ count($item_i) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                {{ $item_i['name'] }}
-                                            </td>
-                                            <td class="text-right">{{ $item_i['receipt']['monthly'] }}</td>
-                                            <td class="text-right">{{ $item_i['receipt']['yearly'] }}</td>
-                                            @if(count($item_i) > 2)
-                                                @foreach( collect($item_i)->except('name', 'receipt') as $key_ii => $item_ii )
-                                                    <tr>
-                                                        <td class="col-md-6 a1 {{ count($item_ii) < 3 ? 'thead' : '' }}">
-                                                            <i class="fa {{ count($item_ii) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                            {{ $item_ii['name'] }}
-                                                        </td>
-                                                        <td class="text-right">{{ $item_ii['receipt']['monthly'] }}</td>
-                                                        <td class="text-right">{{ $item_ii['receipt']['yearly'] }}</td>
-                                                        @if(count($item_ii) > 2)
-                                                            @foreach( collect($item_ii)->except('name', 'receipt') as $key_iii => $item_iii )
-                                                                <tr>
-                                                                    <td class="col-md-6 a2 {{ count($item_iii) < 3 ? 'thead' : '' }}">
-                                                                        <i class="fa {{ count($item_iii) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                                        {{ $item_iii['name'] }}
-                                                                    </td>
-                                                                    <td class="text-right">{{ $item_iii['receipt']['monthly'] }}</td>
-                                                                    <td class="text-right">{{ $item_iii['receipt']['yearly'] }}</td>
-                                                                    @if(count($item_iii) > 2)
-                                                                        @foreach( collect($item_iii)->except('name', 'receipt') as $key_iv => $item_iv )
-                                                                            <tr>
-                                                                                <td class="col-md-6 a3 {{ count($item_iv) < 3 ? 'thead' : '' }}">
-                                                                                    <i class="fa {{ count($item_iv) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                                                    {{ $item_iv['name'] }}
-                                                                                </td>
-                                                                                <td class="text-right">{{ $item_iv['receipt']['monthly'] }}</td>
-                                                                                <td class="text-right">{{ $item_iv['receipt']['yearly'] }}</td>
-                                                                                @if(count($item_iv) > 2)
-                                                                                    @foreach( collect($item_iv)->except('name', 'receipt') as $key_v => $item_v )
-                                                                                        <tr>
-                                                                                            <td class="col-md-6 a4 {{ count($item_v) < 3 ? 'thead' : '' }}">
-                                                                                                <i class="fa {{ count($item_v) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                                                                {{ $item_v['name'] }}
-                                                                                            </td>
-                                                                                            <td class="text-right">{{ $item_v['receipt']['monthly'] }}</td>
-                                                                                            <td class="text-right">{{ $item_v['receipt']['yearly'] }}</td>
-                                                                                        </tr>
-                                                                                    @endforeach
-                                                                                @endif
-                                                                            </tr>
-                                                                        @endforeach
-                                                                    @endif
-                                                                </tr>
-                                                            @endforeach
-                                                        @endif
-                                                    </tr>
-                                                @endforeach
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                </table>
-                            </td>
+                            @foreach( $data as $index => $accounts )
+                                <td colspan="3" class="no-pad border3">
 
+                                    <table class="nested">
+                                        @foreach( $accounts as $key_i => $item_i )
+                                            <tr>
+                                                <td class="A T1">
+                                                    <i class="fa {{ count($item_i) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
+                                                    {{ $item_i['name'] }}
+                                                </td>
+                                                <td class="text-right T2">{{ $item_i[$index]['monthly'] }}</td>
+                                                <td class="text-right T3">{{ $item_i[$index]['yearly'] }}</td>
+                                                @if(count($item_i) > 2)
+                                                    @foreach( collect($item_i)->except('name', $index) as $key_ii => $item_ii )
+                                                        <tr>
+                                                            <td class="a1 {{ count($item_ii) < 3 ? 'thead' : '' }}">
+                                                                <i class="fa {{ count($item_ii) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
+                                                                {{ $item_ii['name'] }}
+                                                            </td>
+                                                            <td class="text-right">{{ $item_ii[$index]['monthly'] }}</td>
+                                                            <td class="text-right">{{ $item_ii[$index]['yearly'] }}</td>
+                                                            @if(count($item_ii) > 2)
+                                                                @foreach( collect($item_ii)->except('name', $index) as $key_iii => $item_iii )
+                                                                    <tr>
+                                                                        <td class="a2 {{ count($item_iii) < 3 ? 'thead' : '' }}">
+                                                                            <i class="fa {{ count($item_iii) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
+                                                                            {{ $item_iii['name'] }}
+                                                                        </td>
+                                                                        <td class="text-right">{{ $item_iii[$index]['monthly'] }}</td>
+                                                                        <td class="text-right">{{ $item_iii[$index]['yearly'] }}</td>
+                                                                        @if(count($item_iii) > 2)
+                                                                            @foreach( collect($item_iii)->except('name', $index) as $key_iv => $item_iv )
+                                                                                <tr>
+                                                                                    <td class="a3 {{ count($item_iv) < 3 ? 'thead' : '' }}">
+                                                                                        <i class="fa {{ count($item_iv) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
+                                                                                        {{ $item_iv['name'] }}
+                                                                                    </td>
+                                                                                    <td class="text-right">{{ $item_iv[$index]['monthly'] }}</td>
+                                                                                    <td class="text-right">{{ $item_iv[$index]['yearly'] }}</td>
+                                                                                    @if(count($item_iv) > 2)
+                                                                                        @foreach( collect($item_iv)->except('name', $index) as $key_v => $item_v )
+                                                                                            <tr>
+                                                                                                <td class="a4 {{ count($item_v) < 3 ? 'thead' : '' }}">
+                                                                                                    <i class="fa {{ count($item_v) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
+                                                                                                    {{ $item_v['name'] }}
+                                                                                                </td>
+                                                                                                <td class="text-right">{{ $item_v[$index]['monthly'] }}</td>
+                                                                                                <td class="text-right">{{ $item_v[$index]['yearly'] }}</td>
+                                                                                            </tr>
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </tr>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    </tr>
+                                                                @endforeach
+                                                            @endif
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                </td>
 
-                            <td colspan="3" class="no-pad border4">
-                                <table class="nested">
-                                    @foreach( $data['payment'] as $key_i => $item_i )
-                                        <tr>
-                                            <td class="col-md-6 A">
-                                                <i class="fa {{ count($item_i) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                {{ $item_i['name'] }}
-                                            </td>
-                                            <td class="text-right">{{ $item_i['payment']['monthly'] }}</td>
-                                            <td class="text-right">{{ $item_i['payment']['yearly'] }}</td>
-                                            @if(count($item_i) > 2)
-                                                @foreach( collect($item_i)->except('name', 'payment') as $key_ii => $item_ii )
-                                                    <tr>
-                                                        <td class="col-md-6 a1 {{ count($item_ii) < 3 ? 'thead' : '' }}">
-                                                            <i class="fa {{ count($item_ii) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                            {{ $item_ii['name'] }}
-                                                        </td>
-                                                        <td class="text-right">{{ $item_ii['payment']['monthly'] }}</td>
-                                                        <td class="text-right">{{ $item_ii['payment']['yearly'] }}</td>
-                                                        @if(count($item_ii) > 2)
-                                                            @foreach( collect($item_ii)->except('name', 'payment') as $key_iii => $item_iii )
-                                                                <tr>
-                                                                    <td class="col-md-6 a2 {{ count($item_iii) < 3 ? 'thead' : '' }}">
-                                                                        <i class="fa {{ count($item_iii) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                                        {{ $item_iii['name'] }}
-                                                                    </td>
-                                                                    <td class="text-right">{{ $item_iii['payment']['monthly'] }}</td>
-                                                                    <td class="text-right">{{ $item_iii['payment']['yearly'] }}</td>
-                                                                    @if(count($item_iii) > 2)
-                                                                        @foreach( collect($item_iii)->except('name', 'payment') as $key_iv => $item_iv )
-                                                                            <tr>
-                                                                                <td class="col-md-6 a3 {{ count($item_iv) < 3 ? 'thead' : '' }}">
-                                                                                    <i class="fa {{ count($item_iv) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                                                    {{ $item_iv['name'] }}
-                                                                                </td>
-                                                                                <td class="text-right">{{ $item_iv['payment']['monthly'] }}</td>
-                                                                                <td class="text-right">{{ $item_iv['payment']['yearly'] }}</td>
-                                                                                @if(count($item_iv) > 2)
-                                                                                    @foreach( collect($item_iv)->except('name', 'payment') as $key_v => $item_v )
-                                                                                        <tr>
-                                                                                            <td class="col-md-6 a4 {{ count($item_v) < 3 ? 'thead' : '' }}">
-                                                                                                <i class="fa {{ count($item_v) < 3 ? 'fa-tag' : '' }}" aria-hidden="true"></i>
-                                                                                                {{ $item_v['name'] }}
-                                                                                            </td>
-                                                                                            <td class="text-right">{{ $item_v['payment']['monthly'] }}</td>
-                                                                                            <td class="text-right">{{ $item_v['payment']['yearly'] }}</td>
-                                                                                        </tr>
-                                                                                    @endforeach
-                                                                                @endif
-                                                                            </tr>
-                                                                        @endforeach
-                                                                    @endif
-                                                                </tr>
-                                                            @endforeach
-                                                        @endif
-                                                    </tr>
-                                                @endforeach
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                </table>
-                            </td>
-
+                            @endforeach
                         </tr>
                         </tbody>
                     </table>
-
-
                 </div>
             </div>
         </code>
@@ -225,9 +162,29 @@
             border-bottom: 2px solid !important;
         }
 
-        .border4{
-            border-right: 1px solid !important;
-            border-bottom: 1px solid !important;
+
+        .H1{
+            width: 27%;
+        }
+
+        .H2{
+            width: 11%;
+        }
+
+        .H3{
+            width: 12%;
+        }
+
+        .T1{
+            width: 55%;
+        }
+
+        .T2{
+            width: 22%;
+        }
+
+        .T3{
+            width: 24%;
         }
 
         .A {

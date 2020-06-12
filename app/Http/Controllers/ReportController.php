@@ -45,24 +45,6 @@ class ReportController extends Controller
     }
 
 
-    public function income_data_table()
-    {
-        $heads = AccountHead::find([3,4]);
-
-        foreach ($heads as $head) {
-            if ( $head->id == 3 )
-                foreach ( $head->theads as $income)
-                    $data['income'][] = $income->id;
-            if ( $head->id == 4)
-                foreach ( $head->theads as $expense )
-                    $data['expense'][] = $expense->id;
-        }
-
-        $all_bl = Process::whereIn('thead_id', collect($data)->flatten())->where( 'date_id', '<=', 8)->get();
-//        return $all_bl->where('thead_id', 61)->sum();
-
-        return view('admin.ais.report.income', compact('heads', 'all_bl'));
-    }
 
 
     public function get(Request $request)
@@ -124,31 +106,6 @@ class ReportController extends Controller
     }
 
 
-    public function test()
-    {
-        $heads = AccountHead::all();
-//        return $heads;
-
-        foreach ($heads as $head) {
-            if ($head->transaction->isNotEmpty())
-                $data[$head->id][] = $head;
-            foreach ( $head->child as $child_i) {
-                if ($child_i->transaction->isNotEmpty())
-                    $data['child_i'][$child_i->id] = $child_i->id;
-                foreach ($child_i->child as $child_ii) {
-                    if ($child_ii->transaction->isNotEmpty())
-                        $data['child_ii'][$child_ii->id] = $child_ii->transaction->pluck('id');
-                    foreach ( $child_ii->child as $child_iii) {
-                        if ($child_iii->transaction->isNotEmpty())
-                            $data['child_iii'][$child_iii->id] = $child_iii->transaction->pluck('id');
-                    }
-                }
-
-            }
-        }
-
-        return $data;
-    }
 
     public function balance(Request $request)
     {
@@ -698,6 +655,7 @@ class ReportController extends Controller
 
         return $data;
     }
+    
 
     public function stock( $mis_head_id)
     {
@@ -709,6 +667,7 @@ class ReportController extends Controller
 
         return view('admin.mis.report.stock', compact('mis_head', 'data'));
     }
+
 
     public function getAllStock( $mis_head, $dates)
     {
@@ -726,6 +685,7 @@ class ReportController extends Controller
 
         return $data;
     }
+
 
     public function getReport( $category, $dates)
     {
@@ -783,9 +743,10 @@ class ReportController extends Controller
         return 200;
     }
 
+
     public function receiptPayment(Request $request)
     {
-        $this->fixThead();
+//        $this->fixThead();
 
         $date = $request->date ?: date('Y-m-d');
 
@@ -879,18 +840,10 @@ class ReportController extends Controller
         asort($data['receipt']);
         asort($data['payment']);
 
-//        foreach ($data['payment'] as $key => $item_i) {
-//            return $key;
-//            return collect($item_i)->except('name', 'receipt');
-//            foreach (collect($item_i)->except('receipt', 'name') as $item_ii) {
-//                return $item_i;
-//            }
-//        }
-
-
         $input['date'] = $date;
 
         return view('admin.ais.report.receipt_payment', compact('data', 'input'));
+//        return view('admin.ais.report.firefox_receipt_payment', compact('data', 'input'));
 
     }
 

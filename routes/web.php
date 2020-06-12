@@ -180,9 +180,6 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('reports/daily', ['as' => 'report.daily', 'uses' => 'ReportController@daily']);
     Route::post('reports/daily', ['as' => 'report.show.daily', 'uses' => 'ReportController@showDaily']);
 
-    Route::get('reports/receipt/payment', ['as' => 'report.repay', 'uses' => 'ReportController@repay']);
-    Route::post('reports/receipt/payment', ['as' => 'report.show.repay', 'uses' => 'ReportController@showRepay']);
-
     Route::get('reports/receipt_payment', ['as' => 'report.receipt_payment', 'uses' => 'ReportController@receiptPayment']);
     Route::post('reports/receipt_payment', 'ReportController@receiptPayment');
 
