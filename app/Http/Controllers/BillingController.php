@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Billing;
 use App\Booking;
 use App\Configuration;
+use App\Date;
 use App\Guest;
 use App\Http\Traits\CustomTrait;
 use App\Room;
@@ -36,6 +37,13 @@ class BillingController extends Controller
             $billing = Billing::where('reserved', 1)->orderBy('id','desc')->get();
             return view('admin.mis.hotel.billing.reservation.index', compact('billing'));
         }
+
+//        foreach ($billing as $item) {
+//            if ( !($item->date))
+//                return $val[] = $item->date_id;
+//        }
+//        return Date::find(38);
+//        return ($val->date_id);
         return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
     }
 
@@ -134,6 +142,7 @@ class BillingController extends Controller
         $x = new NumberFormatter('en', NumberFormatter::SPELLOUT);
         $data['words']['total_bill'] = $x->format( $bill->total_bill);
         $data['date'] = $this->getDate();
+
 
         $all['bill'] = $bill; $all['booking'] = $booking; $all['restaurant'] = $restaurant; $all['data'] = $data; $all['info'] = $info;
 

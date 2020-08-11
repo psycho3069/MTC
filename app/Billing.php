@@ -46,7 +46,7 @@ class Billing extends Model
 
     public function misVoucher()
     {
-        return $this->belongsTo('App\MisVoucher_I', 'mis_voucher_id');
+        return $this->belongsTo('App\MISVoucher_I', 'mis_voucher_id');
     }
 
 
