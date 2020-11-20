@@ -107,7 +107,10 @@ class StockController extends Controller
         foreach ($input as $key => $item) {
             $ledger = MISLedgerHead::find($key);
             $ledger->update( $item);
-            $ledger->currentStock()->where( 'date_id', 0)->update([ 'quantity_dr' => $ledger->amount]);
+            $ledger->currentStock()->updateOrCreate(
+                ['date_id' => 0],
+                ['quantity_dr' => $ledger->amount]
+            );
         }
 
         $request->session()->flash('update', 'Opening balance has been updated');

@@ -15,9 +15,8 @@ class BalanceController extends Controller
      */
     public function index()
     {
-        $theads = TransactionHead::get()->sortBy('ac_head_id');
-//        return $theads->sum('');
-
+        $theads = TransactionHead::orderBy('ac_head_id', 'asc')->get();
+        $theads->load('transactionable');
         return view('admin.ais.account.balance.index', compact( 'theads'));
     }
 
@@ -39,20 +38,19 @@ class BalanceController extends Controller
      */
     public function store(Request $request)
     {
-//        return  $request->debit;
         $debit = collect( $request->debit );
         $credit = collect( $request->credit );
 
         if ( $debit->sum() == $credit->sum() ){
 
-            foreach ( $debit as $key => $item ) {
+            foreach ( $debit as $key => $balance_dr ) {
                 $thead = TransactionHead::find( $key );
-                $thead->amount = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4 ) ?  ( $item - $credit[$key] ) : ( $credit[$key] - $item );
-                $thead->debit = $item;
+                $thead->amount = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4 ) ?  ( $balance_dr - $credit[$key] ) : ( $credit[$key] - $balance_dr );
+                $thead->debit = $balance_dr;
                 $thead->credit = $credit[$key];
                 $thead->save();
 
-                $thead->currentBalance->firstWhere( 'date_id', 0 )->update([
+                $thead->currentBalance()->updateOrCreate(['date_id' => 0], [
                     'debit' => $thead->debit,
                     'credit' => $thead->credit,
                     'amount' => $thead->amount,
@@ -63,8 +61,10 @@ class BalanceController extends Controller
 
 
             return redirect('accounts/balance');
-        } else
+        } else{
+            $request->session()->flash('danger', '<b>Failed!! </b> Debit and Credit isn\'t equal');
             return redirect()->back()->withInput();
+        }
 
     }
 

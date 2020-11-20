@@ -13,7 +13,7 @@
 
                     <div class="card-body">
                         {{ csrf_field() }}
-                        <table class="table table-bordered table-hover table-primary opening-balance table-fixed" id="myTable">
+                        <table class="table table-bordered table-hover table-striped table-success opening-balance table-fixed" id="myTable">
                             <thead>
                             <tr>
                                 <th></th>
@@ -83,7 +83,7 @@
             var dr_amount = 0
             // total()
 
-            $('input').on('change keyup', function() {
+            $(':input').on('keyup', function() {
                 var amount = $(this).parent().siblings().find('input.amount').val()
                 if(($(this).val()==''))
                     $(this).val(0)
@@ -104,17 +104,19 @@
 
 
 
-
-            $('#submit').click(function (e) {
+            $(document).on('submit', 'form', function (e) {
                 total()
                 if ( dr_amount != cr_amount ){
                     e.preventDefault();
+                    alert('Debit and credit isn\'t equal');
                     $('p.error').html(' Debit and credit isn\'t equal');
                 } else {
                     $('p.error').empty();
                     $('p.success').html('Please wait! Your form is being submitted');
                 }
-            })
+
+            });
+
 
             $('#reset').click(function () {
                 $('input.inputbox').val(0);

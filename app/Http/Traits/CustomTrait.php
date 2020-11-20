@@ -20,7 +20,7 @@ trait CustomTrait{
         $conf_date = Configuration::find(1)->software_start_date;
         $date = Date::where('date', $conf_date)->first();
         if ( !$date)
-            $date = $date->create([ 'date' => $conf_date]);
+            $date = Date::create([ 'date' => $conf_date]);
 
         return $date;
     }
