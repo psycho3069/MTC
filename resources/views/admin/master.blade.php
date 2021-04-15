@@ -62,6 +62,12 @@
 
         <main class="py-4">
             @yield('rooms')
+
+            <div class="content">
+                @yield('reports')
+
+            </div>
+
             <div align="center">
                 @yield('content')
             </div>
@@ -93,6 +99,7 @@
 
     @yield('datatable')
     <!-- bootbox -->
+
     <script type="text/javascript" src="{{asset('admin')}}/dist/js/bootbox.min.js"></script>
     <script type="text/javascript">
 

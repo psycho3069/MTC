@@ -173,6 +173,9 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('reports/stock/{id}', ['as' => 'report.stock', 'uses' => 'ReportController@stock']);
     Route::post('reports/stock', ['as' => 'report.show.stock', 'uses' => 'ReportController@showStock']);
 
+    Route::get('reports/income-statement', ['as' => 'report.income-statement', 'uses' => 'AISReportController@incomeStatement']);
+    Route::post('reports/income-statement', ['as' => 'report.income-statement', 'uses' => 'AISReportController@incomeStatement']);
+
 
 
 

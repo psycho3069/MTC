@@ -93,13 +93,21 @@ class ReportController extends Controller
                     $data['expense'][] = $expense->id;
         }
 
-        $year = explode("-",Date::find($date_id) ? Date::find($date_id)->date : Date::get()->last()->date)[0];
+        if (Date::find($date_id)) {
+            $filter_date = Date::find($date_id)->date;
+        } else {
+            $filter_date = Date::get()->last()->date;
+        }
+
+        $year = explode("-", $filter_date)[0];
         $start_date = $year.'-'.explode("-",Date::find($date_id) ? Date::find($date_id)->date : Date::get()->last()->date)[1].'-01';
         $start_year = $year.'-01-01';
         $date_id_min = Date::min('id');
 
-        $all_bl = Process::whereIn('thead_id', collect($data)->flatten())->whereBetween('date_id', [ Date::where('date',$start_date)->first() ? Date::where('date',$start_date)->first()->id : Date::find($date_id_min)->id , Date::find($date_id)->id])->get();
-        $all_bl_year = Process::whereIn('thead_id', collect($data)->flatten())->whereBetween('date_id', [Date::where('date',$start_year)->first() ? Date::where('date',$start_year)->first()->id : Date::find($date_id_min)->id, Date::find($date_id)->id])->get();
+        $all_bl = Process::whereIn('thead_id', collect($data)->flatten())
+            ->whereBetween('date_id', [ Date::where('date',$start_date)->first() ? Date::where('date',$start_date)->first()->id : Date::find($date_id_min)->id , Date::find($date_id)->id])->get();
+        $all_bl_year = Process::whereIn('thead_id', collect($data)->flatten())
+            ->whereBetween('date_id', [Date::where('date',$start_year)->first() ? Date::where('date',$start_year)->first()->id : Date::find($date_id_min)->id, Date::find($date_id)->id])->get();
 
         return view('admin.ais.report.income', compact('heads', 'all_bl','all_bl_year', 'dates', 'date'));
 
@@ -163,7 +171,7 @@ class ReportController extends Controller
         if ( count($data['dates']) == 0  ){
             $status = 0;
             return view('admin.ais.report.daily', compact('status'));
-        }
+        }   
 
         if ( $thead_id){
             $thead = $data['theads']->find($thead_id);
@@ -655,7 +663,7 @@ class ReportController extends Controller
 
         return $data;
     }
-    
+
 
     public function stock( $mis_head_id)
     {
@@ -903,7 +911,6 @@ class ReportController extends Controller
         return $data;
 
     }
-
 
 
 }

@@ -68,11 +68,20 @@
                                                 <?php // calculating total for child_i
                                                 $child_total = 0;
                                                 foreach( $head->transaction as $transaction ){
-                                                    if( $all_bl->where('thead_id', $transaction->id)->sum('credit')>0 || $all_bl->where('thead_id', $transaction->id)->sum('debit')>0)
-                                                        $child_total += $all_bl->where('thead_id', $transaction->id)->sum('credit') - $all_bl->where('thead_id', $transaction->id)->sum('debit');
+                                                    if( $all_bl->where('thead_id', $transaction->id)->sum('credit')>0
+                                                        || $all_bl->where('thead_id', $transaction->id)->sum('debit')>0
+                                                    )
 
-                                                    if( $all_bl_year->where('thead_id', $transaction->id)->sum('credit')>0 || $all_bl_year->where('thead_id', $transaction->id)->sum('debit')>0)
-                                                        $child_total += $all_bl_year->where('thead_id', $transaction->id)->sum('credit') - $all_bl_year->where('thead_id', $transaction->id)->sum('debit');
+                                                        $child_total += $all_bl->where('thead_id', $transaction->id)->sum('credit')
+                                                            - $all_bl->where('thead_id', $transaction->id)->sum('debit');
+
+                                                    if( $all_bl_year->where('thead_id', $transaction->id)->sum('credit')>0
+                                                        || $all_bl_year->where('thead_id', $transaction->id)->sum('debit')>0
+                                                    )
+
+                                                        $child_total += $all_bl_year->where('thead_id', $transaction->id)->sum('credit')
+                                                            -
+                                                            $all_bl_year->where('thead_id', $transaction->id)->sum('debit');
                                                 }
                                                 ?>
                                                 <div class="row">
@@ -134,8 +143,10 @@
                                                                         foreach( $child_iv->transaction as $transaction ){
                                                                             if( $all_bl->where('thead_id', $transaction->id)->sum('credit')>0 || $all_bl->where('thead_id', $transaction->id)->sum('debit')>0)
                                                                                 $child_iv_total += $all_bl->where('thead_id', $transaction->id)->sum('credit') - $all_bl->where('thead_id', $transaction->id)->sum('debit');
+
                                                                             if( $all_bl_year->where('thead_id', $transaction->id)->sum('credit')>0 || $all_bl_year->where('thead_id', $transaction->id)->sum('debit')>0)
-                                                                                $child_iv_total_year += $all_bl_year->where('thead_id', $transaction->id)->sum('credit') - $all_bl_year->where('thead_id', $transaction->id)->sum('debit');
+                                                                                $child_iv_total_year += $all_bl_year->where('thead_id', $transaction->id)->sum('credit')
+                                                                                    - $all_bl_year->where('thead_id', $transaction->id)->sum('debit');
                                                                         }
                                                                     }
                                                                 }
@@ -213,7 +224,9 @@
                                                                                         if( $all_bl->where('thead_id', $transaction->id)->sum('credit')>0 || $all_bl->where('thead_id', $transaction->id)->sum('debit')>0)
                                                                                             $child_iii_total += $all_bl->where('thead_id', $transaction->id)->sum('credit') - $all_bl->where('thead_id', $transaction->id)->sum('debit');
                                                                                         if( $all_bl_year->where('thead_id', $transaction->id)->sum('credit')>0 || $all_bl_year->where('thead_id', $transaction->id)->sum('debit')>0)
-                                                                                            $child_iii_total_year += $all_bl_year->where('thead_id', $transaction->id)->sum('credit') - $all_bl_year->where('thead_id', $transaction->id)->sum('debit');
+                                                                                            $child_iii_total_year += $all_bl_year->where('thead_id', $transaction->id)->sum('credit')
+                                                                                                -
+                                                                                                $all_bl_year->where('thead_id', $transaction->id)->sum('debit');
                                                                                     }
                                                                                     $child_iv_total = 0;
                                                                                     $child_iv_total_year = 0;
