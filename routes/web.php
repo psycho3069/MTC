@@ -92,7 +92,9 @@ Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@
 
 Route::group(['middleware' => 'auth'], function (){
 
+    Route::get('general/configuration/software-date', ['as' => 'configure.software-date', 'uses' => 'ResidualController@softwareDate']);
 
+    Route::post('general/configuration/software-date', ['as' => 'configure.software-date', 'uses' => 'ResidualController@updateSoftwareDate']);
     Route::get('general/configuration/hotel', ['as' => 'configure.hotel', 'uses' => 'ResidualController@hotel']);
     Route::post('general/configuration/hotel', ['as' => 'update.hotel', 'uses' => 'ResidualController@updateHotel']);
     Route::get('general/configuration/ledger/{type}', ['as' => 'configure.ledger', 'uses' => 'ResidualController@ledger']);

@@ -33,6 +33,21 @@ class MISHead extends Model
     }
 
 
+    public function restaurant()
+    {
+        return $this->hasOne('App\MISLedgerHead', 'mis_head_id', 'id')
+            ->where('mis_head_id', 3)
+            ->orderBy('id', 'asc');
+    }
+
+    public function personalRestaurant()
+    {
+        return $this->hasOne('App\MISLedgerHead', 'mis_head_id', 'id')
+            ->where('mis_head_id', 3)
+            ->orderBy('id', 'desc');
+    }
+
+
 
 
 

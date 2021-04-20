@@ -10,17 +10,6 @@
                     <p class="text-danger">{{ $errors->has('software_start_date') ? $errors->first('software_start_date') : '' }}</p>
                     <form method="POST" action="{{ route('update.hotel') }}">
                         {{ csrf_field() }}
-                        <div class="row">
-                            <div class="col-md-3">
-                                <p class="config-label"><b>Software Date</b></p>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label>Select a date</label>
-                                    <input type="date"  class="form-control date" name="software_start_date" value="{{ date('Y-m-d', strtotime($conf->firstWhere('name', 'software_date')->software_start_date)) }}">
-                                </div>
-                            </div>
-                        </div>
 
 
                         <div class="row">
@@ -66,7 +55,7 @@
                             </div>
                             <div class="col-md-5">
                                 @foreach( $data['hotel'] as $mis_head )
-                                    <div class="form-group">
+                                    <div class="form-group account-configuration">
                                         <label>Receipt Account</label>
                                         <input type="hidden" name="input[hotel][{{$mis_head->id}}][debit_head_id]" value="{{ 353 }}">
                                         <select class="form-control ufat" name="input[hotel][{{$mis_head->id}}][credit_head_id]">
@@ -77,27 +66,26 @@
                                     </div>
                                 @endforeach
 
-                                    <div class="form-group">
-                                        <label>Receipt Account</label>
-                                        <input type="hidden" name="input[res][{{$data['res']->id}}][debit_head_id]" value="{{ 353 }}">
-                                        <select class="form-control ufat" name="input[res][{{$data['res']->id}}][credit_head_id]">
-                                            @foreach( $theads as $thead )
-                                                <option value="{{ $thead->id }}" {{ $data['res']->ledger->last()->credit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <div class="form-group">
+                                    <label>Receipt Account</label>
+                                    <input type="hidden" name="input[res][{{$data['res']->id}}][debit_head_id]" value="{{ 353 }}">
+                                    <select class="form-control ufat" name="input[res][{{$data['res']->id}}][credit_head_id]">
+                                        @foreach( $theads as $thead )
+                                            <option value="{{ $thead->id }}" {{ $data['res']->personalRestaurant->credit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label>Receipt Account</label>
-                                        <input type="hidden" name="input[discount][{{$data['discount']->id}}][credit_head_id]" value="{{ 353 }}">
-                                        <select class="form-control ufat" name="input[discount][{{$data['discount']->id}}][debit_head_id]">
-                                            @foreach( $theads as $thead )
-                                                <option value="{{ $thead->id }}" {{ $data['discount']->ledger[0]->debit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-
+                                <div class="form-group">
+                                    <label>Receipt Account</label>
+                                    <input type="hidden" name="input[discount][{{$data['discount']->id}}][credit_head_id]" value="{{ 353 }}">
+                                    <select class="form-control ufat" name="input[discount][{{$data['discount']->id}}][debit_head_id]">
+                                        @foreach( $theads as $thead )
+                                            <option value="{{ $thead->id }}" {{ $data['discount']->
+debit_head_id == $thead->id ? 'selected' : '' }}>{{ $thead->name }} [ {{ $thead->code }} ]</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -111,6 +99,15 @@
     </div>
 @endsection
 
+
+@section('style')
+    <style>
+        .account-configuration{
+            padding-top: 7px;
+            padding-bottom: 10px;
+        }
+    </style>
+@endsection
 
 
 @section('script')

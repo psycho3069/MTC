@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Billing;
 use App\Booking;
 use App\Configuration;
+use App\Date;
 use App\Guest;
 use App\Http\Traits\CustomTrait;
 use App\MISHead;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\DB;
 
 class ResidualController extends Controller
 {
-    //
     use CustomTrait;
 
 
@@ -183,67 +183,114 @@ class ResidualController extends Controller
 
     public function updateHotel(Request $request)
     {
-        $request->validate([
-            'software_start_date' => 'required',
-        ],[
-            'software_start_date.required' => 'Please Enter Software Date',
-        ]);
-
-//        return $request->all();
-
         $input = $request->input;
-        $configurations = Configuration::get();
-        $mis_heads = MISHead::all();
 
-//        return $input['res'];
-
-        $configurations->find(1)->update([ 'software_start_date' => $request->software_start_date]);
-
+        /*
+         * Update Configuration table data(vat for food, service others )
+         * */
         foreach ( $request->conf as $key => $val) {
-            $configurations->where( 'name', $key)->first()->update([ 'value' => $val]);
+            Configuration::where( 'name', $key)->update([ 'value' => $val]);
         }
 
-//        return $input['res'];
-
-//        foreach ( $input as $accounts) {
-//            foreach ($accounts as $key => $item) {
-//                $mis_head = $mis_heads->find( $key);
-//                $mis_head->ledger()->update( $item);
-//                $mis_head->update( $item);
-//            }
-//        }
+        /*
+         * Update MISHeads and LedgerHeads debit, credit account
+         * For hotel - 1,2,3 Mishead
+         * For Personal Restaurant - Personal Restaurant ledger head, which is the last head in ledger heads table for Restaurant MISHEad
+         * For Discount 6
+         * */
 
 
-        //
-        foreach ($input['hotel'] as $key => $item) {
-            $mis_head = $mis_heads->find( $key);
+        /*
+         * Both Restaurant will update first
+         * In second method only Updates the personal Resaturant
+         * */
+        foreach ($input['hotel'] as $head_id => $item) {
+            $mis_head = MISHead::find($head_id);
             $mis_head->ledger()->update( $item);
             $mis_head->update( $item);
         }
 
-        foreach ($input['discount'] as $key => $item) {
-            $mis_head = $mis_heads->find( $key);
-            $mis_head->ledger()->update( $item);
+
+        /*
+         * Update Personal Restaurant Account
+         * */
+        foreach ($input['res'] as $head_id => $item) {
+            $mis_head = MISHead::find($head_id);
+            $mis_head->personalRestaurant->update($item);
             $mis_head->update( $item);
         }
 
-        foreach ($input['res'] as $key => $item) {
-            $mis_head = $mis_heads->find( $key);
-//            return $mis_head->ledger->last();
-            $mis_head->ledger->last()->update( $item);
-            $mis_head->update( $item);
+
+        /*
+         * Update Discount account
+         * */
+        foreach ($input['discount'] as $head_id => $item) {
+            $mis_head = MISHead::find($head_id);
+            $mis_head->ledger()->update($item);
+            $mis_head->update($item);
         }
+
+
 
         return redirect()->back()->with('update', '<b>Configuration updated successfully</b>');
     }
 
 
+    /*
+     * Software date view
+     * */
+    public function softwareDate()
+    {
+        $configuration = Configuration::find(1);
+        $configuration->date = $configuration->date ?: date('Y-m-d');
+        return view('admin.configuration.general.software-date', compact('configuration'));
+    }
 
 
+    public function updateSoftwareDate(Request $request)
+    {
+        $request->validate([
+            'software_date' => 'required|date_format:Y-m-d'
+        ]);
+
+        $configuration = Configuration::find(1);
+        $totalDates = Date::count();
+        $status = false;
+
+        //if date does not exist then create one
+        if ($totalDates == 0){
+            $date = new Date();
+            $date->date = $request->software_date;
+            $status = $date->save();
+        }
+
+        //if only one date is found then update
+        if ($totalDates == 1){
+            $date = Date::first();
+            $date->date = $request->software_date;
+            $status = $date->save();
+        }
+
+        $isValid = Date::whereDate('date', $request->software_date)->count();
 
 
+        if ($isValid){
+            /*If start date is updated then update configuration too*/
+            if ($status){
+                $configuration->software_start_date = $request->software_date;
+            }
 
+            $configuration->date = $request->software_date;
+            $configuration->save();
 
+            return redirect()->back()->with('success', '<b>Date updated successfully</b>');
+        }
+
+        session()->flash('errors', '<b>Date does not exist</b>');
+
+        return redirect()->back()->withInput($request->all());
+
+    }
 
 
 
