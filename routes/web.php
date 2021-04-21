@@ -136,7 +136,6 @@ Route::group(['middleware' => 'auth'], function (){
 
 
 
-    Route::post('accounts/balance/check', ['as' => 'balance.check', 'uses' => 'BalanceController@check']);
     Route::resource('accounts/balance', 'BalanceController');
     Route::resource('accounts', 'AccountController');
 

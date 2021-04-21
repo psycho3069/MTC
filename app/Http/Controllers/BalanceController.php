@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\AccountHeadChild_I;
+use App\AccountHeadChild_II;
+use App\AccountHeadChild_III;
+use App\Http\Traits\SystemConfigurationTrait;
 use App\Process;
 use App\TransactionHead;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BalanceController extends Controller
 {
+    use SystemConfigurationTrait;
     /**
      * Display a listing of the resource.
      *
@@ -15,8 +23,59 @@ class BalanceController extends Controller
      */
     public function index()
     {
-        $theads = TransactionHead::orderBy('ac_head_id', 'asc')->get();
-        $theads->load('transactionable');
+        $query = TransactionHead::query();
+
+        $query->with([
+            'accountHead' => function($query){
+                $query->select('id', 'name', 'code');
+            },
+
+            'transactionable' => function(MorphTo $morphTo){
+            $morphTo->morphWith([
+                AccountHeadChild_I::class => ['parent:id,name,code'],
+                AccountHeadChild_II::class => ['parent.parent:id,name,code'],
+                AccountHeadChild_III::class => ['parent.parent.parent:id,name,code'],
+            ]);
+        }]);
+
+        $query->orderBy('ac_head_id', 'asc');
+        $theads = $query->get();
+
+        $data = [];
+
+        $count = 0;
+        foreach ($theads as $thead) {
+            $count++;
+            $parent = "";
+            $info = (object)[];
+            $info->id = $thead->id;
+            $info->name = $thead->name;
+            $info->code = $thead->code;
+            $info->debit = $thead->debit;
+            $info->credit = $thead->credit;
+            $info->amount = $thead->amount;
+            $info->ac_head_id = $thead->ac_head_id;
+            $info->ac_head_name = $thead->accountHead->name;
+
+            if($thead->transactionable->ac_head_child_ii_id){
+                $parent = $thead->transactionable->parent->parent->name.'-'. $thead->transactionable->parent->name.'-';
+            }
+
+            if($thead->transactionable->ac_head_child_i_id){
+                $parent = $thead->transactionable->parent->name;
+            }
+
+//            $info->parent = $info->ac_head_name.'-'.$parent.'-'.$thead->transactionable->name;
+            $info->parent = $thead->transactionable->name;
+
+            $data[$count] = $info;
+        }
+
+        $total['debit'] = $theads->sum('debit');
+        $total['credit'] = $theads->sum('credit');
+
+//        return view('admin.ais.account.balance.openeing-balance', compact( 'data', 'total'));
+        return view('admin.ais.account.balance.list', compact( 'data', 'total'));
         return view('admin.ais.account.balance.index', compact( 'theads'));
     }
 
@@ -38,79 +97,66 @@ class BalanceController extends Controller
      */
     public function store(Request $request)
     {
+
         $debit = collect( $request->debit );
         $credit = collect( $request->credit );
 
-        if ( $debit->sum() == $credit->sum() ){
+        $startDate = $this->getSoftwareStartDate();
 
-            foreach ( $debit as $key => $balance_dr ) {
-                $thead = TransactionHead::find( $key );
-                $thead->amount = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4 ) ?  ( $balance_dr - $credit[$key] ) : ( $credit[$key] - $balance_dr );
-                $thead->debit = $balance_dr;
-                $thead->credit = $credit[$key];
-                $thead->save();
+        DB::beginTransaction();
+        try {
+            if ( $debit->sum() == $credit->sum() ){
+                foreach ( $debit as $key => $balance_dr ) {
+                    $thead = TransactionHead::find($key);
 
-                $thead->currentBalance()->updateOrCreate(['date_id' => 0], [
-                    'debit' => $thead->debit,
-                    'credit' => $thead->credit,
-                    'amount' => $thead->amount,
-                ]);
-            }
-
-            $request->session()->flash('update', '<b>Opening Balance</b> has been successfully updated');
-
-
-            return redirect('accounts/balance');
-        } else{
-            $request->session()->flash('danger', '<b>Failed!! </b> Debit and Credit isn\'t equal');
-            return redirect()->back()->withInput();
-        }
-
-    }
-
-
-
-    public function check(Request $request)
-    {
-        $debit = collect( array_combine( $request->debit_key, $request->debit_val ));
-        $credit = collect( array_combine($request->credit_key, $request->credit_val) );
-        $debit_total = $debit->sum();
-        $credit_total = $credit->sum();
-
-        if ( $debit_total != $credit_total )
-                return response()->json(['error'=> 'Debit and Credit Isn\'t Equal ' ]);
-        else  {
-            foreach ( $debit as $key => $item ) {
-                $thead = TransactionHead::find( $key );
-                $thead->amount = ( $thead->ac_head_id == 1 || $thead->ac_head_id == 4 ) ?  ( $item - $credit[$key] ) : ( $credit[$key] - $item );
-                $thead->debit = $item;
-                $thead->credit = $credit[$key];
-//                $thead->amount += $balance;
-                $thead->save();
-
-                $op_bl = $thead->currentBalance->where( 'date_id', 0 )->first();
-
-                $all_bl = Process::where( 'thead_id', $thead->id )->get();
-
-                foreach ( $all_bl as $current_bl ) {
-                    $current_bl->update([
-                        'debit' => $thead->debit - $op_bl->debit + $current_bl->debit,
-                        'credit' => $thead->credit - $op_bl->credit + $current_bl->credit,
-                        'amount' => $thead->amount - $op_bl->amount + $current_bl->amount,
+                    /*
+                     * get Current balance for software start date
+                     * subtract the old amount and add the new amount
+                     * */
+                    $currentBalance = Process::firstOrNew([
+                        'thead_id' => $thead->id,
+                        'date_id' => $startDate->id
                     ]);
-                }
-//                return $thead->currentBalance;
-            }
-            return response()->json(['success' => 'Opening Balance Successfully Updated. ']);
 
+                    $currentBalance->debit = $currentBalance->debit - $thead->debit + $balance_dr;
+                    $currentBalance->credit = $currentBalance->credit - $thead->credit + $credit[$key];
+                    $currentBalance->save();
+
+                    /*
+                     * Update Transaction head data
+                     * For Asset & Expense balance = debit - credit
+                     * For Liability, income balance = credit - debit
+                     * */
+
+                    $thead->debit = $balance_dr;
+                    $thead->credit = $credit[$key];
+
+                    if ($thead->ac_head_id == 1 || $thead->ac_head_id == 4){
+                        $thead->amount = $thead->debit - $thead->credit;
+                    }
+
+                    if ($thead->ac_head_id == 2 || $thead->ac_head_id == 3 || $thead->ac_head_id == 5){
+                        $thead->amount = $thead->credit - $thead->debit;
+                    }
+
+                    $thead->save();
+
+                }
+
+                DB::commit();
+                session()->flash('update', '<b>Opening Balance</b> has been successfully updated');
+            }else{
+                session()->flash('danger', '<b>Failed!! </b> Debit and Credit isn\'t equal');
+            }
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('danger', '<b>Internal server error</b>');
+            Log::error($exception->getMessage(), $exception->getTrace());
         }
 
-
-
-
-
-
+        return redirect()->back()->withInput();
     }
+
 
 
 

@@ -15,8 +15,8 @@ class CreateVV3CurrentBalanceTable extends Migration
     {
         Schema::create('current_balance', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('thead_id')->unsigned()->index();
-            $table->integer('date_id')->unsigned()->default(0);
+            $table->unsignedInteger('thead_id')->index();
+            $table->unsignedInteger('date_id');
             $table->double('debit',14,2)->default(0);
             $table->double('credit',14,2)->default(0);
             $table->double('amount',14,2)->default(0);

@@ -7,11 +7,16 @@ use App\AccountHeadChild_I;
 use App\AccountHeadChild_II;
 use App\AccountHeadChild_III;
 use App\AccountHeadChild_IV;
+use App\Date;
+use App\Http\Traits\SystemConfigurationTrait;
 use App\TransactionHead;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
+
+    use SystemConfigurationTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -58,19 +63,20 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-//        return $request->all();
-
         $request->validate([
             'name' => 'required',
-            'code' => 'required',
+            'code' => 'required|unique:transaction_heads,code',
         ],[
             'name.required' => 'Please Enter A Name',
             'code.required' => 'Please Enter A Code',
+            'code.unique' => 'Code already taken',
         ]);
 
         $type = $request->type;
         $input = $request->all();
         $input['ac_head_id'] = $request->parent;
+        $startDate = $this->getSoftwareStartDate();
+        $data['date_id'] = $startDate->id;
 
         if ( $request->child_iii ){
             if ( $type != 2 ) {
@@ -79,7 +85,11 @@ class AccountController extends Controller
             } else {
                 $head = AccountHeadChild_III::find( $request->child_iii );
                 $thead = $head->transaction()->create( $input );
-                $thead->currentBalance()->create();
+                $thead->currentBalance()->create(
+                    [
+                        'date_id' => $startDate->id,
+                    ]
+                );
             }
         } elseif ( $request->child_ii ){
             if ( $type != 2 ){
@@ -88,7 +98,12 @@ class AccountController extends Controller
             } else {
                 $head = AccountHeadChild_II::find( $request->child_ii );
                 $thead = $head->transaction()->create( $input );
-                $thead->currentBalance()->create();
+
+                $thead->currentBalance()->create(
+                    [
+                        'date_id' => $startDate->id,
+                    ]
+                );
             }
         } elseif ( $request->child_i ){
             if ( $type != 2 ){
@@ -97,7 +112,12 @@ class AccountController extends Controller
             } else {
                 $head = AccountHeadChild_I::find( $request->child_i );
                 $thead = $head->transaction()->create( $input );
-                $thead->currentBalance()->create();
+
+                $thead->currentBalance()->create(
+                    [
+                        'date_id' => $startDate->id,
+                    ]
+                );
             }
         } elseif ( $request->parent ){
             if ( $type != 2 ){
@@ -105,12 +125,16 @@ class AccountController extends Controller
             } else {
                 $head = AccountHead::find( $request->parent );
                 $thead = $head->transaction()->create( $input );
-                $thead->currentBalance()->create();
+
+                $thead->currentBalance()->create(
+                    [
+                        'date_id' => $startDate->id,
+                    ]
+                );
             }
         }
 
         $request->session()->flash('create', 'Operation Successful');
-
 
         return redirect('accounts');
 
@@ -160,17 +184,19 @@ class AccountController extends Controller
     {
         $thead = TransactionHead::find($id);
 
-        if ( $thead->currentBalance->sum('debit') || $thead->currentBalance->sum('credit'))
+        if ( $thead->currentBalance->sum('debit') || $thead->currentBalance->sum('credit')){
             return redirect()->back()->with('delete', 'Operation can\'t be done.');
+        }
 
         $thead->currentBalance()->delete();
         $thead->delete();
+
         return redirect()->back()->with('success', 'Operation Successful');
     }
 
 
 
-    public function balance()
+/*    public function balance()
     {
         $heads = AccountHead::all();
         $theads = TransactionHead::all();
@@ -184,5 +210,5 @@ class AccountController extends Controller
                 echo $thead->transactionable->parent->parent->parent->name.'&rarr;'.$thead->transactionable->parent->parent->name.'&rarr;'.$thead->transactionable->parent->name.'&rarr;'.$thead->transactionable->name;
         }
         return view('admin.ais.account.opening_balance', compact('heads', 'theads'));
-    }
+    }*/
 }
