@@ -23,7 +23,7 @@ trait SystemConfigurationTrait
     public function getSoftwareDate()
     {
         $configuration = Configuration::find(1);
-        $date = Date::where('date', $configuration->software_date)->firstOrFail();
+        $date = Date::where('date', $configuration->date)->firstOrFail();
         return $date;
     }
 

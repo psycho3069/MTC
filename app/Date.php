@@ -14,6 +14,13 @@ class Date extends Model
         return $this->hasMany('App\VoucherGroup');
     }
 
+
+    public function groupVouchers()
+    {
+        return $this->hasMany('App\VoucherGroup');
+    }
+
+
     public function vouchers()
     {
         return $this->hasMany('App\Voucher');

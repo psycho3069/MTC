@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Configuration;
 use App\Date;
-use App\Http\Traits\CustomTrait;
-use App\MisVoucher;
-use App\Process;
-use App\TransactionHead;
+use App\Http\Requests\VoucherRequest;
+use App\Http\Traits\SystemConfigurationTrait;
+use App\Http\Traits\VoucherTrait;
 use App\Voucher;
 use App\VoucherGroup;
 use App\VoucherType;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use NumberFormatter;
 use function GuzzleHttp\Promise\all;
 
 class VoucherController extends Controller
 {
 
-    use CustomTrait;
+    use SystemConfigurationTrait, VoucherTrait;
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +27,7 @@ class VoucherController extends Controller
 
     public function index()
     {
-        $data['types'] = VoucherType::all()->except([5,6,7,8,9]);
+        $data['types'] = VoucherType::whereNotIn('id', [5,6,7,8,9])->get();
         $data['v_group'] = VoucherGroup::orderBy('id', 'desc')->get();
 
         return view('admin.ais.voucher.index', compact('data' ));
@@ -44,7 +43,7 @@ class VoucherController extends Controller
         $input['start_date'] = date('Y-m-d', strtotime( $request->start_date));
         $input['end_date'] = date('Y-m-d', strtotime( $request->end_date));
 
-        $data['types'] = VoucherType::all()->except([5,6,7,8,9]);
+        $data['types'] = VoucherType::whereNotIn('id', [5,6,7,8,9])->get();
         $dates = Date::whereBetween('date', [$input['start_date'], $input['end_date']])->orderBy('id')->get();
 
         $data['v_group'] = VoucherGroup::whereIn('date_id', $dates->pluck('id'))->orderBy('date_id', 'desc')->get();
@@ -71,10 +70,11 @@ class VoucherController extends Controller
 
     public function create(Request $request)
     {
-        $data['date'] = Configuration::find(1)->software_start_date;
-        $data['type'] = VoucherType::find( $request->type_id);
-        $account = $this->getAccounts( $request->type_id);
-        return view('admin.ais.voucher.create', compact('data', 'account' ));
+        $type = VoucherType::find($request->type_id);
+        $softwareDate = $this->getSoftwareDate();
+        $account = $this->getVoucherAccounts($request->type_id);
+
+        return view('admin.ais.voucher.create', compact('softwareDate','type', 'account' ));
     }
 
 
@@ -88,63 +88,49 @@ class VoucherController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store(Request $request)
+    public function store(VoucherRequest $request)
     {
-//        return $request->all();
-        $request->validate([
-            'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
-        ], [
-            'input.*.amount.required' => 'Please Enter Amount',
-            'input.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
-        ]);
+        DB::beginTransaction();
+        try {
+            $voucherData = $request->input;
+            $softwareDate = $this->getSoftwareDate();
+            $voucherType = VoucherType::findOrFail($request->type_id);
 
+            $voucherGroup = new VoucherGroup();
+            $voucherGroup->date_id = $softwareDate->id;
+            $voucherGroup->user_id = auth()->id();
+            $voucherGroup->type_id = $voucherType->id;
+            $voucherGroup->note = $request->global_note;
+            $voucherGroup->code = $this->generateVoucherCode($softwareDate, $voucherType);
+            $voucherGroup->save();
 
-        $vouchers = $request->input;
-        $content['user_id'] = auth()->user()->id;
-        $content['note'] = $request->global_note;
-        $content['type_id'] = $request->type_id;
-        $type = VoucherType::find($request->type_id)->short_name;
-        $date = Date::where( 'date', $request->date )->get()->first();
+            foreach ($voucherData as $input) {
+                $voucher = new Voucher();
+                $voucher->v_group_id = $voucherGroup->id;
+                $voucher->date_id = $softwareDate->id;
+                $voucher->credit_head_id = $input['credit_head_id'];
+                $voucher->debit_head_id = $input['debit_head_id'];
+                $voucher->amount = $input['amount'];
+                $voucher->note = $input['note'];
+                $voucher->save();
 
-        if ( empty($date) )
-            $date = Date::create([ 'date' => $request->date ]);
+                /*
+                 * Update current balance for Debit and Credit account
+                 * */
+                $this->saveCurrentBalance($voucher, $softwareDate);
+            }
 
-        $slice_num = 0;
-        $slice_date = date('-y-m-', strtotime($date->date));
-        if ( $date->vGroup->isNotEmpty())
-            $slice_num = substr($date->vGroup->last()->code,-2);
-
-        $slice_num = $slice_num +1;
-        $code =  str_pad($slice_num,2, '0', STR_PAD_LEFT);
-
-        $content['code'] = strtoupper($type).$slice_date.$code;;
-
-        $v_group = $date->vGroup()->create( $content);
-
-        foreach ($vouchers as $voucher) {
-//            $slice_num = $slice_num +1;
-//            $code =  str_pad($slice_num,2, '0', STR_PAD_LEFT);
-
-            $voucher['date_id'] = $date->id;
-//            $voucher['code'] = strtoupper($v_group->type->short_name).$slice_date.$code;
-            $v_group->vouchers()->create( $voucher );
-            $all_bl = Process::all();
-
-            $credit_ac = $all_bl->where('thead_id', $voucher['credit_head_id'] )->where('date_id', $date->id)->first();
-            $debit_ac = $all_bl->where('thead_id', $voucher['debit_head_id'] )->where('date_id', $date->id)->first();
-
-            if ( $credit_ac)
-                $credit_ac->update([ 'credit' => $credit_ac->credit + $voucher['amount'], ]);
-            else
-                $date->currentBalance()->create([ 'thead_id' => $voucher['credit_head_id'], 'credit' => $voucher['amount'] ]);
-            if ( $debit_ac)
-                $debit_ac->update([ 'debit' => $debit_ac->debit + $voucher['amount'], ]);
-            else
-                $date->currentBalance()->create([ 'thead_id' => $voucher['debit_head_id'], 'debit' => $voucher['amount'] ]);
+            session()->flash('success', 'Operation successful');
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('voucher.error', ['error' => $exception->getMessage()]);
         }
 
-        return redirect('vouchers');
 
+        return redirect()->route('vouchers.index');
     }
 
 
@@ -158,16 +144,16 @@ class VoucherController extends Controller
      */
     public function show($id)
     {
-        $v_group = VoucherGroup::find($id);
-        $vouchers = $v_group->vouchers;
+        $voucherGroup = VoucherGroup::findOrFail($id);
+        $vouchers = $voucherGroup->vouchers;
         $data = [];
         foreach ( $vouchers as $item) {
-
-            if ( !isset( $data[$item->debit_head_id] ['debit']) )
+            if ( !isset( $data[$item->debit_head_id] ['debit']) ){
                 $data[$item->debit_head_id] ['debit'] = 0;
-
-            if ( !isset( $data[$item->credit_head_id] ['credit']) )
+            }
+            if ( !isset( $data[$item->credit_head_id] ['credit']) ){
                 $data[$item->credit_head_id] ['credit'] = 0;
+            }
 
             $data[$item->debit_head_id] ['name'] = $item->debitAccount->name;
             $data[$item->debit_head_id] ['code'] = $item->debitAccount->code;
@@ -179,16 +165,17 @@ class VoucherController extends Controller
 
         }
 
-//        return $data;
         $x =  new NumberFormatter( 'en', NumberFormatter::SPELLOUT);
         $info['total']['amount'] = $vouchers->sum('amount');
         $info['total']['words'] = $x->format($vouchers->sum('amount'));
-        $info['v_date'] = $v_group->date->date;
-        $info['v_type'] = $v_group->type->name;
-        $info['v_code'] = $v_group->code;
+        $info['v_date'] = $voucherGroup->date->date;
+        $info['v_type'] = $voucherGroup->type->name;
+        $info['v_code'] = $voucherGroup->code;
 
         return view('admin.ais.voucher.show', compact( 'data', 'info'));
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -198,10 +185,12 @@ class VoucherController extends Controller
      */
     public function edit($id)
     {
-        $v_group = VoucherGroup::find( $id);
+        $v_group = VoucherGroup::find($id);
         return view('admin.ais.voucher.edit', compact('v_group'));
 
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -210,42 +199,41 @@ class VoucherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(VoucherRequest $request, $id)
     {
-        $request->validate([
-            'voucher.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
-        ], [
-            'voucher.*.amount.required' => 'Please Enter Amount',
-            'voucher.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
-        ]);
+        /*
+         * Update current balance
+         * Create update history
+         * update Voucher
+         * */
+        DB::beginTransaction();
+        try {
+            $voucherData = $request->voucher;
 
+            foreach ($voucherData as $voucher_id => $input) {
+                $voucher = Voucher::findOrFail($voucher_id);
 
-        $date = $this->getDate();
+                $this->updateCurrentBalance($voucher, $voucher->amount, $input['amount']);
+                $this->createVoucherHistory($voucher, $voucher->amount, $input['amount']);
 
-        $input = $request->voucher;
+                $voucher->amount = $input['amount'];
+                $voucher->note = $input['note'];
+                $voucher->save();
+            }
 
-        foreach ($input as $key => $item ) {
-            $voucher = Voucher::find($key);
-            $amount = $item['amount'] - $voucher->amount;
-            $credit_ac = Process::Where( 'thead_id', $voucher->credit_head_id )->where('date_id', $voucher->date_id)->first();
-            $debit_ac = Process::Where( 'thead_id', $voucher->debit_head_id )->where('date_id', $voucher->date_id)->first();
-
-            $credit_ac->update([ 'credit' => $credit_ac->credit + $amount ]);
-            $debit_ac->update([ 'debit' => $debit_ac->debit + $amount ]);
-
-            $voucher->voucherHistory()->create([
-                'amount' => $voucher->amount,
-                'note' => $voucher->note,
-                'date_id' => $date->id,
-                'user_id' => auth()->user()->id,
-            ]);
-
-
-            $voucher->update( $item );
+            session()->flash('success', 'Operation successful');
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('voucher.error', ['error' => $exception->getMessage()]);
         }
 
-        return redirect('vouchers');
+        return redirect()->route('vouchers.index');
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -253,38 +241,40 @@ class VoucherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
-        $v_group = VoucherGroup::find( $id);
+        /*
+        * Update current balance
+        * Create Delete history
+        * delete Voucher
+        * */
 
-        foreach ( $v_group->vouchers as $voucher ) {
-            $data['new_amount'] = 0; $data['note'] = 'Deleted Voucher - [id: '.$voucher->id. ']';
-            $this->deleteVoucher( $voucher, $data);
+        DB::beginTransaction();
+        try {
+            $voucherGroup = VoucherGroup::findOrFail($id);
+
+            foreach ( $voucherGroup->vouchers as $voucher ) {
+                $this->updateCurrentBalance($voucher, $voucher->amount, 0);
+                $this->createVoucherHistory($voucher, $voucher->amount, 0, true);
+                $voucher->delete();
+            }
+
+            $voucherGroup->delete();
+
+            session()->flash('success', 'Operation successful');
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('voucher.error', ['error' => $exception->getMessage()]);
         }
 
-        $v_group->delete();
-        session()->flash('success', '<b>Voucher Has Been Deleted Successfully.</b>');
+        return response()->json('voucher deleted', 200);
+
     }
 
 
-    public function getAccounts($type_id)
-    {
-        $code = [1751,1802,1803,1804,1805,1806,1807,1808,1872,1873,1874,1875,1876,1880,1899];
 
-        if ( $type_id == 1 ){
-            $account['credit'] = TransactionHead::whereIn( 'code', $code )->get();
-            $account['debit'] = TransactionHead::whereNotIn( 'code', $code )->get();
-        }elseif ( $type_id == 2 ){
-            $account['credit'] = TransactionHead::whereNotIn( 'code', $code )->get();
-            $account['debit'] = TransactionHead::whereIn( 'code', $code )->get();
-        }elseif ( $type_id == 3){
-            $account['credit'] = TransactionHead::whereNotIn( 'code', $code )->get();
-            $account['debit'] = $account['credit'];
-        }elseif ( $type_id == 4){
-            $account['credit'] = TransactionHead::whereIn( 'code', $code )->get();
-            $account['debit'] = $account['credit'];
-        }
 
-        return $account;
-    }
 }

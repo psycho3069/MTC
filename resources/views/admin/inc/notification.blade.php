@@ -57,3 +57,10 @@
         {!! session('errors') !!}
     </div>
 @endif
+
+@if( session('error'))
+    <div class="alert alert-danger alert-block">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {!! session('error') !!}
+    </div>
+@endif

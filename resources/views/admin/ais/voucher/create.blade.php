@@ -11,7 +11,7 @@
         <samp>
             <div class="card text-left">
                 <div class="card-header">
-                    {{ $data['type']->name }}
+                    {{$type->name}}
                 </div>
 
                 <div class="card-body">
@@ -20,13 +20,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="type">Voucher type</label>
-                                <input type="text" value="{{ $data['type']->name }}" class="form-control" disabled>
+                                <input type="text" value="{{ $type->name }}" class="form-control" disabled>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Date</label>
-                                <input type="text" class="form-control" value="{{ date('d-m-Y', strtotime( $data['date'])) }}" disabled>
+                                <input type="text" class="form-control"
+                                       value="{{date('d-m-Y', strtotime($softwareDate->date))}}" disabled>
                             </div>
                         </div>
                     </div>
@@ -82,9 +83,7 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('vouchers.store') }}">
                         {{ csrf_field() }}
-                        <input type="hidden" name="type_id" value="{{ $data['type']->id }}">
-                        <input type="hidden" name="date" value="{{ $data['date'] }}">
-
+                        <input type="hidden" name="type_id" value="{{$type->id}}">
                         <table class="table table-striped">
                             <thead>
                             <tr>

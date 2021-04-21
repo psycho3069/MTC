@@ -59,7 +59,7 @@
                     </table>
                     <div class="form-group">
                         <label for="global_note">Global Note</label>
-                        <input type="text" class="form-control" name="global_note" value="{{ $v_group->note }}" required>
+                        <input type="text" class="form-control" name="global_note" value="{{ $v_group->note }}">
                     </div>
                     <button type="submit" class="btn btn-primary">Update</button>
                 </form>

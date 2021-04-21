@@ -9,8 +9,9 @@ class VoucherGroup extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'voucher_groups';
 
-    protected $fillable = [ 'date_id', 'type_id', 'user_id', 'note', 'code', 'amount', ];
+    protected $fillable = [ 'date_id', 'type_id', 'user_id', 'note', 'code'];
 
 
     public function type()
