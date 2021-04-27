@@ -9,6 +9,11 @@ class TransactionHead extends Model
     protected $fillable = [ 'ac_head_id', 'name', 'debit', 'credit', 'amount', 'code', 'transactionable_id', 'transactionable_type' ];
 
 
+    public static $accounts = [
+        'cash_in_hand' => 353,
+    ];
+
+
     public function transactionable()
     {
         return $this->morphTo();

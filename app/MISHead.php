@@ -9,6 +9,14 @@ class MISHead extends Model
     protected $table = 'm1_mis_heads';
     protected $fillable = [ 'voucher_type_id', 'name', 'description', 'credit_head_id', 'debit_head_id', ];
 
+    public static $accountType = [
+        'room_booking' => 'room_booking',
+        'venue_booking' => 'venue_booking',
+        'food_sale' => 'food_sale',
+        'grocery_purchase' => 'grocery_purchase',
+        'inventory_purchase' => 'inventory_purchase',
+        'discount' => 'discount',
+    ];
 
     public function voucherType()
     {
@@ -33,17 +41,22 @@ class MISHead extends Model
     }
 
 
-    public function restaurant()
+    public function firstAccount()
     {
         return $this->hasOne('App\MISLedgerHead', 'mis_head_id', 'id')
-            ->where('mis_head_id', 3)
             ->orderBy('id', 'asc');
     }
 
-    public function personalRestaurant()
+    public function foodSaleHotel()
     {
         return $this->hasOne('App\MISLedgerHead', 'mis_head_id', 'id')
-            ->where('mis_head_id', 3)
+            ->orderBy('id', 'asc');
+    }
+
+
+    public function foodSalePersonal()
+    {
+        return $this->hasOne('App\MISLedgerHead', 'mis_head_id', 'id')
             ->orderBy('id', 'desc');
     }
 

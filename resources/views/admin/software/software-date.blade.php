@@ -9,7 +9,7 @@
             </div>
 
             <div class="card-body">
-                <form action="{{route('configure.software-date')}}" method="POST">
+                <form action="{{route('configuration.software.date')}}" method="POST">
                     @csrf
 
                     <div class="form-group row">

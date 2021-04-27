@@ -31,11 +31,11 @@
               Configuration
           </a>
           <div class="dropdown-menu sm-menu">
-              <a class="dropdown-item" href="{{ route('configure.hotel') }}">Hotel</a>
+              <a class="dropdown-item" href="{{ route('configuration.accounts') }}">Hotel</a>
               <a class="dropdown-item" href="{{ route('units.index') }}">Unit</a>
               <a class="dropdown-item" href="{{ route('configure.ledger', 1) }}">Grocery</a>
               <a class="dropdown-item" href="{{ route('configure.ledger', 2) }}">Inventory</a>
-              <a class="dropdown-item" href="{{ route('configure.software-date') }}">Software date</a>
+              <a class="dropdown-item" href="{{ route('configuration.software.date') }}">Software date</a>
           </div>
       </li>
 

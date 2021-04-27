@@ -11,7 +11,9 @@
 |
 */
 
+use App\Http\Controllers\SoftwareConfigurationController;
 use App\TransactionHead;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('mtchome');
@@ -92,13 +94,21 @@ Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@
 
 Route::group(['middleware' => 'auth'], function (){
 
-    Route::get('general/configuration/software-date', ['as' => 'configure.software-date', 'uses' => 'ResidualController@softwareDate']);
-
-    Route::post('general/configuration/software-date', ['as' => 'configure.software-date', 'uses' => 'ResidualController@updateSoftwareDate']);
     Route::get('general/configuration/hotel', ['as' => 'configure.hotel', 'uses' => 'ResidualController@hotel']);
     Route::post('general/configuration/hotel', ['as' => 'update.hotel', 'uses' => 'ResidualController@updateHotel']);
+
     Route::get('general/configuration/ledger/{type}', ['as' => 'configure.ledger', 'uses' => 'ResidualController@ledger']);
     Route::post('general/configuration/ledger', ['as' => 'update.ledger', 'uses' => 'ResidualController@updateLedger' ]);
+
+    Route::get('software/configuration/hotel', [SoftwareConfigurationController::class, 'hotelConfiguration'])
+        ->name('configuration.accounts');
+    Route::post('software/configuration/hotel', [SoftwareConfigurationController::class, 'updateHotelConfiguration'])
+        ->name('configuration.accounts');
+
+    Route::get('software/configuration/software-date', [SoftwareConfigurationController::class, 'softwareDate'])
+        ->name('configuration.software.date');
+    Route::post('software/configuration/software-date', [SoftwareConfigurationController::class, 'updateSoftwareDate'])
+        ->name('configuration.software.date');
 
 
 
