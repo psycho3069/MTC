@@ -15,6 +15,13 @@ class Booking extends Model
         ];
 
 
+    public static $bookingStatus = [
+        'open' => 0,
+        'reserved' => 1,
+        'booked' => 2,
+    ];
+
+
     public function room()
     {
         return $this->belongsTo('App\Room');

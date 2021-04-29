@@ -11,33 +11,33 @@
             <div class="card-body">
                 <p class="text-danger">{!! $errors->has('booking.*') ? 'Booking info is not correct! <b>Operation Unsuccessful.</b>' : '' !!}</p>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Guest Name<span class="required">*</span></label>
                             <input type="text" class="form-control" id="name" value="{{ old('guest.name') }}">
                             <p class="text-danger">{{ $errors->has('guest.name') ? 'Please Enter Guest Name' : '' }}</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Contact No<span class="required">*</span></label>
                             <input type="text" class="form-control" id="contact_no" value="{{ old('guest.contact_no') }}">
                             <p class="text-danger">{{ $errors->has('guest.contact_no') ? 'Please Enter Guest Contact' : '' }}</p>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Address</label>
                             <input type="text" class="form-control" id="address" value="{{ old('guest.address') }}">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Organization</label>
                             <input type="text" class="form-control" id="org_name" value="{{ old('guest.org_name') }}">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Designation</label>
                             <input type="text" class="form-control" id="designation" value="{{ old('guest.designation') }}">
@@ -49,49 +49,58 @@
                 <hr>
 
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Check-In<span class="required">*</span></label>
-                            <input type="date" class="form-control date check_in_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" id="start_date">
+                            <input type="date" class="form-control date check_in_date"
+                                   value="{{$softwareDate->date}}" id="start_date">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Check-Out<span class="required">*</span></label>
-                            <input type="date" class="form-control date check_out_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" id="end_date">
+                            <input type="date" class="form-control date check_out_date"
+                                   value="{{$softwareDate->date}}" id="end_date">
                         </div>
                     </div>
+
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Room Category</label>
                             <select class="form-control" id="category">
                                 <option value="0">All</option>
-                                <option value="1" {{ $data['selected'] <50 ? 'selected' : '' }}>Room</option>
-                                <option value="2" {{ $data['selected'] >=50 ? 'selected' : '' }}>Venue</option>
+                                <option value="1" {{ $preSelected <50 ? 'selected' : '' }}>Room</option>
+                                <option value="2" {{ $preSelected >=50 ? 'selected' : '' }}>Venue</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-2">
+
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Room</label>
                             <select class="form-control" id="room_id">
-                                <option></option>
-                                @foreach( $data['room'] as $item )
-                                    <option value="{{ $item->id }}" {{ $data['selected'] == $item->id ? 'selected' : '' }} class="room">{{ $item->room_no }} - {{ $item->roomCat->name }} | <small>Price: {{ $item->price }}</small></option>
+                                <option value="">Select A Room</option>
+                                @foreach( $rooms as $item )
+                                    <option value="{{$item->id}}" {{$preSelected==$item->id?'selected':''}} class="room">
+                                        {{$item->room_no}} - {{$item->roomCat->name}} |
+                                        Price: {{$item->price}}
+                                    </option>
                                 @endforeach
-                                @foreach( $data['venue'] as $item )
-                                    <option value="{{ $item->id }}" {{ $data['selected'] == $item->id ? 'selected' : '' }} class="venue">{{ $item->name }}  | Price: {{ $item->price }}</option>
+                                @foreach( $venues as $item )
+                                    <option value="{{$item->id}}" {{$preSelected==$item->id?'selected':''}}
+                                    class="venue">{{ $item->name }}  | Price: {{ $item->price }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-2">
+
+                    <div class="col-md-3">
                         <div class="form-group no-wrap">
                             <label>Discount <small>(tk.)</small></label>
                             <input type="number" id="discount" class="form-control" min="0" value="0">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Visitors</label>
                             <input type="number" class="form-control" id="visitors" min="1" value="1">
@@ -228,14 +237,15 @@
 
             $('#add-button').click(function () {
 
-                var discount = $('#discount').val()
-                var start_date = $('#start_date').val()
-                var end_date = $('#end_date').val()
-                var visitors = $('#visitors').val()
-                var room_id = $('#room_id').val()
+                var discount = $('#discount').val();
+                var start_date = $('#start_date').val();
+                var end_date = $('#end_date').val();
+                var visitors = $('#visitors').val();
+                var room_id = $('#room_id').val();
 
-                if( !start_date || !end_date || !room_id )
-                    alert('Please Enter All Required Fields')
+                if( !start_date || !end_date || !room_id ){
+                    alert('Please select another room and check date');
+                }
                 else {
 
                     i++;
@@ -248,9 +258,10 @@
                         '<td><input type="hidden" name="booking['+i+'][no_of_visitors]" value="'+visitors+'">'+visitors+'</td>' +
                         '<td><a class="btn btn-danger btn-sm remove" id="'+i+'">Remove</a></td>' +
                         '</tr>'
-                    )
+                    );
 
-                    $('#room_id').find('option[value="'+room_id+'"]').attr('disabled', true)
+                    $('#room_id').find('option[value="'+room_id+'"]').attr('disabled', true);
+                    $('#discount').val(0);
 
                 }
 

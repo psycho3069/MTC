@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Billing;
-use App\Configuration;
-use App\Http\Traits\CustomTrait;
-use App\MISHead;
-use App\MISLedgerHead;
+use App\Booking;
+use App\Http\Traits\BillingTrait;
+use App\Http\Traits\SoftwareConfigurationTrait;
+use App\Http\Traits\VoucherTrait;
 use App\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    use CustomTrait;
+    use SoftwareConfigurationTrait, BillingTrait, VoucherTrait;
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +22,7 @@ class PaymentController extends Controller
      */
     public function index($bill_id)
     {
-        $bill = Billing::find( $bill_id);
+        $bill = Billing::find($bill_id);
         return view('admin.mis.hotel.billing.payment.index', compact('bill'));
     }
 
@@ -32,12 +34,12 @@ class PaymentController extends Controller
     public function create($bill_id, Request $request)
     {
         $bill = Billing::find($bill_id);
-        $charge = $this->getBillDetails($bill);
+        $charge = $this->getBillingDetails($bill);
 
-//        return $request->co;
-        if ( $request->co)
+        if ( $request->co){
             return view('admin.mis.hotel.billing.payment.checkout', compact('bill'));
 //            return view('admin.mis.hotel.billing.payment.test', compact('bill'));
+        }
 
         return view('admin.mis.hotel.billing.payment.create', compact('bill', 'charge'));
     }
@@ -49,108 +51,142 @@ class PaymentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
 
 
     public function store(Request $request, $bill_id)
     {
-        $input = $request->except('_token');
-        $input['co'] = $request->co ? $request->co : 0;
+        DB::beginTransaction();
+        try {
+
+            $response = $this->storePayment($request, $bill_id);
+            DB::commit();
+            return redirect()->route('billing.show', $bill_id);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('error.log', ['error' => $exception->getMessage()]);
+
+            return redirect()->back();
+        }
+
+    }
+
+
+    public function storePayment($request, $bill_id)
+    {
+        $input = $request->all();
         $bill = Billing::find( $bill_id);
+        $checkoutStatus = $request->checkout_status ? $request->checkout_status : 0;
 
+        if ( !$checkoutStatus || !$bill->checkout_status ){
+            $total_paid = $this->initiatePaymentProcess($input, $bill, $checkoutStatus);
 
-        if ( $input['co'] != true || $bill->checkout_status != true ){
-
-            $total_paid = 0;
-
-            $total_paid = $this->getPayment( $input, $bill);
-
-            if ( $input['co'])
+            if ($checkoutStatus){
                 $bill->discount = $input['discount'];
-
-            if ( $input['co'] || $request->checkout_status)
                 $bill->checkout_status = 1;
+            }
 
             $bill->reserved = 0;
             $bill->total_paid += $total_paid;
             $bill->save();
 
-            if ($bill->mis_voucher_id){ //if mis_voucher_id not null
-                $bill->checkout_status == 1 ? $bill->booking()->update(['booking_status' => 0]) : $bill->booking()->update(['booking_status' => 2]);
+            //if mis_voucher_id not null
+            if ($bill->mis_voucher_id){
+                $status['booking_status'] = $bill->checkout_status == 1 ? Booking::$bookingStatus['open'] : Booking::$bookingStatus['booked'];
+                $bill->booking()->update($status);
             }
 
-            if ( $input['co'])
-                return redirect('billing/'.$bill->id)->with('success', '<b>'.$bill->guest->name.'</b> has been successfully Checked-Out');
+            if ($checkoutStatus){
+                session()->flash('success', "<b>$bill->guest->name</b> has been successfully Checked-Out");
+            }
+            session()->flash('success', '<b>Payment Is Successful<b/>');
 
-            return  redirect('billing/'.$bill->id)->with('success', '<b>Payment Is Successful<b/>');
+            return $total_paid;
         }
 
-        return redirect('billing/'.$bill->id)->with('danger', '<b>'.$bill->guest->name.'</b> has been already Checked-Out');
 
+        session()->flash('danger', '<b>'.$bill->guest->name.'</b> has been already Checked-Out');
+        return 0;
     }
 
 
-    public function getPayment($input, $bill)
+
+
+    public function initiatePaymentProcess($input, $bill, $checkoutStatus)
     {
         $total_paid = 0;
+        $softwareDate = $this->getSoftwareDate();
 
-        $mis_heads = MISHead::all();
-
-        if ( $input['co']){
-            $charge = $this->getBillDetails($bill);
-
+        if ( $checkoutStatus){
+            $charge = $this->getBillingDetails($bill);
             $room['amount'] = $charge['room']['total'] - $charge['room']['paid'];
             $venue['amount'] = $charge['venue']['total'] - $charge['venue']['paid'];
             $food['amount'] = $charge['food']['total'] - $charge['food']['paid'];
+        }else{
 
-            $discount['amount'] = $input['discount'];
-            $discount['ledger'] = $mis_heads->find(6)->ledger->first();
-            $discount['payment_type'] = 'discount';
-            $discount['note'] = 'Gross Discount';
-
-//            $key = $charge['all']['max'];
-//            $$key['amount'] = $charge[$key]['total'] - $charge[$key]['paid'] - $input['discount'];        /*If u ever see this pls don't get mad at me. I had to do it :(*/
-
-        } else{
-
-            if ( $input['payment_type'] == 'room')
+            if ($input['payment_type'] == 'room'){
                 $room['amount'] = $input['amount'];
-
-            if ( $input['payment_type'] == 'venue')
-                $venue['amount'] = $input['amount'];
-
-            if ( $input['payment_type'] == 'food')
-                $food['amount'] = $input['amount'];
-        }
-
-
-        if ( isset( $discount['amount']) && $discount['amount'] != 0  )
-            $this->ais( $discount, $bill);
-//            $this->computeAIS( $discount['ledger'], $discount['amount']);
-
-        if ( isset( $room['amount']) && $room['amount'] != 0  ){
-            $room['ledger'] = $mis_heads->find(1)->ledger->first();
-            $room['payment_type'] = 'room';
-            $total_paid += $this->ais( $room, $bill);
-        }
-
-        if ( isset( $venue['amount']) && $venue['amount'] != 0  ){
-            $venue['ledger'] = $mis_heads->find(2)->ledger->first();
-            $venue['payment_type'] = 'venue';
-            $total_paid += $this->ais( $venue, $bill);
-        }
-
-        if ( isset( $food['amount']) && $food['amount'] != 0 ){
-            if ($bill->mis_voucher_id){
-                $food['ledger'] = $mis_heads->find(3)->ledger->first();
-                $food['payment_type'] = 'food';
-                $total_paid += $this->ais( $food, $bill);
-            } else{
-                $food['ledger'] = $mis_heads->find(3)->ledger->last();
-                $food['payment_type'] = 'food';
-                $total_paid += $this->ais( $food, $bill);
             }
+            if ($input['payment_type'] == 'venue'){
+                $venue['amount'] = $input['amount'];
+            }
+            if ($input['payment_type'] == 'food'){
+                $food['amount'] = $input['amount'];
+            }
+        }
+
+
+        if ( isset( $input['discount']) && $input['discount'] != 0  ){
+            $paymentData['amount'] = $input['discount'];
+            $paymentData['payment_type'] = Payment::$paymentType['discount'];
+            $paymentData['ledgerHead'] = $this->getDiscountAccount();
+
+            $paymentData['billing_id'] = $bill->id;
+            $paymentData['note'] = 'Gross Discount';
+
+            $payment = $this->createPayment($paymentData, $softwareDate);
+        }
+
+
+        if ( isset($room['amount']) && $room['amount'] != 0  ){
+            $paymentData['amount'] = $room['amount'];
+            $paymentData['payment_type'] = Payment::$paymentType['room'];
+            $paymentData['ledgerHead'] = $this->getRoomBookingAccount();
+
+            $paymentData['billing_id'] = $bill->id;
+            $paymentData['note'] = '';
+
+            $payment = $this->createPayment($paymentData, $softwareDate);
+            $total_paid += $payment->amount;
+        }
+
+        if ( isset($venue['amount']) && $venue['amount'] != 0 ){
+            $paymentData['amount'] = $venue['amount'];
+            $paymentData['payment_type'] = Payment::$paymentType['venue'];
+            $paymentData['ledgerHead'] = $this->getVenueBookingAccount();
+
+            $paymentData['billing_id'] = $bill->id;
+            $paymentData['note'] = '';
+
+            $payment = $this->createPayment($paymentData, $softwareDate);
+            $total_paid += $payment->amount;
+        }
+
+        if ( isset($food['amount']) && $food['amount'] != 0 ){
+            $paymentData['amount'] = $food['amount'];
+            $paymentData['payment_type'] = Payment::$paymentType['food'];
+            $paymentData['billing_id'] = $bill->id;
+            $paymentData['note'] = '';
+
+            $paymentData['ledgerHead'] = $this->getHotelFoodSaleAccount();
+            if (!$bill->mis_voucher_id){
+                $paymentData['ledgerHead'] = $this->getPersonalFoodSaleAccount();
+            }
+
+            $payment = $this->createPayment($paymentData, $softwareDate);
+            $total_paid += $payment->amount;
         }
 
         return $total_paid;
@@ -158,12 +194,22 @@ class PaymentController extends Controller
 
 
 
-    public function ais( $data, $bill) /*data[ledger, amount, payment_type]*/
+
+    public function createPayment($paymentData, $softwareDate)
     {
-        $data['mis_voucher_id'] = $this->computeAIS( $data['ledger'], $data['amount']);
-        $bill->payments()->create( $data);
-        return $data['amount'];
+        $misVoucher = $this->createMISVoucher($paymentData['ledgerHead'], $softwareDate, $paymentData['amount']);
+
+        $payment = new Payment();
+        $payment->billing_id = $paymentData['billing_id'];
+        $payment->payment_type = $paymentData['payment_type'];
+        $payment->amount = $paymentData['amount'];
+        $payment->note = $paymentData['note'];
+        $payment->mis_voucher_id = $misVoucher->id;
+        $payment->save();
+
+        return $payment;
     }
+
 
 
 
@@ -188,8 +234,7 @@ class PaymentController extends Controller
     public function edit($bill_id, $id)
     {
         $payment = Payment::find($id);
-        $data['due'] = $payment->bill->total_bill - $payment->bill->total_paid;
-        return view('admin.mis.hotel.billing.payment.edit', compact('payment', 'data'));
+        return view('admin.mis.hotel.billing.payment.edit', compact('payment'));
     }
 
     /**
@@ -202,27 +247,49 @@ class PaymentController extends Controller
     public function update(Request $request, $bill_id, $id)
     {
 
-        $input = $request->except('_token', '_method');
-        $bill = Billing::find( $bill_id);
-        $payment = $bill->payments->find($id);
-        $adv_payment = $bill->payments->sortBy('id')[0];
+        DB::beginTransaction();
+        try {
+            $payment = Payment::where('id', $id)
+                ->where('billing_id', $bill_id)
+                ->firstOrfail();
+            if ($payment->amount != $request->amount){
+                $this->updatePayment($payment, $request->amount);
+                session()->flash('update', '<b>Payment Updated Successfully.</b>');
+            }else{
+                session()->flash('warning', '<b>Please select a different amount</b>');
+            }
+
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('error.log', ['error' => $exception->getMessage()]);
+        }
+
+        return redirect($bill_id.'/payment');
+    }
 
 
-        //updating AIS
-        $data['note'] = 'Updated From MIS Partial Payment- [id: '. $payment->id. ']';
-        $data['new_amount'] = $request->amount;
+    public function updatePayment($payment, $newAmount)
+    {
         $voucher = $payment->misVoucher->voucher;
+        $note = 'Updated From MIS Partial Payment- [id: '. $payment->id. ']';
+        $this->updateVoucherAmount($voucher, $newAmount, $payment->amount, $note);
 
-        if ( $payment->amount != $data['new_amount'])
-            $this->updateAIS( $voucher, $data);
 
-        if ( $adv_payment->id == $payment->id )
-            $bill->advance_paid = $data['new_amount'];
+        $billing = $payment->bill;
+        if ($billing->mis_voucher_id == $payment->mis_voucher_id ){
+            $billing->advance_paid = $newAmount;
+        }
+        $billing->total_paid = $billing->total_paid - $payment->amount + $newAmount;
+        $billing->save();
 
-        $bill->total_paid = $bill->total_paid - $payment->amount + $data['new_amount'];
-        $bill->save();
-        $payment->update( $input);
-        return redirect($bill_id.'/payment')->with('update', '<b>Payment Updated Successfully.</b>');
+        $payment->amount = $newAmount;
+        $payment->note = request('note');
+        $payment->save();
+
+        return $payment;
     }
 
     /**

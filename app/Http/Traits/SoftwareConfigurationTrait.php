@@ -86,6 +86,26 @@ trait SoftwareConfigurationTrait
     }
 
 
+    public function getPaymentType($misHead)
+    {
+        if ($misHead->account_type == MISHead::$accountType['room_booking']){
+            return 'room';
+        }
+
+        if ($misHead->account_type == MISHead::$accountType['venue_booking']){
+            return 'venue';
+        }
+
+        if ($misHead->account_type == MISHead::$accountType['food_sale']){
+            return 'food';
+        }
+
+        if ($misHead->account_type == MISHead::$accountType['discount']){
+            return 'discount';
+        }
+    }
+
+
 
 
 

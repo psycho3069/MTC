@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-8">
+    <div class="col-md-12">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -16,13 +16,15 @@
 
                                 <label id="guest_list">Booking Guest<span class="required">*</span></label>
 
-                                <button type="button" class="btn btn-sm btn-i new-guest float-right"> <i class="fa fa-plus-circle"></i> </button>
+                                <button type="button" class="btn btn-sm btn-i new-guest float-right">
+                                    <i class="fa fa-plus-circle"></i></button>
                                 <button type="button" class="btn btn-sm btn-i guest-list float-right">List</button>
 
                                 <select class="form-control" id="bill">
                                     <option value="">Choose One</option>
                                     @foreach( $billing as $bill )
-                                        <option value="{{ $bill->id }}" {{ $data['bill_id'] == $bill->id ? 'selected' : '' }}>{{ $bill->guest->name }} </option>
+                                        <option value="{{ $bill->id }}" {{$data['bill_id']==$bill->id?'selected':''}}>
+                                            {{ $bill->guest->name }}</option>
                                     @endforeach
                                 </select>
 

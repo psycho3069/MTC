@@ -16,12 +16,11 @@
 
                         <div class="form-group">
                             <label>Amount</label>
-                            <input type="number" step="0.01" class="form-control" name="amount" value="{{ $payment->amount }}" min="0">
+                            <input type="number" step="0.01" class="form-control" name="amount" value="{{$payment->amount}}" min="0">
                         </div>
                         <div class="form-group">
                             <label>Note</label>
-                            <textarea name="note" class="form-control" cols="3" rows="1">{{ $payment->note ? $payment->note : '' }}</textarea>
-                            {{--                                    <input type="text" class="form-control" name="note" value="">--}}
+                            <textarea name="note" class="form-control" cols="3" rows="1">{{$payment->note}}</textarea>
                         </div>
                     </div>
 
@@ -31,13 +30,7 @@
                         </div>
                     </div>
 
-
                 </form>
-
-
-
-
-
             </div>
         </samp>
     </div>

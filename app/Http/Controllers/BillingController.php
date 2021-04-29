@@ -38,12 +38,6 @@ class BillingController extends Controller
             return view('admin.mis.hotel.billing.reservation.index', compact('billing'));
         }
 
-//        foreach ($billing as $item) {
-//            if ( !($item->date))
-//                return $val[] = $item->date_id;
-//        }
-//        return Date::find(38);
-//        return ($val->date_id);
         return view('admin.mis.hotel.billing.index', compact('billing', 'data'));
     }
 

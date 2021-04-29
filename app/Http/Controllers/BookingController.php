@@ -4,21 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Billing;
 use App\Booking;
-use App\Configuration;
-use App\Guest;
-use App\Http\Traits\CustomTrait;
-use App\MISHead;
-use App\MISLedgerHead;
+use App\Http\Requests\BookingRequest;
+use App\Http\Traits\BillingTrait;
+use App\Http\Traits\SoftwareConfigurationTrait;
+use App\Http\Traits\VoucherTrait;
+use App\Payment;
 use App\Room;
 use App\Venue;
 use App\Visitor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
 {
-    use CustomTrait;
+    use SoftwareConfigurationTrait, BillingTrait, VoucherTrait;
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +48,7 @@ class BookingController extends Controller
         $input = $request->input;
 
         foreach ($input as $item) {
-            $visitor = Visitor::where( 'contact_no', $item['contact_no'])->get()->last();
+            $visitor = Visitor::where( 'contact_no', $item['contact_no'])->last();
             if ( isset($visitor->contact_no) && ($visitor->contact_no))
                 $item['appearance'] = $visitor->appearance + 1;
 
@@ -71,116 +73,153 @@ class BookingController extends Controller
 
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Get available room that is not booked
      */
     public function create(Request $request)
     {
-        $date = Configuration::find(1)->software_start_date;
-        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->where('booking_status', '!=', 0)->get()->pluck('room_id');
-//        return $booked;
-        $data['room'] = Room::get()->except($booked->toArray());
-        $data['venue'] = Venue::get()->except($booked->toArray());
-        $data['selected'] = $request->room_id ? $request->room_id : 0;
+        $softwareDate = $this->getSoftwareDate();
+        $booked = Booking::whereDate('end_date', '>=', $softwareDate->date)
+            ->where('booking_status', '!=', 0)
+            ->pluck('room_id');
 
-        return view('admin.mis.hotel.booking.create', compact('data'));
+        $rooms = Room::whereNotIn('id', $booked)->get();
+        $venues = Venue::whereNotIn('id', $booked)->get();
+        $preSelected = $request->room_id ? $request->room_id : 0;
+
+        return view('admin.mis.hotel.booking.create', compact(
+            'rooms','venues', 'preSelected','softwareDate'
+        ));
     }
+
+
+    public function storeNew(BookingRequest $request)
+    {
+        DB::beginTransaction();
+
+        $softwareDate = $this->getSoftwareDate();
+        $billing = $this->createBillingForGuest($request, $softwareDate);
+
+       return $request;
+
+
+        return $guest;
+
+        return $request;
+    }
+
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-
-
-
-
-    public function store(Request $request)
+    public function store(BookingRequest $request)
     {
-//        return $request->all();
-        $request->validate([
-            'guest.name' => 'required',
-            'guest.contact_no' => 'required',
-            'booking.*.*' => 'required',
-        ]);
+        DB::beginTransaction();
+        try {
+            $input = $request->except('_token');
+            $softwareDate = $this->getSoftwareDate();
+            $bookedRoom = $this->validateBooking($softwareDate, $input['booking']);
 
-        $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
-        $date = $this->getDate();
+            if ($bookedRoom > 0){
+                session()->flash('danger', '<b>Room Has Been Already Taken.</b> Please Select Another Room or <b>Refresh the Page</b>');
+                return redirect()->back()->withInput($input);
+            }
 
-        $input = $request->except('_token');
-        $input['billing']['code'] = $this->code();
-        $input['billing']['date_id'] = $date->id;
+            $vatOthers = 0;
+            if ($request->vat){
+                $configuration = $this->getVatOthers();
+                $vatOthers = $configuration->value;
+            }
 
-        $count = $this->checkBooking($input['booking']);
-        if ( $count > 0)
-            return redirect()->back()->with('danger', '<b>Room Has Been Already Taken.</b> Please Select Another Room or <b>Refresh the Page</b>');
+            $guest = $this->createGuest($request->guest);
+            $charge['room'] = 0; $charge['venue'] = 0; $hotel_bill = 0;
 
-        $check_guest = Guest::where( 'contact_no', $input['guest']['contact_no'])->get()->last();
-        $guest = Guest::create($input['guest']);
+            foreach ($input['booking'] as $key => $item) {
+                $item = $this->getBookingRoom($item);
+                $item['booking_status'] = Booking::$bookingStatus['booked'];
+                $item['guest_id'] = $guest->id;
+                $item['vat'] = $vatOthers;
 
-        if ( $check_guest)
-            $guest->update([ 'appearance' => $check_guest->appearance + 1 ]);
+                if ($item['room_id'] < 50 || $item['room_id'] > 499){
+                    $charge['room'] += $item['bill'];
+                }else{
+                    $charge['venue'] += $item['bill'];
+                }
 
-        $charge['room'] = 0; $charge['venue'] = 0; $hotel_bill = 0;
+                $hotel_bill += $item['bill'];
+                $input['booking'][$key] = $item;
+            }
 
-        foreach ($input['booking'] as $key => $item) {
-            $item = $this->getRoomInfo($item);
-            $hotel_bill += $item['bill'];
+            $hotel_vat = $hotel_bill * $vatOthers / 100;
+            $totalBill = $hotel_bill + $hotel_vat;
 
-            $item['booking_status'] = 2;
-            $item['guest_id'] = $guest->id;
-            $item['vat'] = $vat;
-            $input['booking'][$key] = $item;
-            $item['room_id'] < 50 || $item['room_id'] > 499  ? $charge['room'] += $item['bill'] : $charge['venue'] += $item['bill'];
+
+            $ledgerHead = $charge['room'] > $charge['venue'] ? $this->getRoomBookingAccount() : $this->getVenueBookingAccount();
+
+            $misVoucher = $this->createMISVoucher($ledgerHead, $softwareDate, $totalBill);
+
+            $billing = new Billing();
+            $billing->guest_id = $guest->id;
+            $billing->date_id = $softwareDate->id;
+            $billing->mis_voucher_id = $misVoucher->id;
+            $billing->total_bill = $totalBill;
+            $billing->advance_paid = $request->billing['advance_paid'];
+            $billing->total_paid = $request->billing['advance_paid'];
+            $billing->code = $this->getBillingCode();
+            $billing->save();
+
+
+
+            $payment = new Payment();
+            $payment->billing_id = $billing->id;
+            $payment->amount = $billing->advance_paid;
+            $payment->note = 'Advance payment';
+            $payment->payment_type = $this->getPaymentType($ledgerHead->misHead);
+            $payment->mis_voucher_id = $misVoucher->id;
+            $payment->save();
+
+
+            //Store Booking Data
+            foreach ($input['booking'] as $item) {
+                $booking = new Booking();
+                $booking->guest_id = $guest->id;
+                $booking->billing_id = $billing->id;
+                $booking->room_id = $item['room_id'];
+                $booking->booking_status = Booking::$bookingStatus['booked'];
+                $booking->start_date = $item['start_date'];
+                $booking->end_date = $item['end_date'];
+                $booking->discount = $item['discount'];
+                $booking->no_of_visitors = $item['no_of_visitors'];
+                $booking->bill = $item['bill'];
+                $booking->vat = $item['vat'];
+
+                $booking->save();
+            }
+
+
+            DB::commit();
+
+            session()->flash('create', 'Room has been booked successfully');
+
+            if ( $request->check){
+                return redirect()->route('sales.create', ['bill_id' => $billing->id]);
+            }
+
+            return redirect()->route('billing.show', $billing->id);
+
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('booking.error', ['error' => $exception->getMessage()]);
         }
 
-        $hotel_vat = $hotel_bill * $vat / 100;
 
-        $input['billing']['total_bill'] = $hotel_bill + $hotel_vat;
-        $input['billing']['total_paid'] = $input['billing']['advance_paid'] ? $input['billing']['advance_paid'] : 0;
-        $input['billing']['guest_id'] = $guest->id;
 
-        $mis_heads = MISHead::all();
-        $ledger = $charge['room'] > $charge['venue'] ? $mis_heads->find(1)->ledger->first() : $mis_heads->find(2)->ledger->first();
 
-        $payment['amount'] = $input['billing']['total_paid'];
-        $payment['mis_voucher_id'] = $this->computeAIS( $ledger, $payment['amount']);
-        $payment['note'] = 'Advance Payment';
-        $payment['payment_type'] = $ledger->mis_head_id == 1 ? 'room' : 'venue';
-
-        $input['billing']['mis_voucher_id'] = $payment['mis_voucher_id'];
-        $billing = Billing::create( $input['billing']);
-        $billing->payments()->create($payment);
-
-        //Store Booking Data
-        foreach ($input['booking'] as $item) {
-            $billing->booking()->create($item);
-        }
-
-        $request->session()->flash('create', 'Room has been booked successfully');
-
-        if ( $request->check)
-            return redirect('restaurant/sales/create?bill_id='.$billing->id );
-
-        return redirect('billing/'.$billing->id );
-    }
-
-    public function code()
-    {
-        $bill = Billing::whereDate('created_at', date('Y-m-d'))->get()->last();
-        $preds = 'aspada_'.date('d_m_y');
-        $slice_num = 0;
-        if ( $bill )
-            $slice_num = substr( $bill->code, -3);
-        $slice_num += 1;
-        $last_pad = str_pad( $slice_num, 3, '0', STR_PAD_LEFT);
-        $code = $preds.'_'.$last_pad;
-
-        return $code;
 
     }
+
 
     /**
      * Display the specified resource.

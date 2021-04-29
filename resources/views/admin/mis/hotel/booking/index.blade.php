@@ -2,12 +2,12 @@
 
 
 @section('content')
-    <div class="col-md-7">
+    <div class="col-md-12">
         <br><br><br>
         <div class="card">
             <div class="card-header">Billing List</div>
             <div class="card-body">
-                <table class="table table-bordered table-hover table-info">
+                <table class="table table-bordered table-hover">
                     <thead>
                     <tr>
                         <th></th>

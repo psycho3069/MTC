@@ -9,7 +9,7 @@
                 <samp>
                     <form action="{{ route('payment.store', $bill->id) }}" method="POST">
                         {{ csrf_field() }}
-                        <input type="hidden" name="co" value="1">
+                        <input type="hidden" name="checkout_status" value="1">
 
                         <div class="row">
                             <div class="col-md-4">

@@ -13,7 +13,7 @@ class BookingRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class BookingRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'guest.name' => 'required',
+            'guest.contact_no' => 'required',
+            'booking.*.*' => 'required',
         ];
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Date;
 use App\Http\Requests\VoucherRequest;
-use App\Http\Traits\SystemConfigurationTrait;
+use App\Http\Traits\SoftwareConfigurationTrait;
 use App\Http\Traits\VoucherTrait;
 use App\Voucher;
 use App\VoucherGroup;
@@ -18,7 +18,7 @@ use function GuzzleHttp\Promise\all;
 class VoucherController extends Controller
 {
 
-    use SystemConfigurationTrait, VoucherTrait;
+    use SoftwareConfigurationTrait, VoucherTrait;
     /**
      * Display a listing of the resource.
      *
@@ -44,9 +44,14 @@ class VoucherController extends Controller
         $input['end_date'] = date('Y-m-d', strtotime( $request->end_date));
 
         $data['types'] = VoucherType::whereNotIn('id', [5,6,7,8,9])->get();
-        $dates = Date::whereBetween('date', [$input['start_date'], $input['end_date']])->orderBy('id')->get();
+        $dates = Date::whereBetween('date', [$input['start_date'], $input['end_date']])
+            ->orderBy('id')
+            ->get();
 
-        $data['v_group'] = VoucherGroup::whereIn('date_id', $dates->pluck('id'))->orderBy('date_id', 'desc')->get();
+        $data['v_group'] = VoucherGroup::whereIn('date_id', $dates->pluck('id'))
+            ->orderBy('date_id', 'desc')
+            ->get();
+
         if ($request->category == 1)
             $data['v_group'] = $data['v_group']->where('type_id', '>', 4);
         if ($request->category == 2)
@@ -82,10 +87,9 @@ class VoucherController extends Controller
 
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Create voucher group
+     * Create vouchers
+     * Update Current Balance
      */
 
     public function store(VoucherRequest $request)
@@ -96,28 +100,15 @@ class VoucherController extends Controller
             $softwareDate = $this->getSoftwareDate();
             $voucherType = VoucherType::findOrFail($request->type_id);
 
-            $voucherGroup = new VoucherGroup();
-            $voucherGroup->date_id = $softwareDate->id;
-            $voucherGroup->user_id = auth()->id();
-            $voucherGroup->type_id = $voucherType->id;
-            $voucherGroup->note = $request->global_note;
-            $voucherGroup->code = $this->generateVoucherCode($softwareDate, $voucherType);
-            $voucherGroup->save();
+            $voucherGroup = $this->createAISVoucherGroup($softwareDate, $voucherType, $request->global_note);
 
-            foreach ($voucherData as $input) {
-                $voucher = new Voucher();
-                $voucher->v_group_id = $voucherGroup->id;
-                $voucher->date_id = $softwareDate->id;
-                $voucher->credit_head_id = $input['credit_head_id'];
-                $voucher->debit_head_id = $input['debit_head_id'];
-                $voucher->amount = $input['amount'];
-                $voucher->note = $input['note'];
-                $voucher->save();
-
-                /*
-                 * Update current balance for Debit and Credit account
-                 * */
-                $this->saveCurrentBalance($voucher, $softwareDate);
+            /*
+             * Create Voucher and for each voucher update current balance
+             * of Debit and Credit account
+             * */
+            foreach ($voucherData as $data) {
+                $voucher = $this->createAISVoucher($voucherGroup, $data);
+                $this->saveCurrentBalance($voucher, $voucher->amount, 0);
             }
 
             session()->flash('success', 'Operation successful');
@@ -210,15 +201,12 @@ class VoucherController extends Controller
         try {
             $voucherData = $request->voucher;
 
-            foreach ($voucherData as $voucher_id => $input) {
+            foreach ($voucherData as $voucher_id => $newVoucher) {
                 $voucher = Voucher::findOrFail($voucher_id);
 
-                $this->updateCurrentBalance($voucher, $voucher->amount, $input['amount']);
-                $this->createVoucherHistory($voucher, $voucher->amount, $input['amount']);
-
-                $voucher->amount = $input['amount'];
-                $voucher->note = $input['note'];
-                $voucher->save();
+                if ($newVoucher['amount'] != $voucher->amount){
+                    $this->updateVoucherAmount($voucher, $newVoucher['amount'], $voucher->amount, $newVoucher['note']);
+                }
             }
 
             session()->flash('success', 'Operation successful');
@@ -254,8 +242,8 @@ class VoucherController extends Controller
             $voucherGroup = VoucherGroup::findOrFail($id);
 
             foreach ( $voucherGroup->vouchers as $voucher ) {
-                $this->updateCurrentBalance($voucher, $voucher->amount, 0);
-                $this->createVoucherHistory($voucher, $voucher->amount, 0, true);
+                $this->saveCurrentBalance($voucher,  0, $voucher->amount);
+                $this->createVoucherHistory($voucher,0, $voucher->amount, true);
                 $voucher->delete();
             }
 

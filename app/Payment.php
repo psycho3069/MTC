@@ -9,13 +9,16 @@ class Payment extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = [ 'billing_id', 'date_id', 'amount', 'note', 'mis_voucher_id', 'payment_type', ];
+    protected $fillable = [ 'billing_id', 'amount', 'note', 'mis_voucher_id', 'payment_type', ];
 
 
-    public function mis_voucher()
-    {
-        return $this->belongsTo('App\MisVoucher', 'mis_voucher_id');
-    }
+
+    public static $paymentType = [
+        'room' => 'room',
+        'venue' => 'venue',
+        'food' => 'food',
+        'discount' => 'discount',
+    ];
 
 
     public function misVoucher()

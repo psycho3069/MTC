@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-10">
+    <div class="col-md-12">
         {{ csrf_field() }}
         <br><br><br>
 
@@ -11,7 +11,7 @@
             <div class="card-header"><code><b>{{ $data['checkout'] ? 'Checkout' : 'Billing' }} List</b></code></div>
             <div class="card-body">
                 <samp>
-                    <table class="table table-bordered table-hover table-info">
+                    <table class="table table-bordered table-hover">
                         <thead>
                         <tr>
                             <th></th>
@@ -23,8 +23,8 @@
                             <th class="">Due</th>
                             <th class="">Discount</th>
                             <th class="">Checkout</th>
-                            <th class=""></th>
-                            <th class=""></th>
+                            <th class="">Action</th>
+                            <th class="">Payments</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -39,7 +39,7 @@
                                 <td>{{ $bill->total_bill - $bill->total_paid }}</td>
                                 <td>{{ $bill->discount }}</td>
                                 <td><b>{!! $bill->checkout_status ? '<span class="badge badge-success">YES</span>' : '<span class="badge badge-danger">NO</span>' !!}</b></td>
-                                <td width="18%" align="right">
+                                <td>
                                     <a href="{{ route('billing.show', $bill->id) }}" class="btn btn-sm btn-i" title="View">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
@@ -79,7 +79,16 @@
 
 @endsection
 
-
+@section('style')
+    <style>
+        .btn-sm{
+            padding: 0.25rem 0.5rem;
+            font-size: 0.7rem;
+            line-height: .5;
+            border-radius: 0.2rem;
+        }
+    </style>
+@endsection
 
 @section('script')
     <script>
