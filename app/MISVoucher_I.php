@@ -13,9 +13,16 @@ class MISVoucher_I extends Model
     protected $fillable = [ 'mis_head_id', 'ledger_head_id', 'date_id', 'voucher_id', ];
 
 
+
     public function voucher()
     {
         return $this->belongsTo('App\Voucher');
+    }
+
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'mis_voucher_id', 'id');
     }
 
 }

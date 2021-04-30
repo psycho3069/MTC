@@ -151,26 +151,28 @@
                     <input type="hidden" name="guest[designation]" value="{{ old('guest.designation') }}">
 
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label> Advance Amount <small>(tk.)</small></label>
                                 <input type="number" name="billing[advance_paid]" class="form-control" min="0" value="{{ old('billing.advance_paid') ? old('billing.advance_paid') : 0 }}">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>Gross Discount <small>(tk.)</small></label>
                                 <input type="number" class="form-control" name="billing[discount]" min="0" value="{{ old('billing.discount') ? old('billing.discount') : 0 }}">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-2"></div>
+
+                        <div class="col-md-8">
                             <div class="form-group">
                                 <label>Note</label>
                                 <textarea class="form-control" name="billing[note]" cols="3" rows="2" value="{{ old('billing.note') }}"></textarea>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
+                    <button type="submit" class="btn btn-success">Book</button>
                 </form>
 
             </div>
@@ -193,26 +195,33 @@
     <script>
         $(document).ready(function () {
 
-            $('.room').show()
-            $('.venue').show()
+            $('.room').show();
+            $('.venue').show();
 
             $('#category').on('change',function () {
-                var x = $(this).val()
-                if (x == 1) {
-                    $('.room').show()
-                    $('#room_id').val('')
-                    $('.venue').hide()
-                } else if ( x == 2){
-                    $('.venue').show()
-                    $('#room_id').val('')
-                    $('.room').hide()
-                } else{
-                    $('.room').show()
-                    $('#room_id').val('')
-                    $('.venue').show()
-                }
-            })
-        })
+                showRoomByCategory()
+            });
+
+        });
+
+
+        function showRoomByCategory(){
+            var category = $("#category").val();
+
+            if (category == 1) {
+                $('.room').show();
+                $('#room_id').val('');
+                $('.venue').hide();
+            } else if (category == 2){
+                $('.venue').show();
+                $('#room_id').val('');
+                $('.room').hide();
+            } else{
+                $('.room').show();
+                $('#room_id').val('');
+                $('.venue').show();
+            }
+        }
     </script>
 
 
@@ -244,7 +253,7 @@
                 var room_id = $('#room_id').val();
 
                 if( !start_date || !end_date || !room_id ){
-                    alert('Please select another room and check date');
+                    alert('Please select a room and check date');
                 }
                 else {
 
@@ -262,6 +271,8 @@
 
                     $('#room_id').find('option[value="'+room_id+'"]').attr('disabled', true);
                     $('#discount').val(0);
+
+                    showRoomByCategory();
 
                 }
 
@@ -289,8 +300,10 @@
 
             $(document).on('click', '.remove', function(){
                 var button_id = $(this).attr("id");
+                let room_id = $('[name="booking['+button_id+'][room_id]"]').val();
+                $('#room_id').find('option[value='+room_id+']').attr('disabled', false);
                 $('#row'+button_id+'').remove();
-                i--
+                i--;
             });
 
         })

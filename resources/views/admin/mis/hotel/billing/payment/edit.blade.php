@@ -17,6 +17,7 @@
                         <div class="form-group">
                             <label>Amount</label>
                             <input type="number" step="0.01" class="form-control" name="amount" value="{{$payment->amount}}" min="0">
+                            <p class="text-danger">{{$errors->first('amount')}}</p>
                         </div>
                         <div class="form-group">
                             <label>Note</label>

@@ -79,7 +79,7 @@ class BookingController extends Controller
     {
         $softwareDate = $this->getSoftwareDate();
         $booked = Booking::whereDate('end_date', '>=', $softwareDate->date)
-            ->where('booking_status', '!=', 0)
+            ->where('booking_status', '!=', Booking::$bookingStatus['open'])
             ->pluck('room_id');
 
         $rooms = Room::whereNotIn('id', $booked)->get();
@@ -92,27 +92,94 @@ class BookingController extends Controller
     }
 
 
-    public function storeNew(BookingRequest $request)
+    public function store(BookingRequest $request)
     {
+
         DB::beginTransaction();
+        try {
+            $softwareDate = $this->getSoftwareDate();
+            $bookedRoom = $this->validateBooking($softwareDate, $request->booking);
 
-        $softwareDate = $this->getSoftwareDate();
-        $billing = $this->createBillingForGuest($request, $softwareDate);
+            if ($bookedRoom > 0){
+                session()->flash('danger', '<b>Room Has Been Already Taken.</b> Please Select Another Room or <b>Refresh the Page</b>');
+                throw new \Exception('room.booked', 401);
+            }
 
-       return $request;
+            $billing = $this->storeBilling($request, $softwareDate);
+
+            DB::commit();
+            session()->flash('create', 'Room has been booked successfully');
+            if ( $request->check){
+                return redirect()->route('sales.create', ['bill_id' => $billing->id]);
+            }
+            return redirect()->route('billing.show', $billing->id);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('booking.error', ['error' => $exception->getMessage()]);
+
+            return redirect()->back()->withInput($request->all());
+        }
 
 
-        return $guest;
 
-        return $request;
+
     }
+
+
+    public function storeBilling($request, $softwareDate)
+    {
+        $billing = $this->createBillingForGuest($request->guest, $softwareDate);
+        $vatOthers = $request->vat ? $this->getVatOthers()->value : 0;
+
+        $roomCharge = 0;
+        $venueCharge = 0;
+        $hotelBill = 0;
+
+        foreach ($request->booking as $key => $input) {
+            $booking = new Booking();
+            $booking = $this->saveBooking($billing, $booking, $input, $input['discount'], $vatOthers);
+            $roomType = $this->getRoomType($booking->room_id);
+
+            if ($roomType == Booking::$roomType['room']){
+                $roomCharge += $booking->bill;
+            }
+            if ($roomType == Booking::$roomType['venue']){
+                $venueCharge += $booking->bill;
+            }
+
+            $hotelBill += $booking->bill;
+        }
+
+        $totalBill = $hotelBill + ($hotelBill * $vatOthers)/100;
+        $advancePaid = $request->billing['advance_paid'];
+
+        $ledgerHead = $roomCharge > $venueCharge ? $this->getRoomBookingAccount() : $this->getVenueBookingAccount();
+        $misVoucher = $this->createMISVoucher($ledgerHead, $softwareDate, $advancePaid);
+
+        $billing->mis_voucher_id = $misVoucher->id;
+        $billing->total_bill = $totalBill;
+        $billing->advance_paid = $advancePaid;
+        $billing->total_paid = $advancePaid;
+        $billing->save();
+
+        $payment = new Payment();
+        $paymentType = $this->getPaymentType($ledgerHead->misHead);
+        $payment = $this->saveAdvancePayment($billing, $payment, $paymentType);
+
+        return $billing;
+
+    }
+
+
 
 
     /**
      * Store a newly created resource in storage.
      *
      */
-    public function store(BookingRequest $request)
+    public function storeOld(BookingRequest $request)
     {
         DB::beginTransaction();
         try {
@@ -125,33 +192,33 @@ class BookingController extends Controller
                 return redirect()->back()->withInput($input);
             }
 
-            $vatOthers = 0;
-            if ($request->vat){
-                $configuration = $this->getVatOthers();
-                $vatOthers = $configuration->value;
-            }
 
+            $vatOthers = $request->vat ? $this->getVatOthers()->value : 0;
             $guest = $this->createGuest($request->guest);
             $charge['room'] = 0; $charge['venue'] = 0; $hotel_bill = 0;
 
-            foreach ($input['booking'] as $key => $item) {
-                $item = $this->getBookingRoom($item);
-                $item['booking_status'] = Booking::$bookingStatus['booked'];
-                $item['guest_id'] = $guest->id;
-                $item['vat'] = $vatOthers;
+            foreach ($input['booking'] as $key => $room) {
 
-                if ($item['room_id'] < 50 || $item['room_id'] > 499){
-                    $charge['room'] += $item['bill'];
-                }else{
-                    $charge['venue'] += $item['bill'];
+                $billInfo = $this->getBookingCharge($room['start_date'], $room['end_date'], $room['room_id'], $room['discount']);
+                $room['discount'] = $billInfo['discount'];
+                $room['bill'] = $billInfo['bill'];
+
+                if ($billInfo['type'] == Booking::$roomType['room']){
+                    $charge['room'] += $room['bill'];
                 }
 
-                $hotel_bill += $item['bill'];
-                $input['booking'][$key] = $item;
+                if ($billInfo['type'] == Booking::$roomType['venue']){
+                    $charge['venue'] += $room['bill'];
+                }
+
+
+                $hotel_bill += $room['bill'];
+                $input['booking'][$key] = $room;
+
             }
 
-            $hotel_vat = $hotel_bill * $vatOthers / 100;
-            $totalBill = $hotel_bill + $hotel_vat;
+            $totalVat = $hotel_bill * $vatOthers / 100;
+            $totalBill = $hotel_bill + $totalVat;
 
 
             $ledgerHead = $charge['room'] > $charge['venue'] ? $this->getRoomBookingAccount() : $this->getVenueBookingAccount();
@@ -180,24 +247,24 @@ class BookingController extends Controller
 
 
             //Store Booking Data
-            foreach ($input['booking'] as $item) {
+            foreach ($input['booking'] as $room) {
                 $booking = new Booking();
                 $booking->guest_id = $guest->id;
                 $booking->billing_id = $billing->id;
-                $booking->room_id = $item['room_id'];
+                $booking->room_id = $room['room_id'];
                 $booking->booking_status = Booking::$bookingStatus['booked'];
-                $booking->start_date = $item['start_date'];
-                $booking->end_date = $item['end_date'];
-                $booking->discount = $item['discount'];
-                $booking->no_of_visitors = $item['no_of_visitors'];
-                $booking->bill = $item['bill'];
-                $booking->vat = $item['vat'];
+                $booking->start_date = $room['start_date'];
+                $booking->end_date = $room['end_date'];
+                $booking->discount = $room['discount'];
+                $booking->no_of_visitors = $room['no_of_visitors'];
+                $booking->bill = $room['bill'];
+                $booking->vat = $vatOthers;
 
                 $booking->save();
             }
 
 
-            DB::commit();
+//            DB::commit();
 
             session()->flash('create', 'Room has been booked successfully');
 
@@ -212,11 +279,10 @@ class BookingController extends Controller
             session()->flash('error', 'Operation unsuccessful');
             Log::channel('single')
                 ->error('booking.error', ['error' => $exception->getMessage()]);
+
+            return redirect()->back()->withInput($input);
+
         }
-
-
-
-
 
     }
 
@@ -232,13 +298,13 @@ class BookingController extends Controller
         $bill = Billing::find( $id);
 
         $data['total'] = 0;
-        foreach ($bill->booking as $item ) {
-            $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
-            $data['room_cost'][$item->id] = ( $item->room_id < 50 || $item->room_id > 499 ? $item->room->price : $item->venue->price) * $days - $item->discount;
-            $data['total'] += $data['room_cost'][$item->id];
-        }
+        foreach ($bill->booking as $booking ) {
+            $days = $this->daysCalculator($booking->start_date, $booking->end_date, $booking->room_id);
+            $room = $this->getRoomDetails($booking->room_id);
 
-//        return $data;
+            $data['room_cost'][$booking->id] = $room->price * $days - $booking->discount;
+            $data['total'] += $data['room_cost'][$booking->id];
+        }
 
         return view('admin.mis.hotel.booking.show', compact('bill', 'data'));
     }

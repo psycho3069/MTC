@@ -242,9 +242,8 @@ class VoucherController extends Controller
             $voucherGroup = VoucherGroup::findOrFail($id);
 
             foreach ( $voucherGroup->vouchers as $voucher ) {
-                $this->saveCurrentBalance($voucher,  0, $voucher->amount);
-                $this->createVoucherHistory($voucher,0, $voucher->amount, true);
-                $voucher->delete();
+                $deleteNote = 'Deleted Voucher - [id: '.$voucher->id. ']';
+                $this->deleteAISVoucher($voucher, $deleteNote);
             }
 
             $voucherGroup->delete();

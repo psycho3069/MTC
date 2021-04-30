@@ -7,15 +7,22 @@ use App\Booking;
 use App\Configuration;
 use App\Date;
 use App\Guest;
+use App\Http\Traits\BillingTrait;
 use App\Http\Traits\CustomTrait;
+use App\Http\Traits\SoftwareConfigurationTrait;
+use App\Http\Traits\VoucherTrait;
+use App\Payment;
 use App\Room;
 use App\Venue;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use NumberFormatter;
 use PDF;
 use Illuminate\Http\Request;
 class BillingController extends Controller
 {
-    use CustomTrait;
+    use SoftwareConfigurationTrait, BillingTrait, VoucherTrait;
     /**
      * Display a listing of the resource.
      *
@@ -105,16 +112,23 @@ class BillingController extends Controller
         $vat = 0; //for "only food-sale"
         foreach ($bill->booking as $item ) {
             $vat = $item->vat;
-            if ( $item->room_id < 50 || $item->room_id > 499)
+            $bookingType = $this->getRoomType($item->room_id);
+
+            if ( $bookingType == Booking::$roomType['room']){
                 $data['room'][$item->id] = $item;
+            }
 
-            if ( $item->room_id > 49 && $item->room_id <= 500)
+            if ( $bookingType == Booking::$roomType['venue']){
                 $data['venue'][$item->id] = $item;
+            }
 
-            $days = ( strtotime($item->end_date) - strtotime($item->start_date) ) / (60 * 60 * 24);
-            $booking[$item->id]['days'] = $item->room_id < 50 || $item->room_id > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
-            $booking[$item->id]['room_no'] = $item->room_id < 50 || $item->room_id > 499 ? 'Room No-'.$item->room->room_no : $item->venue->name;
-            $booking[$item->id]['unit_price'] = ( $item->room_id < 50 || $item->room_id > 499 ? $item->room->price : $item->venue->price);
+            $days = $this->daysCalculator($item->start_date, $item->end_date, $item->room_id);
+
+            $room = $this->getRoomDetails($item->room_id);
+
+            $booking[$item->id]['days'] = $days;
+            $booking[$item->id]['room_no'] = $room->getName(true);
+            $booking[$item->id]['unit_price'] = $room->price;
         }
 
 
@@ -135,7 +149,7 @@ class BillingController extends Controller
 
         $x = new NumberFormatter('en', NumberFormatter::SPELLOUT);
         $data['words']['total_bill'] = $x->format( $bill->total_bill);
-        $data['date'] = $this->getDate();
+        $data['date'] = $this->getSoftwareDate();
 
 
         $all['bill'] = $bill; $all['booking'] = $booking; $all['restaurant'] = $restaurant; $all['data'] = $data; $all['info'] = $info;
@@ -155,20 +169,28 @@ class BillingController extends Controller
      */
     public function edit($id)
     {
-        $date = $this->getDate();
-        $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date->date)))->where( 'booking_status', '!=', 0)->get()->pluck('room_id')->toArray();
+        $softwareDate = $this->getSoftwareDate();
+        $booked = Booking::whereDate('end_date', '>=', $softwareDate->date)
+            ->where('booking_status', '!=', Booking::$bookingStatus['open'])
+            ->pluck('room_id');
+        $rooms = Room::with('roomCat')->whereNotIn('id', $booked)->get();
+        $venues = Venue::whereNotIn('id', $booked)->get();
 
-        $bill = Billing::find($id);
-        $data['room'] = Room::get()->except($booked);
-        $data['venue'] = Venue::get()->except($booked);
+        $discounts = [];
+        $roomDetails = [];
+        $billing = Billing::with('booking', 'guest')->find($id);
+        foreach ($billing->booking as $key => $booking) {
+            $room = $this->getRoomDetails($booking->room_id);
+            $roomDetails[$booking->room_id] = $room->getName();
 
-        foreach ($bill->booking as $key => $book) {
-//            return $key;
-            $days = ( strtotime( $book->end_date) - strtotime( $book->start_date)) / (60*60*24);
-            $data['discount'][$book->id] = $days != 0 ? $book->discount / $days : $book->discount;
+            $days = $this->daysCalculator($booking->start_date, $booking->end_date, $booking->room_id);
+            $discounts[$booking->id] = $booking->discount/$days;
         }
 
-        return view('admin.mis.hotel.billing.edit', compact('bill', 'data'));
+        return view('admin.mis.hotel.billing.edit', compact(
+            'softwareDate','billing', 'rooms', 'venues',
+            'roomDetails', 'discounts'
+        ));
     }
 
     /**
@@ -180,39 +202,146 @@ class BillingController extends Controller
      */
 
 
-
-
-
-
     public function update(Request $request, $id)
     {
-        $input = $request->except('_token', '_method');
+        DB::beginTransaction();
+        try {
+            $softwareDate = $this->getSoftwareDate();
+            $billing = Billing::with('booking')->findOrFail($id);
+            $bookedRoom = $this->validateBooking($softwareDate, (array) $request->new_booking);
 
-        $bill = Billing::find($id);
+            if ($bookedRoom > 0){
+                session()->flash('danger', '<b>Room Has Been Already Taken.</b> Please Select Another Room or <b>Refresh the Page</b>');
+                throw new \Exception('room.booked', 401);
+            }
 
+            $billing = $this->updateBooking($request, $billing, $softwareDate);
 
+            DB::commit();
+            session()->flash('success', 'Booking successfully updated');
+            return redirect()->route('billing.show', $billing->id);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('booking.error', ['error' => $exception->getMessage()]);
 
-        $vat = $request->vat ? Configuration::where( 'name', 'vat_others')->first()->value : 0;
-
-        $old_bill = 0; $new_bill = 0;
-
-        foreach ( $input['booking'] as $key => $item) {
-//            return $input['booking'];
-            $room = $bill->booking->find( $key);
-            $item['room_id'] = $room->room_id;
-            $item = $this->getRoomInfo( $item);
-
-            $item['discount'] = $bill->checkout_status ? $room->discount : $item['discount'];
-            $old_vat = $room->vat;
-            $old_bill += $room->bill;
-            $new_bill += $item['bill'];
-            $room->update( $item);
+            return redirect()->back()->withInput($request->all());
         }
 
-        if ( isset($input['new_booking']))
-            $count = $this->checkBooking( $input['new_booking']);
 
-        if ( isset($input['new_booking']) && $count < 1)
+    }
+
+
+    public function updateBooking($request, $billing, $softwareDate)
+    {
+        $newBill = 0;
+        $oldVat = $billing->getBookingVat();
+        $oldBill = $billing->booking->sum('bill');
+
+        $vatOthers = $request->vat ? $this->getVatOthers()->value : 0;
+        $vatOthers = $billing->checkout_status ? $oldVat : $vatOthers;
+
+        foreach ((array)$request->booking as $bookingId => $input) {
+            $booking = Booking::where('billing_id', $billing->id)
+                ->where('room_id', $input['room_id'])
+                ->firstOrFail();
+
+            $discount = $billing->checkout_status ? $booking->discount : $input['discount'];
+            $booking = $this->saveBooking($billing, $booking, $input, $discount, $vatOthers);
+            $newBill += $booking->bill;
+        }
+
+
+        $bookingType = "";
+        foreach ((array)$request->new_booking as $input) {
+            $booking = new Booking();
+            $booking = $this->saveBooking($billing, $booking, $input, $input['discount'], $vatOthers);
+            $bookingType = $this->getRoomType($booking->room_id);
+            $newBill += $booking->bill;
+        }
+
+
+        $oldBill += ($oldBill * $oldVat)/ 100;
+        $newBill += ($newBill * $vatOthers)/ 100;
+        $newAdvancePaid = $request->billing['advance_paid'];
+
+        if ($billing->advance_paid != $newAdvancePaid){
+
+            $note = 'Room booking advance payment edited - [id: '.$billing->id .']';
+
+            if ($billing->mis_voucher_id){
+                $aisVoucher = $billing->misVoucher->voucher;
+                $this->updateVoucherAmount($aisVoucher, $newAdvancePaid, $billing->advance_paid, $note);
+                $payment = $billing->advancePayment;
+            }
+
+            if (!$billing->mis_voucher_id){
+                $ledgerHead = $bookingType == Booking::$roomType['room'] ? $this->getRoomBookingAccount() : $this->getVenueBookingAccount();
+                $misVoucher = $this->createMISVoucher($ledgerHead, $softwareDate, $newAdvancePaid);
+                $billing->mis_voucher_id = $misVoucher->id;
+
+                $payment = new Payment();
+                $payment->payment_type = $this->getPaymentType($ledgerHead->misHead);
+            }
+
+
+            $billing->total_paid +=  $newAdvancePaid - $billing->advance_paid;
+            $billing->advance_paid = $newAdvancePaid;
+            $payment = $this->saveAdvancePayment($billing, $payment);
+        }
+
+        $billing->total_bill += $newBill - $oldBill;
+        $billing->save();
+
+        return $billing;
+
+    }
+
+
+
+
+    public function updateOld(Request $request, $id)
+    {
+        DB::beginTransaction();
+        $input = $request->all();
+        $softwareDate = $this->getSoftwareDate();
+
+        $bill = Billing::with('booking')->findOrFail($id);
+
+        $oldBill = 0;
+        $newBill = 0;
+        $oldVat = $bill->getBookingVat();
+        $vatOthers = $request->vat ? $this->getVatOthers()->value : 0;
+        $vatOthers = $bill->checkout_status ? $oldVat : $vatOthers;
+
+        foreach ($input['booking'] as $id => $room) {
+            $booking = $bill->booking()->findOrFail($id);
+            $discount = $bill->checkout_status ? $booking->discount : $room['discount'];
+            $billInfo = $this->getBookingCharge($room['start_date'], $room['end_date'], $booking->room_id, $discount);
+
+            $oldBill += $booking->bill;
+            $newBill += $billInfo['bill'];
+
+            $booking->discount = $billInfo['discount'];
+            $booking->bill = $billInfo['bill'];
+            $booking->vat = $vatOthers;
+            $booking->no_of_visitors = $room['no_of_visitors'];
+            $booking->start_date = $room['start_date'];
+            $booking->end_date = $room['end_date'];
+            $booking->save();
+
+        }
+
+
+        if ( isset($input['new_booking'])){
+            $bookedRoom = $this->validateBooking($softwareDate, $input['new_booking']);
+
+            if ($bookedRoom > 0){
+                session()->flash('danger', '<b>Room Has Been Already Taken.</b> Please Select Another Room or <b>Refresh the Page</b>');
+                return redirect()->back()->withInput($input);
+            }
+
             foreach ($input['new_booking'] as $item) {
                 $item = $this->getRoomInfo( $item);
                 $item['guest_id'] = $bill->guest_id;
@@ -220,6 +349,9 @@ class BillingController extends Controller
                 $bill->booking()->create( $item);
                 $new_bill += $item['bill'];
             }
+        }
+
+
 
         $old_bill += ($old_bill * $old_vat) / 100;
         $new_bill += ($new_bill * $vat) / 100;
@@ -253,22 +385,40 @@ class BillingController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $bill = Billing::find( $id);
+        DB::beginTransaction();
+        try {
+            $billing = Billing::findOrFail($id);
 
-        foreach ( $bill->payments as $payment) {
-            $data['new_amount'] = 0; $data['note'] = 'Deleted Payment form MIS Bill  - [payment_id: '.$payment->id. ']';
-            $voucher = $payment->misVoucher->voucher;
-            $this->deleteVoucher( $voucher, $data);
-            $payment->delete();
+            foreach ($billing->payments as $payment) {
+                $deleteNote = 'Deleted billings form MIS  - [payment_id: '.$payment->id. ']';
+                $misVoucher = $payment->misVoucher;
+
+                $this->deleteAISVoucher($misVoucher->voucher, $deleteNote);
+                $misVoucher->delete();
+                $payment->delete();
+            }
+
+            $billing->booking()->delete();
+            $billing->restaurant()->delete();
+            $billing->delete();
+
+            session()->flash('success', '<b>Operation Successful.</b> Bill has been Deleted.');
+            DB::commit();
+
+            return 200;
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('booking.delete.error', ['error' => $exception->getMessage()]);
+
+            return 403;
         }
 
-        $bill->booking()->delete();
-        $bill->restaurant()->delete();
-        $bill->delete();
 
-        $request->session()->flash('success', '<b>Operation Successful.</b> Bill has been Deleted.');
 
-        return 44;
+
+        return 200;
 
     }
 

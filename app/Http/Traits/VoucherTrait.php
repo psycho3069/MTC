@@ -86,6 +86,14 @@ trait VoucherTrait
     }
 
 
+    public function deleteAISVoucher($voucher, $deleteNote)
+    {
+        $this->updateCurrentBalance($voucher,  0, $voucher->amount);
+        $this->createVoucherHistory($voucher,0, $voucher->amount, $deleteNote);
+        $voucher->delete();
+    }
+
+
 
     public function createAISVoucherGroup($softwareDate, $voucherType, $note = null)
     {
@@ -157,18 +165,16 @@ trait VoucherTrait
     }
 
 
-    public function createVoucherHistory($voucher, $newAmount, $oldAmount, $isDeleting = false)
+    public function createVoucherHistory($voucher, $newAmount, $oldAmount, $deleteNote = null)
     {
         if ($oldAmount != $newAmount){
             $softwareDate = $this->getSoftwareDate();
-            $deleteNote = 'Deleted Voucher - [id: '.$voucher->id. ']';
-
             $voucherHistory = new VoucherUpdateHistory();
             $voucherHistory->voucher_id = $voucher->id;
             $voucherHistory->date_id = $softwareDate->id;
             $voucherHistory->user_id = auth()->id();
             $voucherHistory->amount = $voucher->amount;
-            $voucherHistory->note = $isDeleting ? $deleteNote : $voucher->note;
+            $voucherHistory->note = $deleteNote ?: $voucher->note;
             $voucherHistory->save();
         }
     }

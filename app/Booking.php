@@ -15,11 +15,26 @@ class Booking extends Model
         ];
 
 
+    protected $casts = [
+        'start_at' => 'date:Y-m-d',
+        'end_at' => 'date:Y-m-d',
+    ];
+
+
     public static $bookingStatus = [
         'open' => 0,
         'reserved' => 1,
         'booked' => 2,
     ];
+
+
+    public static $roomType = [
+        'room' => 'room',
+        'venue' => 'venue',
+    ];
+
+
+
 
 
     public function room()
@@ -39,6 +54,8 @@ class Booking extends Model
     {
         return $this->hasMany('App\Visitor');
     }
+
+
 
 
 

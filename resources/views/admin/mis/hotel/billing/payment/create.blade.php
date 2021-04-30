@@ -23,7 +23,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Payment Amount</label>
-                                    <input type="number" class="form-control" id="amount" name="amount" value="0" min="0">
+                                    <input type="number" class="form-control" id="amount" name="amount" value="0">
+                                    <p class="text-danger">{{$errors->first('amount')}}</p>
                                 </div>
                             </div>
 

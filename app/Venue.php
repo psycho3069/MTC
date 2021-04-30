@@ -12,4 +12,9 @@ class Venue extends Model
 
 
 
+    public function getName($prefix = false)
+    {
+        return $this->name;
+    }
+
 }

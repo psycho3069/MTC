@@ -38,6 +38,8 @@
                                 <div class="form-group">
                                     <label>Payment Amount</label>
                                     <input type="number" class="form-control" id="amount" value="{{ $bill->total_bill - $bill->total_paid }}" disabled>
+                                    <input type="hidden"  name="amount" value="{{$bill->total_bill - $bill->total_paid }}">
+                                    <p class="text-danger">{{$errors->first('amount')}}</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -74,11 +76,11 @@
             var discount = parseFloat($('#discount').val())
 
             $('#discount').on('change keyup', function () {
-                var val = parseFloat($(this).val()) - discount
+                var val = parseFloat($(this).val()) - discount;
                 // $('#total_bill').val(total_bill-val)
-                $('#due').val(due-val)
-                $('#amount').val(amount-val)
-
+                $('#due').val(due-val);
+                $('#amount').val(amount-val);
+                $('[name="amount"]').val(amount-val);
             })
 
         })

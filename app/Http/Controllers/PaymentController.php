@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Billing;
 use App\Booking;
+use App\Http\Requests\PaymentRequest;
 use App\Http\Traits\BillingTrait;
 use App\Http\Traits\SoftwareConfigurationTrait;
 use App\Http\Traits\VoucherTrait;
@@ -54,13 +55,28 @@ class PaymentController extends Controller
      */
 
 
-    public function store(Request $request, $bill_id)
+    public function store(PaymentRequest $request, $bill_id)
     {
         DB::beginTransaction();
         try {
+            $billing = Billing::findOrFail($bill_id);
+            $checkoutStatus = $request->checkout_status ? $request->checkout_status : 0;
 
-            $response = $this->storePayment($request, $bill_id);
+            if ( !$checkoutStatus || !$billing->checkout_status ){
+                $response = $this->storePayment($request, $billing, $checkoutStatus);
+
+                if ($checkoutStatus) {
+                    $guestName =  $billing->guest->name;
+                    session()->flash('success', "<b>$guestName</b> has been successfully Checked-Out");
+                } else {
+                    session()->flash('success', "<b>Payment Is Successful<b/>");
+                }
+            }else{
+                session()->flash('danger', '<b>'.$billing->guest->name.'</b> has been already Checked-Out');
+            }
+
             DB::commit();
+
             return redirect()->route('billing.show', $bill_id);
         }catch (\Exception $exception){
             DB::rollBack();
@@ -74,41 +90,28 @@ class PaymentController extends Controller
     }
 
 
-    public function storePayment($request, $bill_id)
+    public function storePayment($input, $billing, $checkoutStatus)
     {
-        $input = $request->all();
-        $bill = Billing::find( $bill_id);
-        $checkoutStatus = $request->checkout_status ? $request->checkout_status : 0;
 
-        if ( !$checkoutStatus || !$bill->checkout_status ){
-            $total_paid = $this->initiatePaymentProcess($input, $bill, $checkoutStatus);
+        $total_paid = $this->initiatePaymentProcess($input, $billing, $checkoutStatus);
 
-            if ($checkoutStatus){
-                $bill->discount = $input['discount'];
-                $bill->checkout_status = 1;
-            }
-
-            $bill->reserved = 0;
-            $bill->total_paid += $total_paid;
-            $bill->save();
-
-            //if mis_voucher_id not null
-            if ($bill->mis_voucher_id){
-                $status['booking_status'] = $bill->checkout_status == 1 ? Booking::$bookingStatus['open'] : Booking::$bookingStatus['booked'];
-                $bill->booking()->update($status);
-            }
-
-            if ($checkoutStatus){
-                session()->flash('success', "<b>$bill->guest->name</b> has been successfully Checked-Out");
-            }
-            session()->flash('success', '<b>Payment Is Successful<b/>');
-
-            return $total_paid;
+        if ($checkoutStatus){
+            $billing->discount = $input['discount'];
+            $billing->checkout_status = 1;
         }
 
+        $billing->reserved = 0;
+        $billing->total_paid += $total_paid;
+        $billing->save();
 
-        session()->flash('danger', '<b>'.$bill->guest->name.'</b> has been already Checked-Out');
-        return 0;
+        //if mis_voucher_id not null
+        if ($billing->mis_voucher_id){
+            $status['booking_status'] = $billing->checkout_status == 1 ? Booking::$bookingStatus['open'] : Booking::$bookingStatus['booked'];
+            $billing->booking()->update($status);
+        }
+
+        return $total_paid;
+
     }
 
 
@@ -244,7 +247,7 @@ class PaymentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $bill_id, $id)
+    public function update(PaymentRequest $request, $bill_id, $id)
     {
 
         DB::beginTransaction();

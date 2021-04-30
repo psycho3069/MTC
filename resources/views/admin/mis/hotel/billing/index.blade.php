@@ -105,7 +105,7 @@
                     data:{ _token: _token },
                     success:function (data) {
                         // console.log( data)
-                        window.location.href = "{{ route('vouchers.index') }}";
+                        window.location.reload();
                     }
                 })
             }

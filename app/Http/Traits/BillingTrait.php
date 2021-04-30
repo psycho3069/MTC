@@ -11,6 +11,7 @@ use App\Payment;
 use App\Room;
 use App\Venue;
 use App\VoucherGroup;
+use Carbon\Carbon;
 
 trait BillingTrait
 {
@@ -30,12 +31,22 @@ trait BillingTrait
         $billing->code = $this->getBillingCode();
         $billing->save();
 
-        return $billing;
-
+        return $billing;#
     }
 
 
 
+    public function saveAdvancePayment($billing, $payment, $paymentType = null)
+    {
+        $payment->billing_id = $billing->id;
+        $payment->amount = $billing->advance_paid;
+        $payment->mis_voucher_id = $billing->mis_voucher_id;
+        $payment->payment_type = $payment->payment_type ?: $paymentType;
+        $payment->note = 'Advance payment';
+        $payment->save();
+
+        return $payment;
+    }
 
     /*
      * Check if any selected room is booked
@@ -44,8 +55,8 @@ trait BillingTrait
     {
         return Booking::whereDate('end_date', '>=', $softwareDate->date)
             ->whereIn('room_id', array_column($bookingInput, 'room_id'))
+            ->where('booking_status', '!=', Booking::$bookingStatus['open'])
             ->count();
-
     }
 
 
@@ -70,6 +81,7 @@ trait BillingTrait
     }
 
 
+
     public function getBillingCode()
     {
         $billNumber = 0;
@@ -90,25 +102,101 @@ trait BillingTrait
 
 
 
+    public function saveBooking($billing, $booking, $input, $discount, $vat)
+    {
+        $roomCharge = $this->getBookingCharge($input['start_date'], $input['end_date'], $input['room_id'], $discount);
+
+        $booking->billing_id = $billing->id;
+        $booking->guest_id = $billing->guest_id;
+        $booking->vat = $vat;
+        $booking->bill = $roomCharge['bill'];
+        $booking->discount = $roomCharge['discount'];
+
+        $booking->room_id = $input['room_id'];
+        $booking->start_date = $input['start_date'];
+        $booking->end_date = $input['end_date'];
+        $booking->no_of_visitors = $input['no_of_visitors'];
+        $booking->booking_status = Booking::$bookingStatus['booked'];
+
+        if ($booking->isDirty())
+            $booking->save();
+
+        return $booking;
+    }
+
+
+
+    public function getBookingCharge($startDate, $endDate, $roomId, $discount)
+    {
+        $room = $this->getRoomDetails($roomId);
+        $days = $this->daysCalculator($startDate, $endDate, $roomId);
+
+        $discount = $discount * $days;
+        $bill = $room->price * $days - $discount;
+
+        return [
+            'bill' => $bill,
+            'discount' => $discount,
+            'days' => $days,
+            'type' => $this->getRoomType($roomId)
+        ];
+    }
+
+
+
+
+    public function daysCalculator($startDate, $endDate, $roomId)
+    {
+        $roomType = $this->getRoomType($roomId);
+        $startDate = new Carbon($startDate);
+        $days = $startDate->diffInDays($endDate, false);
+
+        if ($roomType == Booking::$roomType['room']){
+            $days = $days == 0 ? 1 : $days;
+        }
+
+        if ($roomType == Booking::$roomType['venue']){
+            $days += 1;
+        }
+
+        return $days;
+    }
+
+
+
+    public function getRoomDetails($roomId)
+    {
+        $roomType = $this->getRoomType($roomId);
+
+        if ($roomType == Booking::$roomType['room']){
+            return Room::findOrFail($roomId);
+        }
+
+
+        if ($roomType == Booking::$roomType['venue']){
+            return Venue::findOrFail($roomId);
+        }
+
+    }
+
+
+    public function getRoomType($roomId)
+    {
+        if ($roomId < 50 || $roomId >= 500){
+            return Booking::$roomType['room'];
+        }
+
+        if ($roomId >= 50 && $roomId < 500){
+            return Booking::$roomType['venue'];
+        }
+
+    }
+
+
+
     /*Old Code*/
 
-    public function getBookingRoom($room)
-    {
-//        return $room;
 
-        $room['start_date'] = date('Y-m-d', strtotime($room['start_date']));
-        $room['end_date'] = date('Y-m-d', strtotime($room['end_date']));
-
-        $days = (strtotime( $room['end_date']) - strtotime( $room['start_date']) ) / (60 * 60 * 24);
-        $days = $room['room_id'] < 50 || $room['room_id'] > 499 ? ( $days == 0 ? 1 : $days) : $days + 1;
-
-        $room_price = $room['room_id'] < 50 || $room['room_id'] > 499 ? Room::find($room['room_id'])->price : Venue::find( $room['room_id'])->price;
-        $room['discount'] = $room['discount'] * $days;
-        $room['bill'] = $room_price * $days - $room['discount'];
-        $room['days'] = $days;
-
-        return $room;
-    }
 
 
 

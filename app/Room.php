@@ -18,4 +18,15 @@ class Room extends Model
         return $this->belongsTo('App\RoomCategory', 'category_id');
     }
 
+
+
+    public function getName($prefix = false)
+    {
+        if ($prefix)
+            return "Room No-".$this->room_no;
+
+        return $this->room_no . '-'. $this->roomCat->name;
+
+    }
+
 }

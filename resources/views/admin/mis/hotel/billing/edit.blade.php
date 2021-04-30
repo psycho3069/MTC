@@ -1,116 +1,124 @@
 @extends('admin.master')
 
 
-@section('content')
-    <div class="col-md-10">
-        <form action="{{ route('billing.update', $bill->id) }}" method="POST">
-            {{ csrf_field() }}
-            <input type="hidden" name="_method" value="PATCH">
+@section('reports')
+    <div class="col-md-12">
+        <form action="{{route('billing.update', $billing->id)}}" method="POST">
+            @csrf
+            <input type="hidden" name="_method" value="PUT">
 
             <div class="row">
                 <div class="col-md-7">
                     <div class="card text-left">
                         <div class="card-header">
                             <samp>
-                                {{ $bill->guest->name }}'s Bill
+                                {{$billing->guest->name}}'s Bill
                                 <span class="float-right">
                                     <label>Vat</label>
-                                    <input type="checkbox" name="vat" value="1" {{ $bill->booking[0]->vat !=0 ? 'checked' : '' }}>
+                                    <input type="checkbox" name="vat" value="1" {{$billing->getBookingVat() ? 'checked' : ''}}>
                                 </span>
                             </samp>
                         </div>
                         <div class="card-body">
                             <samp>
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Name</label>
-                                            <input type="text" class="form-control" name="billing[name]" value="{{ $bill->guest->name }}">
+                                            <input type="text" class="form-control" name="guest[name]"
+                                                   value="{{$billing->guest->name}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Contact No.</label>
-                                            <input type="text" class="form-control" name="billing[contact_no]" value="{{ $bill->guest->contact_no }}">
+                                            <input type="text" class="form-control" name="guest[contact_no]"
+                                                   value="{{$billing->guest->contact_no}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Org.</label>
-                                            <input type="text" class="form-control" name="billing[org_name]" value="{{ $bill->guest->org_name }}">
+                                            <input type="text" class="form-control" name="guest[org_name]"
+                                                   value="{{$billing->guest->org_name}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Designation</label>
-                                            <input type="text" class="form-control" name="billing[designation]" value="{{ $bill->guest->designation }}">
+                                            <input type="text" class="form-control" name="guest[designation]"
+                                                   value="{{$billing->guest->designation}}">
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Advance paid</label>
-                                            <input type="number" class="form-control" name="billing[advance_paid]" value="{{ $bill->advance_paid }}">
+                                            <input type="number" class="form-control" name="billing[advance_paid]"
+                                                   value="{{$billing->advance_paid}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Gross discount</label>
-                                            <input type="number" class="form-control" name="billing[discount]" value="{{ $bill->discount }}">
+                                            <input type="number" class="form-control" name="billing[discount]"
+                                                   value="{{$billing->discount}}"
+                                                {{$billing->checkoutStatus()?'disabled':''}}>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Note</label>
-                                            <textarea name="billing[note]" cols="2" rows="1" class="form-control">{{ $bill->note }}</textarea>
+                                            <textarea name="billing[note]" cols="2" rows="1" class="form-control">
+                                                {{$billing->note}}</textarea>
                                         </div>
                                     </div>
                                 </div>
 
+
                                 <hr>
 
-                                @foreach( $bill->booking as $book )
-                                    {{ $loop->iteration }}.
-
-
-
-
-
+                                @foreach($billing->booking as $booking )
                                     <div class="row">
-                                        <div style="width: 44%;">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Check-In</label>
-                                                        <input type="date" class="form-control date" name="booking[{{$book->id}}][start_date]" value="{{ $book->start_date }}">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Check-Out</label>
-                                                        <input type="date" class="form-control date" name="booking[{{$book->id}}][end_date]" value="{{ $book->end_date }}">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style="width: 20%; margin-left: 2.5%;">
+                                        <div class="col-md-2">
                                             <div class="form-group">
-                                                <label>Room</label>
-                                                <input type="text" class="form-control" value="{{ $book->room_id < 50 || $book->room_id > 100 ? $book->room->room_no.'-'.$book->room->roomCat->name : $book->venue->name }}" disabled>
+                                                <label></label>
+                                                <p>{{$loop->iteration}}. {{$roomDetails[$booking->room_id]}}</p>
+                                                <input type="hidden" name="booking[{{$booking->id}}][room_id]"
+                                                       value="{{$booking->room_id}}">
                                             </div>
                                         </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Check-In</label>
+                                                <input type="date" class="form-control date"
+                                                       name="booking[{{$booking->id}}][start_date]"
+                                                       value="{{$booking->start_date}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Check-Out</label>
+                                                <input type="date" class="form-control date"
+                                                       name="booking[{{$booking->id}}][end_date]"
+                                                       value="{{$booking->end_date}}">
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Discount</label>
-                                                <input type="number" class="form-control" name="booking[{{$book->id}}][discount]" value="{{ $data['discount'][$book->id] }}" min="0">
+                                                <input type="number" class="form-control"
+                                                       name="booking[{{$booking->id}}][discount]"
+                                                       value="{{$discounts[$booking->id]}}" min="0" {{$billing->checkout_status?'disabled':''}}>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Visitors</label>
-                                                <input type="number" class="form-control" name="booking[{{$book->id}}][no_of_visitors]" value="{{ $book->no_of_visitors }}" min="1" max="80">
+                                                <input type="number" class="form-control"
+                                                       name="booking[{{$booking->id}}][no_of_visitors]"
+                                                       value="{{$booking->no_of_visitors}}"
+                                                       min="1" max="80">
                                             </div>
                                         </div>
                                     </div>
@@ -148,24 +156,32 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-In<span class="required">*</span></label>
-                                            <input type="date" class="form-control date check_in_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" id="start_date">
+                                            <input type="date" class="form-control date check_in_date"
+                                                   value="{{$softwareDate->date}}"
+                                                   id="start_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Check-Out<span class="required">*</span></label>
-                                            <input type="date" class="form-control date check_out_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" id="end_date">
+                                            <input type="date" class="form-control date check_out_date"
+                                                   value="{{$softwareDate->date}}"
+                                                   id="end_date">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Discount <small>(tk.)</small></label>
+                                            <input type="number" id="discount" class="form-control" min="0" value="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>No. Of Visitors</label>
                                             <input type="number" class="form-control" id="visitors" min="1" value="1">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Category</label>
                                             <select class="form-control" id="category">
@@ -175,27 +191,31 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Room</label>
                                             <select class="form-control" id="room_id">
-                                                <option></option>
-                                                @foreach( $data['room'] as $item )
-                                                    <option value="{{ $item->id }}" class="room">{{ $item->room_no }} - {{ $item->roomCat->name }} | <small>Price: {{ $item->price }}</small></option>
+                                                <option value="">Select a room</option>
+                                                @foreach( $rooms as $room )
+                                                    <option value="{{$room->id}}" class="room">
+                                                        {{$room->room_no}} - {{$room->roomCat->name}} |
+                                                        Price: {{$room->price}}
+                                                    </option>
                                                 @endforeach
-                                                @foreach( $data['venue'] as $item )
-                                                    <option value="{{ $item->id }}" class="venue">{{ $item->name }}  | Price: {{ $item->price }}</option>
+                                                @foreach( $venues as $venue )
+                                                    <option value="{{$venue->id}}" class="venue">
+                                                        {{$venue->name}}  |
+                                                        Price: {{$venue->price}}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Discount <small>(tk.)</small></label>
-                                            <input type="number" id="discount" class="form-control" min="0" value="0">
-                                        </div>
-                                    </div>
+
                                 </div>
+
+
 
                                 <button type="button" class="btn btn-block btn-i pull-right" id="add-button">Add</button>
                             </samp>
@@ -212,8 +232,8 @@
 
 
 {{--@section('style')--}}
-{{--    <link href="{{ asset('css/datepicker.min.css') }}" rel="stylesheet">--}}
-{{--    <link href="{{ asset('css/flatpickr.min.css') }}" rel="stylesheet">--}}
+{{--    <link href="{{asset('css/datepicker.min.css')}}" rel="stylesheet">--}}
+{{--    <link href="{{asset('css/flatpickr.min.css')}}" rel="stylesheet">--}}
 {{--@endsection--}}
 
 
@@ -226,57 +246,50 @@
             $('.venue').show()
 
             $('#category').on('change',function () {
-                var x = $(this).val()
-                if (x == 1) {
-                    $('.room').show()
-                    $('#room_id').val('')
-                    $('.venue').hide()
-                } else if ( x == 2){
-                    $('.venue').show()
-                    $('#room_id').val('')
-                    $('.room').hide()
-                } else{
-                    $('.room').show()
-                    $('#room_id').val('')
-                    $('.venue').show()
-                }
-            })
-        })
+                showRoomByCategory();
+            });
+        });
+
+
+        function showRoomByCategory(){
+            var category = $("#category").val();
+
+            if (category == 1) {
+                $('.room').show();
+                $('#room_id').val('');
+                $('.venue').hide();
+            } else if (category == 2){
+                $('.venue').show();
+                $('#room_id').val('');
+                $('.room').hide();
+            } else{
+                $('.room').show();
+                $('#room_id').val('');
+                $('.venue').show();
+            }
+        }
     </script>
 
 
     <script>
         $(document).ready(function () {
             var i = 0;
-            var book = {!! json_encode(count($bill->booking)) !!}
+            var book = "@json(count($billing->booking))";
 
             $('#add-button').click(function () {
-                // alert(22)
-
-                var discount = $('#discount').val()
-                var start_date = $('#start_date').val()
-                var end_date = $('#end_date').val()
-                var visitors = $('#visitors').val()
-                var room_id = $('#room_id').val()
-
-                // var date1 = new Date(start_date)
-                // var date2 = new Date(end_date)
-                //
-                // date1 = date1.getDate()+' '+date1.getMonth() + ',' + date1.getFullYear()
-                // date2 = date2.getDate()+' '+date2.getMonth() + ',' + date2.getFullYear()
-
-                // console.log(
-                //     start_date + end_date + name + contact_no
-                // );
+                var discount = $('#discount').val();
+                var start_date = $('#start_date').val();
+                var end_date = $('#end_date').val();
+                var visitors = $('#visitors').val();
+                var room_id = $('#room_id').val();
 
 
 
-
-                if( !start_date || !end_date || !room_id )
-                    alert('Please Enter All Required Fields')
+                if( !start_date || !end_date || !room_id ){
+                    alert('Please select a room and check date');
+                }
                 else {
                     book++; i++;
-
                     $('#add-list').append(
                         '<tr id="row'+i+'">' +
                         '<td>'+book+'.</td>' +
@@ -290,7 +303,7 @@
                     )
 
                     $('#room_id').find('option[value="'+room_id+'"]').attr('disabled', true)
-
+                    showRoomByCategory();
 
                 }
 
@@ -299,6 +312,8 @@
 
             $(document).on('click', '.remove', function(){
                 var button_id = $(this).attr("id");
+                let room_id = $('[name="new_booking['+button_id+'][room_id]"]').val();
+                $('#room_id').find('option[value='+room_id+']').attr('disabled', false);
                 $('#row'+button_id+'').remove();
                 i--; book--;
             });

@@ -58,7 +58,7 @@ include('hotel_routes.php');
 include('hr_routes.php');
 include('restaurant_routes.php');
 include('account_routes.php');
-include('checkout_routes.php');
+//include('checkout_routes.php');
 
 
 
@@ -93,10 +93,6 @@ Route::post('reserve', ['as' => 'reserve.store' , 'uses' => 'ResidualController@
 
 
 Route::group(['middleware' => 'auth'], function (){
-
-    Route::get('general/configuration/hotel', ['as' => 'configure.hotel', 'uses' => 'ResidualController@hotel']);
-    Route::post('general/configuration/hotel', ['as' => 'update.hotel', 'uses' => 'ResidualController@updateHotel']);
-
     Route::get('general/configuration/ledger/{type}', ['as' => 'configure.ledger', 'uses' => 'ResidualController@ledger']);
     Route::post('general/configuration/ledger', ['as' => 'update.ledger', 'uses' => 'ResidualController@updateLedger' ]);
 
@@ -206,4 +202,4 @@ Route::group(['middleware' => 'auth'], function (){
 
 });
 
-include('inventory_routes.php');
+//include('inventory_routes.php');

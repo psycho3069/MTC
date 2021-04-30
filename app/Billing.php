@@ -50,9 +50,32 @@ class Billing extends Model
     }
 
 
+    public function advancePayment()
+    {
+        return $this->hasOne(Payment::class, 'billing_id', 'id')
+            ->where('mis_voucher_id', $this->mis_voucher_id);
+    }
+
+
     public function date()
     {
         return $this->belongsTo('App\Date');
+    }
+
+
+
+    public function getBookingVat()
+    {
+        if ($this->booking->count())
+            return $this->booking[0]->vat;
+
+        return 0;
+    }
+
+
+    public function checkoutStatus()
+    {
+        return $this->checkout_status ? true : false;
     }
 
 }
