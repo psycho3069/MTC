@@ -102,7 +102,7 @@
                     data: {_token: _token},
                     success: function (data) {
                         console.log(data)
-                        window.location.href = "/purchase?mis_head_id="+data;
+                        window.location.reload();
                     }
                 })
         }

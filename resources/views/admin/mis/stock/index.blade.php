@@ -55,11 +55,12 @@
     <script>
         $(document).ready(function () {
             getTable();
-            $('#search').keyup(function () {
+
+            $('#per-page').on('change', function () {
                 getTable();
             });
 
-            $('#per-page').on('change', function () {
+            $('#search').keyup(function () {
                 getTable();
             });
         });
@@ -76,7 +77,6 @@
                 page: page,
                 per_page: per_page,
             }).then((response) => {
-                console.log(response.data);
                 $('#table-content').html(response.data);
             }, (error) => {
                 console.log(error);

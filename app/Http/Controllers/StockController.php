@@ -52,7 +52,7 @@ class StockController extends Controller
                 });
         });
 
-        $misHeadI = $query->paginate($perPage)
+        $categories = $query->paginate($perPage)
             ->withPath("stock")
             ->appends([
                 'mis_head_id' => $misHeadId,
@@ -60,7 +60,7 @@ class StockController extends Controller
                 'per_page' => $perPage
             ]);
 
-        return view('admin.mis.stock.index-table', compact('misHeadI'))->render();
+        return view('admin.mis.stock.index-table', compact('categories'))->render();
     }
 
 
@@ -85,6 +85,7 @@ class StockController extends Controller
 
     public function tableSearch($misHeadId)
     {
+        $perPage = request('per_page') ?: 5;
         $name = request('name');
         $units = UnitType::all();
         $query = MISLedgerHead::query();
@@ -94,9 +95,9 @@ class StockController extends Controller
             $query->where('name', 'LIKE', "%$name%");
         });
         $query->orderBy('name', 'asc');
-        $ledgerHeads = $query->paginate(5)
+        $ledgerHeads = $query->paginate($perPage)
             ->withPath("{$misHeadId}")
-            ->appends(['name' => $name]);
+            ->appends(['name' => $name, 'per_page' => $perPage]);
 
         return view('admin.mis.stock.balance-table', compact('ledgerHeads', 'units'));
 

@@ -2,26 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Configuration;
-use App\Date;
 use App\Employee;
-use App\Http\Traits\CustomTrait;
-use App\MisCurrentStock;
-use App\MISHead;
+use App\Http\Requests\Purchase\StoreRequest;
+use App\Http\Requests\Purchase\UpdateRequest;
+use App\Http\Traits\SoftwareConfigurationTrait;
+use App\Http\Traits\StockTrait;
+use App\Http\Traits\VoucherTrait;
 use App\MISHeadChild_I;
-use App\MISLedgerHead;
-use App\Process;
-use App\Purchase;
 use App\PurchaseGroup;
-use App\StockHead;
 use App\Supplier;
 use App\Unit;
-use App\VoucherGroup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PurchaseController extends Controller
 {
-    use CustomTrait;
+    use StockTrait, SoftwareConfigurationTrait, VoucherTrait;
     /**
      * Display a listing of the resource.
      *
@@ -95,10 +92,10 @@ class PurchaseController extends Controller
 
     public function item(Request $request)
     {
-//        return $request->all();
         $result = MISHeadChild_I::find( $request->id);
         foreach ($result->ledger as $item) {
-            $data['item'][$item->id]['stock'] = $item->currentStock->sum('quantity_dr') - $item->currentStock->sum('quantity_cr');
+            $data['item'][$item->id]['stock'] = $item->currentStock->sum('quantity_dr')
+                - $item->currentStock->sum('quantity_cr');
             $data['item'][$item->id]['name'] = $item->name;
             $data['item'][$item->id]['unit'] = $item->unitType->name;
             $data['item'][$item->id]['unit_type_id'] = $item->unit_type_id;
@@ -111,56 +108,22 @@ class PurchaseController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-
-
-
-
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-//        return $request->all();
-        $request->validate([
-            'mis_head_id' => 'required',
-            'input.*.*' => 'required',
-            'input.*.quantity_dr' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
-            'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
-        ],[
-            'mis_head_id.required' => 'Your request can\'t be completed. Please try again',
-            'input.*.*.required' => 'Please Enter Valid Info',
-            'input.*.quantity_dr.required' => 'Please Enter Quantity',
-            'input.*.quantity_dr.regex' => 'Invalid Quantity. Only decimal values are allowed',
-            'input.*.amount.required' => 'Please Enter Amount',
-            'input.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
-        ]);
-
-
-        $input = collect( $request->input);
-        $date = $this->getDate();
-
-        $data = $request->except('input', '_token');
-        $data['date_id'] = $date->id;
-        $data['user_id'] = auth()->user()->id;
-
-        $p_group = PurchaseGroup::create( $data);
-
-        foreach ($input as $item) {
-            $ledger = MISLedgerHead::find( $item['stock_id']);
-            $item['mis_voucher_id'] = $this->computeAIS( $ledger, $item['amount']);
-
-            $item['date_id'] = $date->id;
-            $unit = $ledger->unitType->units->find( $item['unit_id']);
-            $item['quantity_dr'] = $item['quantity_dr'] / $unit->multiply_by;
-
-            $cr_stock = $ledger->currentStock()->create($item);
-            $item['current_stock_id'] = $cr_stock->id;
-            $p_group->purchases()->create( $item);
+        DB::beginTransaction();
+        try {
+            $softwareDate = $this->getSoftwareDate();
+            $this->storeMISPurchase($request, $softwareDate);
+            DB::commit();
+            session()->flash('create', '<b>All Items has been purchased.</b>');
+            return redirect()->route('purchase.index', ['mis_head_id' => $request->mis_head_id]);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')->error('purchase.error', ['error' => $exception->getMessage()]);
+            return redirect()->route('purchase.index', ['mis_head_id' => $request->mis_head_id]);
         }
-
-
-        $request->session()->flash('create', '<b>All Items has been purchased.</b>');
-
-        return redirect('purchase?mis_head_id='.$ledger->mis_head_id);
 
     }
 
@@ -175,7 +138,7 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        $p_group = PurchaseGroup::find($id);
+        $p_group = PurchaseGroup::findOrFail($id);
         return view('admin.mis.purchase.show', compact('p_group'));
     }
 
@@ -187,7 +150,7 @@ class PurchaseController extends Controller
      */
     public function edit($id)
     {
-        $p_group = PurchaseGroup::find($id);
+        $p_group = PurchaseGroup::findOrFail($id);
         $data['supplier'] = Supplier::all();
         $data['receiver'] = Employee::all();
         $data['units'] = Unit::all();
@@ -204,41 +167,26 @@ class PurchaseController extends Controller
      */
 
 
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-//        return $request->all();
-        $request->validate([
-            'input.*.*' => 'required',
-            'input.*.quantity_dr' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
-            'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
-        ],[
-            'input.*.*.required' => 'Please Enter Valid Info',
-            'input.*.quantity_dr.required' => 'Please Enter Quantity',
-            'input.*.quantity_dr.regex' => 'Invalid Quantity. Only decimal values are allowed',
-            'input.*.amount.required' => 'Please Enter Amount',
-            'input.*.amount.regex' => 'Invalid Amount. Only decimal values are allowed',
-        ]);
+        DB::beginTransaction();
+        try {
+            $purchaseGroup = PurchaseGroup::findOrFail($id);
+            $this->updateMISPurchase($request, $purchaseGroup);
+            DB::commit();
+            session()->flash('update', '<b>Purchase has been updated successfully</b>');
+            return redirect()->route('purchase.index', ['mis_head_id' => $purchaseGroup->mis_head_id]);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('purchase.error', ['error' => $exception->getMessage()]);
 
-        $input = collect($request->input);
-        $p_group = PurchaseGroup::find($id);
-        $data['note'] = 'Updated From Grocery Purchase- [id: '.$p_group->id .']';
-
-        foreach ($input as $key => $item) {
-            $purchase = $p_group->purchases->find($key);
-            $voucher = $purchase->misVoucher->voucher;
-            $data['new_amount'] = $item['amount'];
-
-            if ( $voucher->amount != $item['amount'])
-                $this->updateAIS( $voucher, $data);
-
-            $purchase->update( $item);
-            $unit = $purchase->ledger->unitType->units->find( $item['unit_id']);
-            $purchase->currentStock->update([ 'quantity_dr' => $item['quantity_dr'] / $unit->multiply_by ]);
-
+            return redirect()->back();
         }
 
-        $request->session()->flash('update', '<b>Purchase has been updated successfully</b>');
-        return redirect('purchase?mis_head_id='.$p_group->mis_head_id);
+
+
 
     }
 
@@ -254,20 +202,20 @@ class PurchaseController extends Controller
 
     public function destroy($id)
     {
-        $p_group = PurchaseGroup::find( $id);
-
-        foreach ($p_group->purchases as $purchase) {
-            $voucher = $purchase->misVoucher->voucher;
-            $data['new_amount'] = 0; $data['note'] = 'Deleted From Grocery Purchase - [id: '.$purchase->id. ']';
-            $this->deleteVoucher( $voucher, $data);
-            $purchase->misVoucher->delete();
-            $purchase->currentStock->delete();
-            $purchase->delete();
+        DB::beginTransaction();
+        try {
+            $purchaseGroup = PurchaseGroup::findOrFail( $id);
+            $this->deleteMISPurchase($purchaseGroup);
+            session()->flash('success', '<b>Purchase Has Been Deleted Successfully.</b>');
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('purchase.error', ['error' => $exception->getMessage()]);
         }
-        $p_group->delete();
 
-        session()->flash('success', '<b>Purchase Has Been Deleted Successfully.</b>');
 
-        return $p_group->mis_head_id;
+        return $purchaseGroup->mis_head_id;
     }
 }

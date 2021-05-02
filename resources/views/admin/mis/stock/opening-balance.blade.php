@@ -12,24 +12,43 @@
                                     Opening Balance
                                 </strong>
                             </div>
-
-                            <div class="offset-md-4 float-right mb-2">
-                                <input type="search" id="search"
-                                       class="form-control search-input"
-                                       placeholder="Search..."
-                                       data-route="{{route('table.stock.balance', $misHeadId)}}"
-                                       value="{{request('name')}}">
-                            </div>
                         </div>
                     </div>
 
                     <div class="card-body">
-                        <p class="text-danger">{{ $errors->has('input.*.amount') ? $errors->first('input.*.amount') : '' }}</p>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Show Entries</label>
+                                    <select id="per-page" class="form-control">
+                                        <option value="5" {{request('per_page')==5?'selected':''}}>5</option>
+                                        <option value="10" {{request('per_page')==10?'selected':''}}>10</option>
+                                        <option value="25" {{request('per_page')==25?'selected':''}}>25</option>
+                                        <option value="50" {{request('per_page')==50?'selected':''}}>50</option>
+                                        <option value="100" {{request('per_page')==100?'selected':''}}>100</option>
+                                        <option value="150" {{request('per_page')==150?'selected':''}}>150</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4"></div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label>Search</label>
+                                    <input type="search" id="search"
+                                           class="form-control search-input"
+                                           placeholder="Search..."
+                                           data-route="{{route('table.stock.balance', $misHeadId)}}"
+                                           value="{{request('name')}}">
+                                </div>
+                            </div>
+                        </div>
 
                         <form action="{{ route('stock.balance') }}" method="POST">
-                            {{ csrf_field()}}
+                            @csrf
 
-                            <div id="stock-table">
+                            <p class="text-danger">{{ $errors->has('input.*.amount') ? $errors->first('input.*.amount') : '' }}</p>
+                            <div id="table-content">
 
                             </div>
 
@@ -50,25 +69,32 @@
     <script>
         $(document).ready(function () {
 
-            getStocks();
+            getTable();
 
             $('#search').keyup(function () {
-                getStocks();
+                getTable();
+            });
+
+            $('#per-page').on('change', function () {
+                getTable();
             });
         });
 
-        function getStocks() {
+        function getTable() {
             const search = $('#search');
             const data_route = search.data('route');
             const name = search.val();
             const page = "{{request('page')}}";
+            const per_page = $('#per-page').val();
+
 
             axios.post(data_route, {
                 name: name,
                 page: page,
+                per_page: per_page,
             }).then((response) => {
                 console.log(response.data);
-                $('#stock-table').html(response.data);
+                $('#table-content').html(response.data);
             }, (error) => {
                 console.log(error);
             });

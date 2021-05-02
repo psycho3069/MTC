@@ -7,6 +7,8 @@ namespace App\Http\Traits;
 use App\MISHead;
 use App\MISHeadChild_I;
 use App\MISLedgerHead;
+use App\PurchaseGroup;
+use App\Unit;
 
 trait StockTrait
 {
@@ -94,6 +96,79 @@ trait StockTrait
 
             return 200;
         }
+    }
+
+
+
+    public function storeMISPurchase($request, $softwareDate)
+    {
+        $input = collect($request->input);
+
+        $data = $request->except('input', '_token');
+        $data['date_id'] = $softwareDate->id;
+        $data['user_id'] = auth()->id();
+
+        $p_group = PurchaseGroup::create($data);
+
+        foreach ($input as $item) {
+            $ledgerHead = MISLedgerHead::find($item['stock_id']);
+            $unit = $this->getUnit($item['unit_id'], $ledgerHead->unit_type_id);
+            $misVoucher = $this->createMISVoucher($ledgerHead, $softwareDate, $item['amount']);
+
+            $item['mis_voucher_id'] = $misVoucher->id;
+            $item['date_id'] = $softwareDate->id;
+            $item['quantity_dr'] = $this->getUnitQuantity($item['quantity_dr'], $unit);
+
+            $cr_stock = $ledgerHead->currentStock()->create($item);
+            $item['current_stock_id'] = $cr_stock->id;
+            $p_group->purchases()->create($item);
+        }
+
+
+        return $p_group;
+
+    }
+
+
+    public function updateMISPurchase($request, $purchaseGroup)
+    {
+        $input = $request->input;
+        $note = 'Updated From Grocery Purchase- [id: '.$purchaseGroup->id .']';
+        foreach ($input as $key => $item) {
+            $purchase = $purchaseGroup->purchases->find($key);
+            $purchase->update($item);
+            $unit = $this->getUnit($item['unit_id']);
+            $purchase->currentStock->update([ 'quantity_dr' => $this->getUnitQuantity($item['quantity_dr'], $unit)]);
+
+            $aisVoucher = $purchase->misVoucher->voucher;
+            if ($aisVoucher->amount != $item['amount']){
+                $this->updateVoucherAmount($aisVoucher, $item['amount'], $purchase->amount, $note);
+            }
+        }
+
+        return $purchaseGroup;
+    }
+
+
+    public function deleteMISPurchase($purchaseGroup)
+    {
+        foreach ($purchaseGroup->purchases as $purchase) {
+            $aisVoucher = $purchase->misVoucher->voucher;
+
+            $note = 'Deleted From Grocery Purchase - [id: '.$purchase->id. ']';
+            $this->deleteAISVoucher($aisVoucher, $note);
+            $purchase->misVoucher->delete();
+            $purchase->currentStock->delete();
+            $purchase->delete();
+        }
+        return $purchaseGroup->delete();
+    }
+
+
+
+    public function getUnitQuantity($quantity, $unit)
+    {
+        return $quantity / $unit->multiply_by;
     }
 
 

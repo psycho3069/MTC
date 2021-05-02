@@ -1,3 +1,4 @@
+<label>Total: {{$ledgerHeads->total()}}</label>
 <table class="table table-bordered">
     <thead>
     <tr>
@@ -37,6 +38,6 @@
         </tr>
     @endforeach
     </tbody>
+    {{$ledgerHeads->links()}}
 </table>
 
-{{$ledgerHeads->links()}}

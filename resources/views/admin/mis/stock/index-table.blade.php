@@ -1,3 +1,4 @@
+<label>Total: {{$categories->total()}}</label>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -10,7 +11,7 @@
 
     <tbody>
         @php( $i = 0)
-        @foreach( $misHeadI as $category )
+        @foreach($categories as $category )
         <tr>
             <td>{{ ++$i }}</td>
             <td class="tree">
@@ -61,7 +62,7 @@
     @endforeach
     </tbody>
 
-    {{$misHeadI->links()}}
+    {{$categories->links()}}
 
 </table>
 

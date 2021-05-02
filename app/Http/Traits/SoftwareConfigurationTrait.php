@@ -6,6 +6,7 @@ namespace App\Http\Traits;
 use App\Configuration;
 use App\Date;
 use App\MISHead;
+use App\Unit;
 
 
 trait SoftwareConfigurationTrait
@@ -83,6 +84,17 @@ trait SoftwareConfigurationTrait
         $misHead = MISHead::where('account_type', MISHead::$accountType['discount'])
             ->firstOrFail();
         return $misHead->firstAccount;
+    }
+
+
+    public function getUnit($unitId, $unitTypeId = null)
+    {
+        $query = Unit::query();
+        $query->where('id', $unitId);
+        $query->when($unitTypeId, function ($query, $unitTypeId){
+            $query->where('unit_type_id', $unitTypeId);
+        });
+        return $query->firstOrFail();
     }
 
 
