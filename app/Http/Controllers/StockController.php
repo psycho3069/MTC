@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Stock\OpeningBalanceRequest;
+use App\Http\Requests\Stock\StoreRequest;
+use App\Http\Traits\SoftwareConfigurationTrait;
+use App\Http\Traits\StockTrait;
+use App\MisCurrentStock;
 use App\MISHead;
 use App\MISHeadChild_I;
 use App\MISLedgerHead;
@@ -9,9 +14,12 @@ use App\Stock;
 use App\StockHead;
 use App\UnitType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StockController extends Controller
 {
+    use SoftwareConfigurationTrait, StockTrait;
     /**
      * Display a listing of the resource.
      *
@@ -19,60 +27,43 @@ class StockController extends Controller
      */
     public function index(Request $request)
     {
-        $mis_head_id = $request->mis_head_id != 5 ? 4 : 5;
-        $mis_heads = MISHeadChild_I::where( 'mis_head_id', $mis_head_id)->get();
-
-
-        return view('admin.mis.stock.index', compact('mis_heads', 'mis_head_id'));
+        $misHeadId = $request->mis_head_id != 5 ? 4 : 5;
+        return view('admin.mis.stock.index', compact( 'misHeadId'));
     }
 
 
-    public function test()
+
+
+    public function getIndexTable($misHeadId)
     {
+        $name = request('name');
+        $perPage = request('per_page') ?: 5;
+        $query = MISHeadChild_I::query();
 
+        $query->where( 'mis_head_id', $misHeadId);
+        $query->when($name, function ($query, $name) use ($misHeadId){
+            $query->with(['ledger' => function($query) use ($name){
+                $query->where('name', 'LIKE', "%$name%");
+            }]);
+            $query->where('name', 'LIKE', "%$name%")
+                ->orWhereHas('ledger', function($query) use($name, $misHeadId){
+                    $query->where('name', 'LIKE', "%$name%");
+                    $query->where('mis_head_id',  $misHeadId);
+                });
+        });
 
-//        $ledgers = MISLedgerHead::whereIn('mis_head_id', [4,5])->get();
-//        foreach ($ledgers as $ledger) {
-//            $ledger->currentStock()->create(['date_id' => 0]);
-//        }
-
-
-        $x = MISLedgerHead::all();
-//        foreach ($x as $key => $item) {
-//            $item->update(['credit_head_id' => 353, 'debit_head_id' => 16, ]);
-//            $item->update(['unit_type_id' => 1]);
-//        }
-
-
-
-        $main = MISHead::find([4, 5]);
-        $stock_heads = StockHead::all();
-        $code = 1300;
-
-        foreach ($stock_heads as $stock_head) {
-
-            $x = $stock_head->type_id == 3 ? $main->find(4) : $main->find(5);
-            $mis_head = $x->child()->create([
-                'name' => $stock_head->name,
-                'credit_head_id' => $x->credit_head_id,
-                'debit_head_id' => $x->debit_head_id,
+        $misHeadI = $query->paginate($perPage)
+            ->withPath("stock")
+            ->appends([
+                'mis_head_id' => $misHeadId,
+                'name' => $name,
+                'per_page' => $perPage
             ]);
 
-            foreach ( $stock_head->stock as $stock){
-                $code += 100;
-                $ledger = $mis_head->ledger()->create([
-                    'name' => $stock->name,
-                    'code' => $code,
-                    'mis_head_id' => $mis_head->mis_head_id,
-                    'credit_head_id' => $mis_head->credit_head_id,
-                    'debit_head_id' => $mis_head->debit_head_id,
-                    'unit_type_id' => 1,
-                ]);
-                $ledger->currentStock()->create([ 'date_id' => 0]);
-            }
-        }
-
+        return view('admin.mis.stock.index-table', compact('misHeadI'))->render();
     }
+
+
 
 
 
@@ -84,38 +75,67 @@ class StockController extends Controller
     }
 
 
-    public function opening($mis_head_id)
+    public function opening($misHeadId)
     {
-        $mis_head_id = $mis_head_id != 5 ? 4 : 5;
-        $categories = MISHeadChild_I::where('mis_head_id', $mis_head_id)->get();
-        $units = UnitType::all();
-        return view('admin.mis.stock.opening', compact('categories', 'units'));
+        $misHeadId = $misHeadId != 5 ? 4 : 5;
+        $total = MISLedgerHead::where('mis_head_id', $misHeadId)->count();
+        return view('admin.mis.stock.opening-balance', compact('total',  'misHeadId'));
     }
 
 
-    public function balance(Request $request)
+    public function tableSearch($misHeadId)
     {
+        $name = request('name');
+        $units = UnitType::all();
+        $query = MISLedgerHead::query();
+        $query->with('ledgerable:id,name', 'misHead:id,name');
+        $query->where('mis_head_id', $misHeadId);
+        $query->when($name, function($query, $name){
+            $query->where('name', 'LIKE', "%$name%");
+        });
+        $query->orderBy('name', 'asc');
+        $ledgerHeads = $query->paginate(5)
+            ->withPath("{$misHeadId}")
+            ->appends(['name' => $name]);
 
-        $request->validate([
-            'input.*.amount' => 'required|regex:/^[0-9]*\.?[0-9]+$/',
-        ], [
-            'input.*.amount.regex' => 'Only Decimal Values are Allowed',
-        ]);
+        return view('admin.mis.stock.balance-table', compact('ledgerHeads', 'units'));
 
-        $input = $request->input;
+    }
 
-        foreach ($input as $key => $item) {
-            $ledger = MISLedgerHead::find($key);
-            $ledger->update( $item);
-            $ledger->currentStock()->updateOrCreate(
-                ['date_id' => 0],
-                ['quantity_dr' => $ledger->amount]
-            );
+
+    public function balance(OpeningBalanceRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $softwareStartDate = $this->getSoftwareStartDate();
+
+            foreach ($request->input as $id => $input){
+                $ledgerHead = MISLedgerHead::findOrFail($id);
+                $currentStock = MisCurrentStock::firstOrNew([
+                    'stock_id' => $ledgerHead->id,
+                    'date_id' => $softwareStartDate->id
+                ]);
+
+                $currentStock->quantity_dr += $input['amount'] - $ledgerHead->amount;
+                $currentStock->save();
+
+                $ledgerHead->amount = $input['amount'];
+                $ledgerHead->unit_type_id = $input['unit_type_id'];
+                $ledgerHead->save();
+            }
+
+            DB::commit();
+            session()->flash('update', 'Opening balance successfully updated');
+            return redirect( )->back();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('stock.errors', ['error' => $exception->getMessage()]);
+
+            return redirect( )->back();
         }
 
-        $request->session()->flash('update', 'Opening balance has been updated');
-
-        return redirect('stock/opening/'.$ledger->mis_head_id );
     }
 
 
@@ -139,49 +159,33 @@ class StockController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Create Item or Category
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        if ( $request->cat_id)
-            $request->validate([
-                'name' => 'required',
-                'unit_type_id' => 'required',
-            ]);
+        DB::beginTransaction();
+        try {
+            if ($request->cat_id){
+                $ledgerHead = $this->createLedgerHead($request);
+                $request->session()->flash('create', '<b>'.$ledgerHead->name.'</b> has been added to the <b>'.$ledgerHead->ledgerable->name.'</b> category list');
+            }else{
+                $misHeadI = $this->createLedgerHeadCategory($request);
+                $request->session()->flash('create', '<b>'.$misHeadI->name.'</b> has been added to the category list');
+            }
 
-        $request->validate([
-            'name' => 'required',
-        ]);
-
-        $input = $request->all();
-
-
-        $mis_head = MISHead::find( $input['mis_head_id']);
-
-        if ( $request->cat_id){
-            $kate = MISHeadChild_I::find( $request->cat_id);
-            $code= MISLedgerHead::withTrashed()->orderBy('id', 'desc')->first();
-            $input['code'] = !$code ? 1000 : $code->code + 100;
-
-            $input['credit_head_id'] = $kate->credit_head_id;
-            $input['debit_head_id'] = $kate->debit_head_id;
-            $stock = $kate->ledger()->create( $input);
-
-            $stock->currentStock()->create(['date_id' => 0 ]);
-            $request->session()->flash('create', '<b>'.$stock->name.'</b> has been added to the <b>'.$stock->ledgerable->name.'</b> category list');
+            DB::commit();
+            return redirect()->route('stock.index', ['mis_head_id' => $request->mis_head_id]);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')->error('stock.error', ['error' => $exception->getMessage()]);
+            return redirect()->route('stock.index', ['mis_head_id' => $request->mis_head_id]);
         }
-        else{
-            $input['credit_head_id'] = $mis_head->credit_head_id;
-            $input['debit_head_id'] = $mis_head->debit_head_id;
-            $item = $mis_head->child()->create( $input);
-            $request->session()->flash('create', '<b>'.$item->name.'</b> has been added to the category list');
-        }
-        return redirect('stock?mis_head_id='.$request->mis_head_id);
-//        return redirect()->back();
+
     }
+
+
+
 
     /**
      * Display the specified resource.
@@ -245,53 +249,21 @@ class StockController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
     {
-//        return $request->all();
-
-        $i = 0; $operation = false;
-
-        if ( !$request->type){
-            $mis_head = MISHeadChild_I::find($id);
-            $cat = '<b>'.$mis_head->name.'</b>';
-
-            if ( $mis_head->ledger->isNotEmpty() ){
-                foreach ( $mis_head->ledger as $item) {
-                    if ( $item->purchases->isEmpty() && $item->deliveries->isEmpty()){
-                        $item->currentStock()->where('date_id', 0)->delete();
-                        $item->delete(); $i++;
-                    }
-                 $operation = count( $mis_head->ledger) == $i ? true : false;
-                }
-            }
-
-            $operation = $mis_head->ledger->isNotEmpty() ? false : true;
-
-            if ( $operation)
-                $mis_head->delete();
-
-            $operation ? $request->session()->flash('success', $cat. ' has been removed from category list') : $request->session()->flash('warning', 'Not all Items in category '.$cat.' is Empty');
-
+        DB::beginTransaction();
+        try {
+            $response = $this->deleteLedgerHead($request, $id);
+            DB::commit();
+            return $response;
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('stock.error', ['error' => $exception->getMessage()]);
+            return 403;
         }
-
-        if ( $request->type){
-
-            $item = MISLedgerHead::find($id);
-
-            if( $item->purchases->isEmpty() && $item->deliveries->isEmpty() && count($item->currentStock) == 1 ){
-                $item->currentStock()->where('date_id', 0)->delete();
-                $item->delete();
-                $operation = true;
-            }
-
-            $operation ? $request->session()->flash('success', '<b>'.$item->name.'</b> has been deleted successfully') : $request->session()->flash('failed', '<b> Operation Unsuccessful. '.$item->name.'</b> Has Dependencies.');
-        }
-
-
-        return 101;
-
 
     }
 

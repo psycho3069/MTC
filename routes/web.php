@@ -145,6 +145,9 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('accounts/balance', 'BalanceController');
     Route::resource('accounts', 'AccountController');
 
+    Route::any('stock-index-table/{mis_head_id}', 'StockController@getIndexTable')->name('table.stock.index');
+    Route::any('stock-balance-table/{mis_head_id}', 'StockController@tableSearch')->name('table.stock.balance');
+
     Route::post('stock/opening', ['as' => 'stock.balance', 'uses' => 'StockController@balance']);
     Route::get('stock/opening/{type_id}', ['as' => 'stock.opening', 'uses' => 'StockController@opening']);
     Route::get('stock/list/{type_id}', ['as' => 'stock.list', 'uses' => 'StockController@list']);

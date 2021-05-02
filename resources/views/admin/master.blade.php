@@ -96,6 +96,8 @@
 {{--    <script src="{{asset('bs4')}}/js/jquery.js"></script>--}}
     <script src="{{asset('bs4')}}/js/bootstrap.min.js"></script>
     <script src="{{asset('bs4')}}/js/bootstrap.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
     @yield('datatable')
     <!-- bootbox -->
