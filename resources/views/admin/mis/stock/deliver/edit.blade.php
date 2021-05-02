@@ -11,25 +11,34 @@
                         {{ csrf_field()}}
                         <input type="hidden" name="_method" value="PATCH">
 
-                        <table class="table table-hover">
+                        <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Stock</th>
                                 <th>Quantity</th>
                                 <th>Unit</th>
                             </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ $delivery->ledger->name }}</td>
-                                    <td class="col-md-2">
-                                        <input type="text" class="form-control text-right" name="quantity" value="{{ $delivery->currentStock->quantity_cr * $delivery->unit->multiply_by }}" min="0">
+                                    <td width="130">{{ $delivery->ledger->name }}</td>
+                                    <td width="100" align="right">
+                                        {{$delivery->ledger->stockAvailable().' '.$delivery->ledger->unitType->short_name}}
+                                    </td>
+                                    <td width="70">
+                                        <input type="text" class="form-control text-right"
+                                               name="quantity"
+                                               value="{{ $delivery->currentStock->quantity_cr * $delivery->unit->multiply_by }}" min="0">
                                     </td>
 
-                                    <td class="col-md-2">
+                                    <td width="100">
                                         <select class="form-control text-center" name="unit_id">
                                             @foreach( $delivery->ledger->unitType->units as $unit )
-                                                <option value="{{ $unit->id }}" {{ $delivery->unit_id == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
+                                                <option value="{{$unit->id}}"
+                                                    {{$delivery->unit_id==$unit->id?'selected':''}}>
+                                                    {{$unit->name}}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </td>

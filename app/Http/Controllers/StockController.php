@@ -207,10 +207,10 @@ class StockController extends Controller
      */
     public function edit($id)
     {
-//        return $stock_head->stock;
         $mis_head = MISHeadChild_I::find( $id);
         $units = UnitType::get();
-        return view('admin.mis.stock.edit', compact('mis_head', 'units'));
+        $softwareStartDate = $this->getSoftwareStartDate();
+        return view('admin.mis.stock.edit', compact('mis_head', 'units', 'softwareStartDate'));
 
     }
 

@@ -20,7 +20,7 @@
                                     <option value="2" {{request('per_page')==2?'selected':''}}>2</option>
                                     <option value="3" {{request('per_page')==3?'selected':''}}>3</option>
                                     <option value="4" {{request('per_page')==4?'selected':''}}>4</option>
-                                    <option value="5" {{request('per_page')==5?'selected':''}}>5</option>
+                                    <option value="5" {{request('per_page', 5)==5?'selected':''}}>5</option>
                                     <option value="10" {{request('per_page')==10?'selected':''}}>10</option>
                                 </select>
                             </div>

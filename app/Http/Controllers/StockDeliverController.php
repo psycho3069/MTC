@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Configuration;
 use App\Date;
 use App\Delivery;
+use App\Http\Traits\SoftwareConfigurationTrait;
+use App\Http\Traits\StockTrait;
 use App\MISHeadChild_I;
 use App\MISLedgerHead;
 use App\Stock;
@@ -12,9 +14,12 @@ use App\StockHead;
 use App\Unit;
 use App\UnitType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StockDeliverController extends Controller
 {
+    use SoftwareConfigurationTrait, StockTrait;
     /**
      * Display a listing of the resource.
      *
@@ -41,39 +46,25 @@ class StockDeliverController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-//        return $request->all();
+        DB::beginTransaction();
+        try {
+            $softwareDate = $this->getSoftwareDate();
+            $this->deliverGroceries($request, $softwareDate);
+            DB::commit();
+            session()->flash('success', 'Delivery successfully');
+            return redirect()->route('deliver.index');
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('delivery.error', ['error' => $exception->getMessage()]);
 
-        $input = $request->input;
-        $conf_date = Configuration::find(1)->software_start_date;
-        $date = Date::where( 'date', $conf_date)->first();
-
-        if ( empty($date) )
-            $date = Date::create([ 'date' => $conf_date ]);
-
-        foreach ($input as $item) {
-            $stock = MISLedgerHead::find($item['stock_id']);
-            $unit = $stock->unitType->units->find( $item['unit_id']);
-            $quantity = $item['quantity'] / $unit->multiply_by;
-            $total = $stock->currentStock->sum('quantity_dr') - $stock->currentStock->sum('quantity_cr');
-            $item['quantity'] = $quantity > $total ? $total * $unit->multiply_by : $item['quantity'];
-
-            $item['date_id'] = $date->id;
-            $item['quantity_cr'] = $item['quantity'] / $unit->multiply_by;
-            $cr_stock = $stock->currentStock()->create($item);
-            $item['current_stock_id'] = $cr_stock->id;
-            $stock->deliveries()->create($item);
+            return redirect()->back()->withInput($request->all());
         }
-
-
-        $request->session()->flash('success', 'Items has been Delivered successfully');
-        return redirect('stocks/deliver');
 
     }
 
@@ -96,11 +87,10 @@ class StockDeliverController extends Controller
      */
     public function edit($id)
     {
-        $delivery = Delivery::find($id);
+        $delivery = Delivery::findOrfail($id);
         $data['units'] = Unit::all();
 
-        if ( $delivery)
-            return view('admin.mis.stock.deliver.edit', compact('delivery', 'data'));
+        return view('admin.mis.stock.deliver.edit', compact('delivery', 'data'));
 
     }
 
@@ -113,16 +103,23 @@ class StockDeliverController extends Controller
      */
     public function update(Request $request, $id)
     {
-//        return $request->all();
-        $input = $request->all();
-        $delivery = Delivery::find( $id);
-        $unit = $delivery->ledger->unitType->units->find( $input['unit_id']);
-        $quantity_cr = $input['quantity'] / $unit->multiply_by;
-        $total = $delivery->ledger->currentStock->sum('quantity_dr') - $delivery->ledger->currentStock->sum('quantity_cr') + $delivery->quantity / $delivery->unit->multiply_by;
+        DB::beginTransaction();
+        try {
+            $delivery = Delivery::findOrFail($id);
+            $this->updateDelivery($request, $delivery);
+            DB::commit();
+            session()->flash('success', 'Delivery updated');
+            return redirect()->route('deliver.index');
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('delivery.error', ['error' => $exception->getMessage()]);
 
-        $input['quantity'] = $quantity_cr > $total ? $total * $unit->multiply_by : $input['quantity'];
-        $delivery->update( $input);
-        $delivery->currentStock->update([ 'quantity_cr' => $input['quantity'] / $unit->multiply_by ]);
+            return redirect()->back()->withInput($request->all());
+        }
+
+
 
 
         return redirect('stocks/deliver')->with('update', '<b>Operation successful</b>');
@@ -137,7 +134,7 @@ class StockDeliverController extends Controller
      */
     public function destroy($id)
     {
-        $delivery = Delivery::find( $id);
+        $delivery = Delivery::find($id);
         $delivery->currentStock->delete();
         $delivery->delete();
 

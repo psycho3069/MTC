@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="col-md-8">
+    <div class="col-md-10">
         {{ csrf_field() }}
         <br><br><br>
         <samp>
@@ -12,14 +12,14 @@
                     <button type="button" class="btn btn-i btn-sm pull-right" onclick='window.location="{{ route('deliver.create') }}"'>New Delivery</button>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-hover table-info">
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th></th>
-                            <th class="">Date</th>
-                            <th class="">Item name</th>
-                            <th class="">Delivery quantity</th>
-                            <th class=""></th>
+                            <th>Date</th>
+                            <th>Item name</th>
+                            <th>Delivery quantity</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -29,7 +29,7 @@
                                 <td>{{ date('d-m-Y', strtotime($item->date->date)) }}</td>
                                 <td>{{ $item->ledger->name }}</td>
                                 <td>{{ $item->quantity.' '.$item->unit->name }}</td>
-                                <td width="18%" align="right">
+                                <td align="right">
                                     <a href="{{ route('deliver.edit', $item->id) }}" class="btn btn-sm btn-primary" title="Edit">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
@@ -63,7 +63,7 @@
                     data: {_token: _token},
                     success: function (data) {
                         console.log(data)
-                        window.location.href = "{{ route('deliver.index') }}";
+                        window.location.reload();
                     }
                 })
         }

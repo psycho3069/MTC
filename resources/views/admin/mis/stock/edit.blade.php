@@ -34,25 +34,26 @@
                                 <h4>Items</h4>
                                 <p class="text-danger">{{ $errors->has('input.*.name') ? $errors->first('input.*.name') : '' }}</p>
 {{--                                <p class="text-danger">{{ $errors->has('input.*.unit_type_id') ? $errors->first('input.*.unit_type_id') : '' }}</p>--}}
-                                @foreach( $mis_head->ledger as $item )
+                                @foreach( $mis_head->ledger as $ledgerHead )
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Name</label>
-                                                <input type="text" class="form-control" name="input[{{$item->id}}][name]" value="{{ $item->name }}">
+                                                <input type="text" class="form-control" name="input[{{$ledgerHead->id}}][name]" value="{{ $ledgerHead->name }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label>Unit</label>
-                                            <select class="form-control" name="input[{{$item->id}}][unit_type_id]" {{ count( $item->currentStock->where('date_id', '!=', 0)) > 0 ? 'disabled' : ''}}>
+                                            <select class="form-control" name="input[{{$ledgerHead->id}}][unit_type_id]"
+                                                {{$ledgerHead->currentStock->count() > 1 ? 'disabled' : ''}}>
                                                 @foreach( $units as $unit )
-                                                    <option value="{{ $unit->id }}" {{ $item->unit_type_id == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
+                                                    <option value="{{ $unit->id }}" {{ $ledgerHead->unit_type_id == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="col-md-5">
                                             <label>Description</label>
-                                            <textarea class="form-control" name="input[{{$item->id}}][description]" cols="3" rows="1">{{ $item->description }}</textarea>
+                                            <textarea class="form-control" name="input[{{$ledgerHead->id}}][description]" cols="3" rows="1">{{ $ledgerHead->description }}</textarea>
                                         </div>
                                     </div>
                                 @endforeach

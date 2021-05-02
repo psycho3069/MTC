@@ -112,7 +112,7 @@ trait StockTrait
 
         foreach ($input as $item) {
             $ledgerHead = MISLedgerHead::find($item['stock_id']);
-            $unit = $this->getUnit($item['unit_id'], $ledgerHead->unit_type_id);
+            $unit = $this->getUnit($item['unit_id']);
             $misVoucher = $this->createMISVoucher($ledgerHead, $softwareDate, $item['amount']);
 
             $item['mis_voucher_id'] = $misVoucher->id;
@@ -165,10 +165,72 @@ trait StockTrait
     }
 
 
+    public function deliverGroceries($request, $softwareDate)
+    {
+        foreach ($request->input as $item) {
+            $ledgerHead = MISLedgerHead::findOrFail($item['stock_id']);
+            $unit = $this->getUnit($item['unit_id']);
+            $deliveryQuantity = $this->checkDeliveryQuantity($item['quantity'], $unit, $ledgerHead);
+
+            if ($deliveryQuantity <= 0){
+                session()->flash('warning', '<b>Delivery failed.</b> Stock not available');
+                throw new \Exception('Stock not available', 403);
+            }
+
+            $item['date_id'] = $softwareDate->id;
+            $item['quantity'] = $this->getChosenQuantity($deliveryQuantity, $unit);
+            $item['quantity_cr'] = $deliveryQuantity;
+
+            $cr_stock = $ledgerHead->currentStock()->create($item);
+            $item['current_stock_id'] = $cr_stock->id;
+            $ledgerHead->deliveries()->create($item);
+        }
+
+    }
+
+
+    public function updateDelivery($request, $delivery)
+    {
+        $unit = $this->getUnit($request->unit_id);
+        $currentStock = $delivery->currentStock;
+        $deliveryQuantity = $this->checkDeliveryQuantity($request->quantity, $unit, $delivery->ledger, $currentStock->quantity_cr);
+
+
+        if ($deliveryQuantity < 0){
+            session()->flash('warning', '<b>Delivery failed.</b> Stock not available');
+            throw new \Exception('Stock not available', 403);
+        }
+
+        $delivery->quantity = $this->getChosenQuantity($deliveryQuantity, $unit);
+        $delivery->unit_id = $unit->id;
+        $delivery->save();
+
+        $currentStock->quantity_cr = $deliveryQuantity;
+        $currentStock->save();
+
+        return $delivery;
+    }
+
+
+    public function checkDeliveryQuantity($quantity, $unit, $ledgerHead, $previous = 0)
+    {
+        $deliveryQuantity = $this->getUnitQuantity($quantity, $unit);
+        $totalAvailable = $ledgerHead->stockAvailable() + $previous;
+
+        return $totalAvailable >= $deliveryQuantity ? $deliveryQuantity : 0;
+    }
+
+
 
     public function getUnitQuantity($quantity, $unit)
     {
         return $quantity / $unit->multiply_by;
+    }
+
+
+    public function getChosenQuantity($quantity, $unit)
+    {
+        return $quantity * $unit->multiply_by;
     }
 
 

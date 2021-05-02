@@ -26,6 +26,13 @@ class MISLedgerHead extends Model
         return $this->hasMany('App\MisCurrentStock', 'stock_id');
     }
 
+
+    public function stockAvailable()
+    {
+        return $this->currentStock->sum('quantity_dr') - $this->currentStock->sum('quantity_cr');
+    }
+
+
     public function purchases()
     {
         return $this->hasMany('App\Purchase', 'stock_id');
