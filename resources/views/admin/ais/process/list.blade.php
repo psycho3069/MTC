@@ -8,12 +8,12 @@
             color: #fff;
         }
     </style>
-    <div class="col-md-8">
+    <div class="col-md-12">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
                     <b>Day End Process</b>
-                    <form action="{{ route('process.show.list') }}" method="POST" class="pull-right">
+                    <form action="{{ route('process.show.list') }}" method="POST">
                         {{ csrf_field() }}
 
                         <select id="year" class="form-horizontal">
@@ -34,6 +34,8 @@
                         </select>
                         <button class="btn btn-dark btn-sm">Show</button>
                     </form>
+
+
                     <form method="POST" action="{{ route('process.store') }}">
                         {{ csrf_field() }}
                         @if( $date->status != 1 )
@@ -43,7 +45,7 @@
                     </form>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-hover table-primary">
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th scope="col">Type</th>
@@ -56,27 +58,28 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach( $date->vGroup as $v_group )
+                        @foreach( $date->vGroup as $voucherGroup )
                             <tr>
-                                <td>{{ $v_group->type->name }}</td>
-                                <td>{{ $v_group->code }}</td>
-                                <td>{{ $v_group->vouchers->sum('amount') }}</td>
-                                <td>{{ str_limit( $v_group->note, 40)  }}</td>
-                                <td>{{ date('d-m-Y', strtotime($v_group->date->date)) }}</td>
-                                <td>
-                                    {!! $v_group->date->status ? '<span class="badge badge-success">Success</span>' : '<span class="badge badge-warning">Pending</span>' !!}
+                                <td width="50">{{ $voucherGroup->type->name }}</td>
+                                <td width="100">{{ $voucherGroup->code }}</td>
+                                <td width="100">{{ $voucherGroup->vouchers->sum('amount') }}</td>
+                                <td width="100">{{ str_limit( $voucherGroup->note, 40)  }}</td>
+                                <td width="100">{{ date('d-m-Y', strtotime($voucherGroup->date->date)) }}</td>
+                                <td width="100">
+                                    {!! $voucherGroup->date->status ? '<span class="badge badge-success">Success</span>' : '<span class="badge badge-warning">Pending</span>' !!}
                                 </td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-i" for="btnControl">
-                                            More
-                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                        </button>
-                                        <div class="dropdown-content">
-                                            <a href="{{ route('vouchers.show', $v_group->id) }}">View</a>
-                                            <a href="{{ route('vouchers.edit', $v_group->id) }}">Edit</a>
-                                        </div>
-                                    </div>
+                                <td width="50">
+                                    <a href="{{ route('vouchers.show', $voucherGroup->id) }}" class="btn btn-sm btn-i" title="View">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ route('vouchers.edit', $voucherGroup->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    @if( $voucherGroup->type_id != 10 && $voucherGroup->type_id != 11)
+                                        <a href="" class="btn btn-sm btn-danger" data_id="{{ $voucherGroup->id }}" title="Delete" onclick="destroy( $(this).attr('data_id')); return false;">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

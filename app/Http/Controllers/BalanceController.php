@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\AccountHeadChild_I;
 use App\AccountHeadChild_II;
 use App\AccountHeadChild_III;
-use App\Http\Traits\SystemConfigurationTrait;
+use App\Http\Traits\SoftwareConfigurationTrait;
 use App\Process;
 use App\TransactionHead;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class BalanceController extends Controller
 {
-    use SystemConfigurationTrait;
+    use SoftwareConfigurationTrait;
     /**
      * Display a listing of the resource.
      *

@@ -29,9 +29,9 @@ class VoucherController extends Controller
     {
         $data['types'] = VoucherType::whereNotIn('id', [5,6,7,8,9])->get();
         $data['v_group'] = VoucherGroup::orderBy('id', 'desc')->get();
+        $softwareDate = $this->getSoftwareDate();
 
-        return view('admin.ais.voucher.index', compact('data' ));
-//        return view('admin.ais.voucher.test', compact('data' ));
+        return view('admin.ais.voucher.index', compact('data', 'softwareDate'));
     }
 
 
@@ -39,29 +39,39 @@ class VoucherController extends Controller
     public function list(Request $request)
     {
         $input = $request->all();
+        $input['start_date'] = $request->start_date;
+        $input['end_date'] = $request->end_date;
 
-        $input['start_date'] = date('Y-m-d', strtotime( $request->start_date));
-        $input['end_date'] = date('Y-m-d', strtotime( $request->end_date));
-
-        $data['types'] = VoucherType::whereNotIn('id', [5,6,7,8,9])->get();
+        $voucherTypes = VoucherType::whereNotIn('id', [5,6,7,8,9])->get();
         $dates = Date::whereBetween('date', [$input['start_date'], $input['end_date']])
             ->orderBy('id')
             ->get();
 
-        $data['v_group'] = VoucherGroup::whereIn('date_id', $dates->pluck('id'))
-            ->orderBy('date_id', 'desc')
-            ->get();
+        $query = VoucherGroup::query();
+        $query->whereIn('voucher_groups.date_id', $dates->pluck('id'));
 
         if ($request->category == 1)
-            $data['v_group'] = $data['v_group']->where('type_id', '>', 4);
+            $query->where('type_id', '>', 4);
         if ($request->category == 2)
-            $data['v_group'] = $data['v_group']->where('type_id', '<', 5);
+            $query->where('type_id', '<', 5);
         if ($request->type_id)
-            $data['v_group'] = $data['v_group']->where('type_id', $request->type_id);
+            $query->where('type_id', $request->type_id);
 
-//        return $input;
+        $query->with([
+        'type' => function($query){
+            $query->selectRaw('id, name');
+            }, 'vouchers' => function($query){
+                $query->selectRaw('v_group_id, amount');
+            }, 'user' => function($query){
+                $query->selectRaw('id, name');
+            }]);
 
-        return view('admin.ais.voucher.list', compact('data', 'input'));
+        $query->orderBy('date_id', 'desc');
+        $voucherGroups = $query->get();
+
+        return view('admin.ais.voucher.list', compact(
+            'voucherGroups', 'voucherTypes', 'input'
+        ));
     }
 
 

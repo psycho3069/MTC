@@ -4,7 +4,7 @@
 
 
 @section('content')
-    <div class="col-md-10">
+    <div class="col-md-12">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -13,11 +13,15 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label>Start Date</label>
-                                <input type="date" class="form-control date" name="start_date" value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}" >
+                                <input type="date" class="form-control date"
+                                       name="start_date"
+                                       value="{{$softwareDate->date}}" >
                             </div>
                             <div class="col-md-3">
                                 <label>End Date</label>
-                                <input type="date" class="form-control date" name="end_date"  value="{{ date('Y-m-d', strtotime(\App\Configuration::find(1)->software_start_date)) }}">
+                                <input type="date" class="form-control date"
+                                       name="end_date"
+                                       value="{{$softwareDate->date}}">
                             </div>
 
                             <div class="col-md-2">
@@ -34,7 +38,10 @@
                                 <select name="type_id" class="form-control" id="type">
                                     <option value="0">All</option>
                                     @foreach( $data['types'] as $item )
-                                        <option value="{{ $item->id }}" class={{ $item->id >4 ? 'auto' : 'manual' }} >{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}"
+                                                class={{ $item->id >4 ? 'auto' : 'manual' }} >
+                                            {{ $item->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -71,14 +78,18 @@
                                 <td>{{ date('d-m-Y', strtotime($item->date->date)) }}</td>
 
                                 <td width="18%" align="">
-                                    <a href="{{ route('vouchers.show', $item->id) }}" class="btn btn-sm btn-i" title="View">
+                                    <a href="{{ route('vouchers.show', $item->id) }}"
+                                       class="btn btn-sm btn-i" title="View">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
-                                    <a href="{{ route('vouchers.edit', $item->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                    <a href="{{ route('vouchers.edit', $item->id) }}"
+                                       class="btn btn-sm btn-primary" title="Edit">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
                                     @if( $item->type_id != 10 && $item->type_id != 11)
-                                        <a href="" class="btn btn-sm btn-danger" data_id="{{ $item->id }}" title="Delete" onclick="destroy( $(this).attr('data_id')); return false;">
+                                        <a href="" class="btn btn-sm btn-danger"
+                                           data_id="{{ $item->id }}" title="Delete"
+                                           onclick="destroy( $(this).attr('data_id')); return false;">
                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                         </a>
                                     @endif

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Configuration;
 use App\Date;
+use App\Http\Traits\SoftwareConfigurationTrait;
 use App\Process;
 use App\TransactionHead;
 use App\TransactionHistory;
@@ -12,18 +13,18 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProcessController extends Controller
 {
+    use SoftwareConfigurationTrait;
+
+
     public function index(Request $request)
     {
         $all_bl = Process::all();
         $dates = Date::all();
-
-//        $data = Process::where('debit', '>', 0)->orWhere('credit', '>', 0)->get()->groupBy('date_id');
-//        $data = new LengthAwarePaginator($data, count($data), 2);
-//        $data->setPath('process');
-
         return view('admin.ais.process.index', compact('dates', 'all_bl'));
     }
 
@@ -36,19 +37,23 @@ class ProcessController extends Controller
 
     public function list()
     {
-        $dates = Date::orderBy('id')->get();
+        $dates = Date::select('id', 'date', 'status')->get();
         $x = $dates->where('status', 0);
         $date = $x->isEmpty() ? $dates->first() : $x->first();
 
-        return $this->getDate( $dates, $date);
+        return $this->getDate($dates, $date);
     }
 
 
     public function showList(Request $request)
     {
-        $dates = Date::orderBy('id')->get();
-        $date = $dates->find( $request->date_id);
-        return $this->getDate( $dates, $date);
+
+        $query = Date::query();
+        $query->with(['groupVouchers', 'groupVouchers.vouchers', 'groupVouchers.type']);
+        $date = $query->findOrFail($request->date_id);
+        $dates = Date::get();
+
+        return $this->getDate($dates, $date);
     }
 
     public function getDate( $dates, $date)
@@ -69,7 +74,6 @@ class ProcessController extends Controller
             }
         }
 
-//        return $data['days'];
         $data['months'] = collect($data['months'])->unique();
 
         return view('admin.ais.process.list', compact('date', 'data', 'format') );
@@ -111,6 +115,27 @@ class ProcessController extends Controller
     }
 
 
+
+    public function listOld()
+    {
+
+        $defaultDate = Date::where('status', 0)->value('id');
+        $query = Date::query();
+        $query->with(['groupVouchers', 'groupVouchers.vouchers', 'groupVouchers.type']);
+        $showDate = $query->find(request('date_id', $defaultDate));
+
+        $dates = [];
+        $query = Date::query();
+        $query->selectRaw('id, YEAR(date) year, MONTHNAME(date) month, DAY(date) day');
+        $query->orderBy('date');
+        foreach ($query->get() as $date) {
+            $dates[$date->year][$date->month][$date->day] = $date->id;
+        }
+
+
+        return view('admin.ais.process.list', compact('dates', 'showDate') );
+
+    }
 
 
 
@@ -155,16 +180,31 @@ class ProcessController extends Controller
 
     public function store(Request $request)
     {
-        $dates = Date::all();
-        $dates->find( $request->date_id)->update([ 'status' => 1]);
+        DB::beginTransaction();
+        try {
+            $date = Date::findOrFail($request->date_id);
+            $date->status = 1;
+            $date->save();
 
-        $x = Configuration::find(1);
-        $x->software_start_date = date('Y-m-d', strtotime('+1 day', strtotime($x->software_start_date)));;
-        $x->save();
+            $nextDate = Carbon::parse($date->date)->addDay();
+            $nextDate = Date::firstOrCreate(['date' => $nextDate]);
 
-        if ( count($dates->where('date', $x->software_start_date)) == 0 )
-            $dates[0]->create([ 'date' => $x->software_start_date]);
-        return redirect('process/list')->with('success', 'Operation Successful!');
+            $softwareDate = $this->getSoftwareConfigurationDate();
+            $softwareDate->date = $nextDate->date;
+            $softwareDate->save();
+            session()->flash('success', 'Operation successful');
+            DB::commit();
+            return redirect()->route('process.list');
+        }catch (\Exception $exception){
+            DB::rollBack();
+            session()->flash('error', 'Operation unsuccessful');
+            Log::channel('single')
+                ->error('process.error', ['error' => $exception->getMessage()]);
+
+            return redirect()->back();
+        }
+
+
     }
 
 

@@ -6,7 +6,7 @@
 
           <p id="demo" style="color: white;"></p>
 
-              <p style="color: whitesmoke;">Software date : <b style="color: whitesmoke;">{{ date('d-m-Y', strtotime(\App\Configuration::find(1)->software_start_date)) }}</b></p>
+              <p style="color: whitesmoke;">Software date : <b style="color: whitesmoke;">{{ date('d-m-Y', strtotime(\App\Configuration::find(1)->date)) }}</b></p>
 
 
             <p style="color: #99c2ff; font-size: 25px; font-family: 'Times New Roman', Times, serif; ">

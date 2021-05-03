@@ -4,7 +4,7 @@
 
 
 @section('content')
-    <div class="col-md-9">
+    <div class="col-md-12">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -13,11 +13,13 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label>Start Date</label>
-                                <input type="date" class="form-control date" name="start_date" value="{{ $input['start_date'] }}">
+                                <input type="date" class="form-control date"
+                                       name="start_date" value="{{ $input['start_date'] }}">
                             </div>
                             <div class="col-md-3">
                                 <label>End Date</label>
-                                <input type="date" class="form-control date" name="end_date" value="{{ $input['end_date'] }}">
+                                <input type="date" class="form-control date"
+                                       name="end_date" value="{{ $input['end_date'] }}">
                             </div>
                             <div class="col-md-2">
                                 <label>Type</label>
@@ -27,23 +29,27 @@
                                     <option value="2" {{ $input['category'] == 2 ? 'selected' : '' }}>Manual</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label>Category</label>
                                 <select name="type_id" class="form-control" id="type">
                                     <option value="0">All</option>
-                                    @foreach( $data['types'] as $item )
-                                        <option value="{{ $item->id }}" class={{ $item->id >4 ? 'auto' : 'manual' }} {{ $input['type_id'] == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                    @foreach( $voucherTypes as $voucherType )
+                                        <option value="{{ $voucherType->id }}"
+                                            class={{$voucherType->id>4?'auto':'manual'}}
+                                            {{$input['type_id']==$voucherType->id?'selected':''}}>
+                                            {{ $voucherType->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-1" style="margin-top: 2%;">
+                            <div class="col-md-1">
                                 <button class="btn btn-dark btn-sm show-button">Show</button>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary">
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th></th>
@@ -57,25 +63,25 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach( $data['v_group'] as $item )
+                        @foreach( $voucherGroups as $voucherGroup )
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->code }}</td>
-                                <td>{{ $item->type->name }} Voucher</td>
-                                <td>{{ $item->vouchers->sum('amount') }}</td>
-                                <td>{{ str_limit($item->note, 18) }}</td>
-                                <td>{{ $item->user->name }}</td>
-                                <td>{{ date('d-m-Y', strtotime( $item->date->date)) }}</td>
+                                <td width="50">{{ $loop->iteration }}</td>
+                                <td width="100">{{ $voucherGroup->code }}</td>
+                                <td width="100">{{ $voucherGroup->type->name }} Voucher</td>
+                                <td width="100">{{ $voucherGroup->vouchers->sum('amount') }}</td>
+                                <td width="100">{{ $voucherGroup->note }}</td>
+                                <td width="100">{{ $voucherGroup->user->name }}</td>
+                                <td width="100">{{ date('d-m-Y', strtotime( $voucherGroup->date->date)) }}</td>
 
-                                <td width="18%" align="">
-                                    <a href="{{ route('vouchers.show', $item->id) }}" class="btn btn-sm btn-i" title="View">
+                                <td width="50">
+                                    <a href="{{ route('vouchers.show', $voucherGroup->id) }}" class="btn btn-sm btn-i" title="View">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
-                                    <a href="{{ route('vouchers.edit', $item->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                    <a href="{{ route('vouchers.edit', $voucherGroup->id) }}" class="btn btn-sm btn-primary" title="Edit">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
-                                    @if( $item->type_id != 10 && $item->type_id != 11)
-                                        <a href="" class="btn btn-sm btn-danger" data_id="{{ $item->id }}" title="Delete" onclick="destroy( $(this).attr('data_id')); return false;">
+                                    @if( $voucherGroup->type_id != 10 && $voucherGroup->type_id != 11)
+                                        <a href="" class="btn btn-sm btn-danger" data_id="{{ $voucherGroup->id }}" title="Delete" onclick="destroy( $(this).attr('data_id')); return false;">
                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                         </a>
                                     @endif

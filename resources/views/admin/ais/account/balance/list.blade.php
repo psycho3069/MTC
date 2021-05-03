@@ -13,7 +13,7 @@
 
                     <div class="card-body">
                         {{ csrf_field() }}
-                        <table class="table table-bordered table-hover table-striped table-success opening-balance table-fixed" id="myTable">
+                        <table class="table table-bordered table-hover table-striped opening-balance table-fixed" id="myTable">
                             <thead>
                             <tr>
                                 <th></th>

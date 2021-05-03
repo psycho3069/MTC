@@ -8,14 +8,14 @@ use App\AccountHeadChild_II;
 use App\AccountHeadChild_III;
 use App\AccountHeadChild_IV;
 use App\Date;
-use App\Http\Traits\SystemConfigurationTrait;
+use App\Http\Traits\SoftwareConfigurationTrait;
 use App\TransactionHead;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
 
-    use SystemConfigurationTrait;
+    use SoftwareConfigurationTrait;
 
     /**
      * Display a listing of the resource.

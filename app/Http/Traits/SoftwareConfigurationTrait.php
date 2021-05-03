@@ -20,6 +20,11 @@ trait SoftwareConfigurationTrait
     }
 
 
+    public function getSoftwareConfigurationDate()
+    {
+        return Configuration::findOrFail(1);
+    }
+
 
     public function getSoftwareDate()
     {
