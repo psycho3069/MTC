@@ -8,7 +8,6 @@ use App\Configuration;
 use App\Date;
 use App\Guest;
 use App\Http\Traits\BillingTrait;
-use App\Http\Traits\CustomTrait;
 use App\Http\Traits\SoftwareConfigurationTrait;
 use App\Http\Traits\VoucherTrait;
 use App\Payment;

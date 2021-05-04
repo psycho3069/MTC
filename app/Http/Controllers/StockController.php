@@ -85,7 +85,7 @@ class StockController extends Controller
 
     public function tableSearch($misHeadId)
     {
-        $perPage = request('per_page') ?: 5;
+        $perPage = request('per_page') ?: 25;
         $name = request('name');
         $units = UnitType::all();
         $query = MISLedgerHead::query();

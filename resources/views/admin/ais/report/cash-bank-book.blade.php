@@ -23,7 +23,19 @@
                         <form action="{{ route('report.cash-bank-book') }}">
                             {{ csrf_field() }}
                             <div class="row">
-                                <div class="col-md-1" >
+                                <div class="col-md-3">
+                                    <label>Start Date</label>
+                                    <div>
+                                        <input type="date" class="form-control" name="start_date"
+                                               value="{{ $data['start_date'] }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>End Date</label>
+                                    <div>
+                                        <input type="date" class="form-control" name="end_date"
+                                               value="{{ $data['end_date'] }}">
+                                    </div>
                                 </div>
                                 <div class="col-md-2">
                                     <label>Type</label>
@@ -33,7 +45,7 @@
                                         <option value="2" @if(2 == $data['category']) {{ 'Selected' }}  @endif>Manual</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label>Category</label>
                                     <select name="type_id" class="form-control" id="type">
                                         <option value="0">All</option>
@@ -41,18 +53,6 @@
                                             <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} @if($item->id == $data['type']) {{ 'Selected' }}  @endif >{{ $item->name }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Start Date</label>
-                                    <div>
-                                        <input type="date" class="form-control date" name="start_date" value="{{ $data['start_date'] ? $data['start_date'] : Date::find(1)->date }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <label>End Date</label>
-                                    <div>
-                                        <input type="date" class="form-control date" name="end_date" value="{{ $data['end_date'] ? $data['end_date'] : Date::all()->last()->date }}">
-                                    </div>
                                 </div>
                                 <div class="col-md-1">
                                     <button class="btn btn-dark btn-sm show-button pull-right">Show</button>
@@ -62,20 +62,16 @@
                     </small>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary table-chart table-responsive">
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th class="" style='width: 5%;' rowspan="2">Date</th>
-                            <th class="" style='width: 5%;' rowspan="2">Voucher Code</th>
-                            <th class="" style='width: 25%;' rowspan="2">Account head</th>
-                            <th class="" style='width: 20%;' rowspan="2">Narration/Cheque Details</th>
-                            <th class="" style='width: 15%;' colspan="2">Receipt (Debit)</th>
-                            <th class="" style='width: 15%;' colspan="2">Payment (Credit)</th>
-                            <th class="" style='width: 15%;' colspan="2">Balance</th>
-{{--                            <th class="" style='width: 15%;'>Credit (Bank)</th>--}}
-{{--                            <th class="" style='width: 15%;'>Debit (Bank)</th>--}}
-{{--                            <th class="" style='width: 15%;'>Balance (Bank)</th>--}}
-                            {{--                    <th class="">Dr/Cr</th>--}}
+                            <th rowspan="2" width="100">Date</th>
+                            <th rowspan="2" width="100">Voucher Code</th>
+                            <th rowspan="2" width="100">Account head</th>
+                            <th rowspan="2" width="100">Narration/Cheque Details</th>
+                            <th colspan="2" width="100">Receipt (Debit)</th>
+                            <th colspan="2" width="100">Payment (Credit)</th>
+                            <th colspan="2" width="100">Balance</th>
                         </tr>
                         <tr>
                             <th>Cash</th>

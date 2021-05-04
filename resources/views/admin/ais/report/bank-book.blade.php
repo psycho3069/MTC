@@ -69,7 +69,7 @@
                     </small>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary table-chart table-responsive">
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th class="" style='width: 5%;'>Date</th>

@@ -22,7 +22,7 @@
                         <b>Receipt Payment Statement[POSMIS-6]</b>
                     </p>
 
-                    <form action="{{ route('report.income-statement') }}" method="POST">
+                    <form action="{{ route('reports.income.statement') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="row">
                             <div class="col-md-3">
@@ -125,6 +125,16 @@
                             @endforeach
                         </tr>
                         </tbody>
+                        <tr class="profit">
+                            <td colspan="3">
+                                <table class="nested">
+                                    <td class="no-border">Profit</td>
+                                    <td class="no-border text-right T2">{{$data[3]['monthly'] - $data[4]['monthly']}}</td>
+                                    <td class="no-border text-right T3">{{$data[3]['cumulative'] - $data[4]['cumulative']}}</td>
+
+                                </table>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -141,6 +151,13 @@
         /*.table-bordered th, .table-bordered td {*/
         /*    border: 1px solid;*/
         /*}*/
+        .profit td{
+            font-weight: 800;
+            border: 0.21em solid black;
+        }
+        .no-border{
+            border: transparent !important;
+        }
 
         .border1{
             border: 2px solid black !important;

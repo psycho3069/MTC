@@ -6,13 +6,13 @@
 
         <small>
             <form method="POST" action="{{ route('balance.store') }}">
+                {{ csrf_field() }}
                 <div class="card">
                     <div class="card-header">
                         <b>Opening Balance</b>
                     </div>
 
                     <div class="card-body">
-                        {{ csrf_field() }}
                         <table class="table table-bordered table-hover table-striped opening-balance table-fixed" id="myTable">
                             <thead>
                             <tr>

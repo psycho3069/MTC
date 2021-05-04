@@ -23,7 +23,17 @@
                         <form action="{{ route('report.cash-book') }}">
                             {{ csrf_field() }}
                             <div class="row">
-                                <div class="col-md-2" >
+                                <div class="col-md-3">
+                                    <label>Start Date</label>
+                                    <div>
+                                        <input type="date" class="form-control" name="start_date" value="{{ $data['start_date'] }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>End Date</label>
+                                    <div>
+                                        <input type="date" class="form-control" name="end_date" value="{{ $data['end_date'] }}">
+                                    </div>
                                 </div>
                                 <div class="col-md-2">
                                     <label>Type</label>
@@ -33,7 +43,7 @@
                                         <option value="2" @if(2 == $data['category']) {{ 'Selected' }}  @endif>Manual</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label>Category</label>
                                     <select name="type_id" class="form-control" id="type">
                                         <option value="0">All</option>
@@ -42,18 +52,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <label>Start Date</label>
-                                    <div>
-                                        <input type="date" class="form-control date" name="start_date" value="{{ $data['start_date'] }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <label>End Date</label>
-                                    <div>
-                                        <input type="date" class="form-control date" name="end_date" value="{{ $data['end_date'] }}">
-                                    </div>
-                                </div>
+
                                 <div class="col-md-1">
                                     <button class="btn btn-dark btn-sm show-button pull-right">Show</button>
                                 </div>
@@ -62,7 +61,7 @@
                     </small>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary table-chart table-responsive">
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th class="" style='width: 5%;'>Date</th>

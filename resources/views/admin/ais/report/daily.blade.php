@@ -3,13 +3,8 @@
 @extends('admin.master')
 
 
-@section('content')
-    @if( isset($status))
-        <div class="offset-md-5">
-            <h4>Nothing found</h4>
-        </div>
-    @else
-        <div class="col-md-10">
+@section('reports')
+        <div class="col-md-12">
             <samp>
                 <div class="card text-left">
                     <div class="card-header">
@@ -19,13 +14,13 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Start Date</label>
-                                        <input type="date" name="start_date" class="form-control" value="{{ isset($input) ? $input['start_date'] : '' }}">
+                                        <input type="date" name="start_date" class="form-control" value="{{$input['start_date']}}">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>End Date</label>
-                                        <input type="date" name="end_date" value="{{ isset($input) ? $input['end_date'] : date('Y-m-d') }}" class="form-control">
+                                        <input type="date" name="end_date" value="{{$input['end_date']}}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -38,25 +33,26 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Category</label>
                                         <select name="type_id" class="form-control" id="type">
                                             <option value="0">All</option>
                                             @foreach( $data['types'] as $item )
-                                                <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} >{{ $item->name }}</option>
+                                                <option value="{{ $item->id }}" class={!! $item->id >4 ? 'auto' : 'manual' !!} >
+                                                    {{ $item->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-2" style="margin-top: 4%">
-                                    <button class="btn btn-dark btn-sm">Show</button>
+                                <div class="col-md-1">
+                                    <button class="btn btn-dark btn-sm form-control mt-4">Show</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="card-footer">
-                        <table class="table table-bordered table-hover table-primary table-fixed">
+                        <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th></th>
@@ -71,7 +67,8 @@
                             </thead>
                             <tbody>
                             @php( $i =0)
-                            @foreach( $record as $x => $v_group )
+
+                            @foreach($record as $x => $v_group )
                                 @foreach( $v_group as $key => $item )
                                     <tr>
                                         <td>{{ $i++ }}</td>
@@ -91,9 +88,6 @@
                 </div>
             </samp>
         </div>
-
-    @endif
-
 @endsection
 
 @section('script')

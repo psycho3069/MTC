@@ -33,7 +33,7 @@ class FrontendController extends Controller
 
     public function configDate()
     {
-        $date = Configuration::find(1)->software_start_date;
+        $date = Configuration::find(1)->date;
         return date('Y-m-d', strtotime($date));
     }
 
@@ -135,7 +135,7 @@ class FrontendController extends Controller
         ]);
 
         // $date = $request->date;
-        $date = Configuration::find(1)->software_start_date;
+        $date = Configuration::find(1)->date;
         $input = $request->all();
         $input['type'] = 'hotel_rv';
         $input['mis_ac_head_id'] = 1;
@@ -210,7 +210,7 @@ class FrontendController extends Controller
             'status'  => 'required|max:5'
         ]);
 
-        $date = Configuration::find(1)->software_start_date;
+        $date = Configuration::find(1)->date;
 
         $input = $request->all();
         $input['type'] = 'venue_rv';

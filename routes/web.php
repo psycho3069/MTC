@@ -11,6 +11,13 @@
 |
 */
 
+use App\Http\Controllers\Reports\BalanceSheetController;
+use App\Http\Controllers\Reports\CashBookReportController;
+use App\Http\Controllers\Reports\DailyTransactionController;
+use App\Http\Controllers\Reports\IncomeStatementController;
+use App\Http\Controllers\Reports\LedgerReportController;
+use App\Http\Controllers\Reports\ReceiptPaymentController;
+use App\Http\Controllers\Reports\StockReportController;
 use App\Http\Controllers\SoftwareConfigurationController;
 use App\TransactionHead;
 use Illuminate\Support\Facades\Route;
@@ -166,40 +173,44 @@ Route::group(['middleware' => 'auth'], function (){
     Route::resource('vouchers', 'VoucherController');
 
     Route::get('reports/income', ['as' => 'report.income', 'uses' => 'ReportController@income']);
-    Route::get('reports/balance', ['as' => 'report.balance', 'uses' => 'ReportController@balance']);
     Route::get('reports/test', ['as' => 'report.test', 'uses' => 'ReportController@test']);
     Route::get('reports/cash', ['as' => 'report.cash', 'uses' => 'ReportController@cash']);
-    Route::get('reports/ledger/{thead_id?}', ['as' => 'report.ledger', 'uses' => 'ReportController@ledger']);
-    Route::post('reports/ledger', ['as' => 'report.show.ledger', 'uses' => 'ReportController@showLedger']);
-    Route::get('reports/cash-book', ['as' => 'report.cash-book', 'uses' => 'ReportController@cashBook']);
-    Route::get('reports/bank-book', ['as' => 'report.bank-book', 'uses' => 'ReportController@bankBook']);
-    Route::get('reports/cash-bank-book', ['as' => 'report.cash-bank-book', 'uses' => 'ReportController@cashBankBook']);
-    Route::get('reports/daily', ['as' => 'report.daily', 'uses' => 'ReportController@daily']);
-    Route::post('reports/daily', ['as' => 'report.show.daily', 'uses' => 'ReportController@showDaily']);
-
-    Route::get('reports/receipt_payment', ['as' => 'report.receipt_payment', 'uses' => 'ReportController@receiptPayment']);
-    Route::post('reports/receipt_payment', 'ReportController@receiptPayment');
-
-    Route::get('reports/stock/{id}', ['as' => 'report.stock', 'uses' => 'ReportController@stock']);
-    Route::post('reports/stock', ['as' => 'report.show.stock', 'uses' => 'ReportController@showStock']);
-
-    Route::get('reports/income-statement', ['as' => 'report.income-statement', 'uses' => 'AISReportController@incomeStatement']);
-    Route::post('reports/income-statement', ['as' => 'report.income-statement', 'uses' => 'AISReportController@incomeStatement']);
 
 
 
+    Route::any('reports/income-statement', [IncomeStatementController::class, 'incomeStatement'])
+        ->name('reports.income.statement');
+
+    Route::get('reports/ledger/{thead_id?}', [LedgerReportController::class, 'ledger'])
+        ->name('report.ledger');
+    Route::post('reports/ledger/{thead_id?}', [LedgerReportController::class, 'showLedger'])
+        ->name('report.show.ledger');
+
+    Route::get('reports/daily', [DailyTransactionController::class, 'daily'])
+        ->name('report.daily');
+    Route::post('reports/daily', [DailyTransactionController::class, 'showDaily'])
+        ->name('report.show.daily');
+
+    Route::get('reports/cash-book', [CashBookReportController::class, 'cashBook'])
+        ->name('report.cash-book');
+    Route::get('reports/bank-book', [CashBookReportController::class, 'bankBook'])
+        ->name('report.bank-book');
+    Route::get('reports/cash-bank-book', [CashBookReportController::class, 'cashBankBook'])
+        ->name('report.cash-bank-book');
+
+    Route::any('reports/receipt_payment', [ReceiptPaymentController::class, 'receiptPayment'])
+        ->name('report.receipt_payment');
+
+    Route::get('reports/stock/{id}', [StockReportController::class, 'stock'])
+        ->name('report.stock');
+    Route::post('reports/stock', [StockReportController::class, 'showStock'])
+        ->name('report.show.stock');
+
+    Route::get('reports/balance', [BalanceSheetController::class, 'balance'])
+        ->name('report.balance');
 
 
 
-
-
-
-//    Route::resource('receiver', 'ReceiverController');
-//    Route::resource('staff', 'StaffController');
-//    Route::resource('mis/accounts', 'MisAccountController', ['as' => 'mis']);
-//    Route::post('purchase/item', ['as' => 'purchase.item', 'uses' => 'InventoryPurchaseController@item']);
-//    Route::get('inventory/list', ['as' => 'inventory.list', 'uses' => 'MisInventoryController@list']);
-//    Route::resource('mis/inventory', 'MisInventoryController', ['as' => 'mis']);
 
 
 

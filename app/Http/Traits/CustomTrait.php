@@ -2,11 +2,13 @@
 
 namespace App\Http\Traits;
 
+use App\Billing;
 use App\Booking;
 use App\Configuration;
 use App\Date;
 use App\MisAccountHead;
 use App\MisVoucher;
+use App\Payment;
 use App\Process;
 use App\Room;
 use App\Venue;
@@ -17,10 +19,8 @@ trait CustomTrait{
 
     public function getDate()
     {
-        $conf_date = Configuration::find(1)->software_start_date;
+        $conf_date = Configuration::find(1)->date;
         $date = Date::where('date', $conf_date)->first();
-        if ( !$date)
-            $date = Date::create([ 'date' => $conf_date]);
 
         return $date;
     }
@@ -28,7 +28,7 @@ trait CustomTrait{
 
     public function checkBooking( $input)
     {
-        $date = Configuration::find( 1)->software_start_date;
+        $date = Configuration::find( 1)->date;
         $booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date)))->where( 'booking_status', '!=', 0)->get();
 
         $room_id = collect( $input)->pluck('room_id');
@@ -36,7 +36,7 @@ trait CustomTrait{
     }
 
 
-    public function getBillDetails( $bill)
+    public function getBillDetails($bill)
     {
         $charge['room']['total'] = $bill->booking->where('room_id', '<', 50)->sum('bill');
         $charge['room']['total'] += $bill->booking->where('room_id', '>', 499)->sum('bill');
@@ -48,15 +48,16 @@ trait CustomTrait{
             $charge['venue']['total'] += $charge['venue']['total'] * $bill->booking[0]->vat / 100;
         }
 
-        if ( $bill->restaurant->isNotEmpty())
+        if ( $bill->restaurant->isNotEmpty()){
             $charge['food']['total'] += $charge['food']['total'] * ( $bill->restaurant[0]->vat + $bill->restaurant[0]->service_charge ) / 100;
+        }
 
-        $charge['room']['paid'] = $bill->payments->where('payment_type', 'room')->sum('amount');
-        $charge['venue']['paid'] = $bill->payments->where('payment_type', 'venue')->sum('amount');
-        $charge['food']['paid'] = $bill->payments->where('payment_type', 'food')->sum('amount');
+        $charge['room']['paid'] = $bill->payments->where('payment_type', Payment::$paymentType['room'])->sum('amount');
+        $charge['venue']['paid'] = $bill->payments->where('payment_type', Payment::$paymentType['venue'])->sum('amount');
+        $charge['food']['paid'] = $bill->payments->where('payment_type', Payment::$paymentType['food'])->sum('amount');
+
 
         $max = collect($charge)->sortByDesc('total')->keys()->first();
-
 
         $charge['all']['total'] = $charge['room']['total'] + $charge['venue']['total'] + $charge['food']['total'];
         $charge['all']['max'] = $max;

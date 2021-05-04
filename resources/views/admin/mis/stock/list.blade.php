@@ -4,7 +4,6 @@
     <div class="col-md-8">
         <samp>
             <div class="card text-left">
-{{--                <div class="card-header"> <strong>All {{ ucfirst($categories->first()->category) }} Item</strong></div>--}}
                 <div class="card-header">
                     <b>{{ $mis_head_id != 5 ? 'Grocerie\'s' : 'Inventorie\'s' }} Stock</b>
                 </div>

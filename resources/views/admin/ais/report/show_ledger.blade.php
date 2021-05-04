@@ -15,7 +15,7 @@
 </style>
 
 @section('content')
-    <div class="col-md-9">
+    <div class="col-md-12">
         <samp>
             <div class="card text-left">
                 <div class="card-header">
@@ -73,7 +73,7 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <table class="table table-bordered table-hover table-primary table-fixed">
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th class="">Date</th>

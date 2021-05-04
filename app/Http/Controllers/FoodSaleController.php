@@ -8,7 +8,6 @@ use App\FoodMenu;
 use App\FoodSale;
 use App\Guest;
 use App\Http\Traits\BillingTrait;
-use App\Http\Traits\CustomTrait;
 use App\Http\Traits\SoftwareConfigurationTrait;
 use App\Menu;
 use App\MenuType;
@@ -19,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class FoodSaleController extends Controller
 {
-    use CustomTrait, SoftwareConfigurationTrait, BillingTrait;
+    use SoftwareConfigurationTrait, BillingTrait;
     /**
      * Display a listing of the resource.
      *

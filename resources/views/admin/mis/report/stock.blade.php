@@ -1,23 +1,37 @@
 @extends('admin.master')
 
 
-@section('content')
-    <div class="col-md-9">
+@section('reports')
+    <div class="col-md-12">
         <samp>
             <div class="card">
                 <div class="card-header">
-                    {{ csrf_field() }}
-                    <div class="row">
-                        <input type="date" class="form-control col-md-2 date" id="from" style="margin-right: 1%; margin-left: 16%;">
-                        <input type="date" class="form-control col-md-2 date" id="to" style="margin-right: 1%;">
-                        <select class="form-control col-md-3" id="kate_id" style="margin-right: 1%;">
-                            <option value="all">All</option>
-                            @foreach( $mis_head->child as $kate )
-                                <option value="{{ $kate->id }}">{{ $kate->name }}</option>
-                            @endforeach
-                        </select>
-                        <button type="button" class="btn btn-i btn-sm" style="width: 6%; height: 4%; margin-top: 3px;">Show</button>
-                    </div>
+                    <form action="{{route('report.show.stock')}}" method="POST">
+                        @csrf
+
+                        <input type="hidden" name="mis_head_id" value="{{$mis_head->id}}">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="date" class="form-control" id="from"
+                                       name="from" value="{{$input['start_date']}}">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="date" class="form-control" id="to"
+                                       name="to" value="{{$input['software_date']}}">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-control" id="kate_id" name="kate_id">
+                                    <option value="all">All</option>
+                                    @foreach( $mis_head->child as $kate )
+                                        <option value="{{ $kate->id }}">{{ $kate->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-i btn-sm" style="width: 6%; height: 4%; margin-top: 3px;">Show</button>
+                        </div>
+                    </form>
+
                 </div>
 
                 <div class="card-header">
@@ -82,24 +96,23 @@
                 var check = 0
 
                 check = !Date.parse(from) || !Date.parse(to) ? alert(msg1) : ( Date.parse(from) > Date.parse(to) ? alert( msg2) : 1)
-                if ( check == 1 )
+                if ( check == 1 ){
                     check = !kate_id ? alert(msg3) : 2
-                // console.log(from, to, kate_id)
+                }
 
                 if ( check == 2){
-
                     $.ajax({
                         type: 'POST',
                         url: "{{ route('report.show.stock') }}",
                         data: {_token: _token, from: from, to: to, kate_id: kate_id, mis_head_id: mis_head_id},
                         success: function (data) {
-                            // console.log( data)
+                            console.log(data);
                             var content = $('#content'); content.empty();
                             var table = $('.table').DataTable();
                             table.clear().draw(); table.destroy();
 
                             if( data == 220)
-                                $('#content').append('No Results Found')
+                                $('#content').html('<h4>No Results Found</h4>')
                             else {
                                 var i = 1;
                                 $.each(data['stock'], function (key, val) {

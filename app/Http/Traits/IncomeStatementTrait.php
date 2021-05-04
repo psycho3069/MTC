@@ -57,6 +57,13 @@ trait IncomeStatementTrait
             ->whereIn('ac_head_id', $ac_head)
             ->pluck('id');
 
+        $balance['cumulative'] = DB::table('current_balance')
+            ->selectRaw('thead_id, (SUM(debit) - SUM(credit)) AS total')
+            ->whereIn('thead_id', $theads_id)
+            ->groupBy('thead_id')
+            ->having('total', '!=', 0)
+            ->get();
+
         $balance['monthly'] = DB::table('current_balance')
             ->selectRaw('thead_id, (SUM(debit) - SUM(credit)) AS total')
             ->whereIn('date_id', $dates)
@@ -65,19 +72,18 @@ trait IncomeStatementTrait
             ->having('total', '!=', 0)
             ->get();
 
-        $balance['cumulative'] = DB::table('current_balance')
-            ->selectRaw('thead_id, (SUM(debit) - SUM(credit)) AS total')
-//            ->whereIn('thead_id', $theads_id)
-            ->whereIn('thead_id', $balance['monthly']->pluck('thead_id'))
-            ->groupBy('thead_id')
-            ->having('total', '!=', 0)
-            ->get();
+
 
         $income = [];
-        foreach ($balance as $key => $theads) {
+
+        foreach ($balance as $incomeType => $theads) {
             foreach ($theads as $thead){
-                $income[$thead->thead_id][$key] = $thead->total;
+                $income[$thead->thead_id][$incomeType] = $thead->total;
             }
+        }
+
+        foreach ($income as $theadId => $balance){
+            $income[$theadId]['monthly'] = $balance['monthly'] ?? 0;
         }
 
         return $income;
@@ -85,10 +91,10 @@ trait IncomeStatementTrait
 
 
 
-    public function getIncomeAccounts($ac_head, $theads_id)
+    public function getIncomeAccounts($ac_heads, $theads_id)
     {
         $query = AccountHead::query();
-        $query->whereIn('id', $ac_head);
+        $query->whereIn('id', $ac_heads);
 
         $query->with([
             'theads' => function($q) use ($theads_id) {

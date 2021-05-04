@@ -169,7 +169,8 @@
           <a class="dropdown-item" href="{{ route('report.receipt_payment') }}">Receipt Payment Report</a>
           <a class="dropdown-item" href="{{ route('report.cash-bank-book') }}">Cash & Bank Book Report</a>
           <a class="dropdown-item" href="{{ route('report.balance') }}">Balance Sheet</a>
-          <a class="dropdown-item" href="{{ route('report.income') }}">Income Statement</a>
+{{--          <a class="dropdown-item" href="{{ route('report.income') }}">Income Statement</a>--}}
+          <a class="dropdown-item" href="{{ route('reports.income.statement') }}">Income Statement</a>
           <a class="dropdown-item" href="{{ route('report.stock', 4) }}">Grocery Report</a>
           <a class="dropdown-item" href="{{ route('report.stock', 5) }}">Inventory Report</a>
       </div>

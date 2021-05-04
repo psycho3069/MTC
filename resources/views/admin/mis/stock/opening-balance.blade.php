@@ -23,7 +23,7 @@
                                     <select id="per-page" class="form-control">
                                         <option value="5" {{request('per_page')==5?'selected':''}}>5</option>
                                         <option value="10" {{request('per_page')==10?'selected':''}}>10</option>
-                                        <option value="25" {{request('per_page')==25?'selected':''}}>25</option>
+                                        <option value="25" {{request('per_page', 25)==25?'selected':''}}>25</option>
                                         <option value="50" {{request('per_page')==50?'selected':''}}>50</option>
                                         <option value="100" {{request('per_page')==100?'selected':''}}>100</option>
                                         <option value="150" {{request('per_page')==150?'selected':''}}>150</option>

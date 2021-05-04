@@ -1,27 +1,32 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Reports;
 
 use App\Http\Traits\IncomeStatementTrait;
+use App\Http\Traits\SoftwareConfigurationTrait;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class AISReportController extends Controller
+class IncomeStatementController extends Controller
 {
-    use IncomeStatementTrait;
-
+    use IncomeStatementTrait, SoftwareConfigurationTrait;
 
 
     public function incomeStatement()
     {
         $ac_head = [3, 4];
+        $softwareDate = $this->getSoftwareDate();
+        $date = request('date') ?: $softwareDate->date;
 
-        $date = request('date') ?: date('Y-m-d');
-//        $date = date('2020-03-26');
         $dates_id = $this->getLookupDates($date);
         $income = $this->getMonthlyIncome($dates_id, $ac_head);
         $accountHeads = $this->getIncomeAccounts($ac_head, array_keys($income));
 
         $data = [];
+        $data[3]['monthly'] = 0;
+        $data[3]['cumulative'] = 0;
+        $data[4]['monthly'] = 0;
+        $data[4]['cumulative'] = 0;
 
         foreach ($accountHeads as $head) {
             $data[$head->id]['name'] = $head->name;
@@ -71,8 +76,8 @@ class AISReportController extends Controller
             }
         }
 
+
         return view('admin.ais.report.income-statement', compact('data', 'date'));
     }
-
 
 }

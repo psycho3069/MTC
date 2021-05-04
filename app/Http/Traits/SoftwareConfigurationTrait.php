@@ -7,6 +7,7 @@ use App\Configuration;
 use App\Date;
 use App\MISHead;
 use App\Unit;
+use App\VoucherType;
 
 
 trait SoftwareConfigurationTrait
@@ -14,7 +15,7 @@ trait SoftwareConfigurationTrait
 
     public function getSoftwareStartDate()
     {
-        $configuration = Configuration::find(1);
+        $configuration = Configuration::findOrFail(1);
         $date = Date::where('date', $configuration->software_start_date)->firstOrFail();
         return $date;
     }
@@ -120,6 +121,12 @@ trait SoftwareConfigurationTrait
         if ($misHead->account_type == MISHead::$accountType['discount']){
             return 'discount';
         }
+    }
+
+
+    public function getVoucherTypes()
+    {
+        return VoucherType::whereNotIn('id', [5,6,7,8,9])->get();
     }
 
 
