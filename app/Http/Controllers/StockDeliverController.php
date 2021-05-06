@@ -87,7 +87,7 @@ class StockDeliverController extends Controller
      */
     public function edit($id)
     {
-        $delivery = Delivery::findOrfail($id);
+        $delivery = Delivery::find($id);
         $data['units'] = Unit::all();
 
         return view('admin.mis.stock.deliver.edit', compact('delivery', 'data'));
@@ -105,7 +105,7 @@ class StockDeliverController extends Controller
     {
         DB::beginTransaction();
         try {
-            $delivery = Delivery::findOrFail($id);
+            $delivery = Delivery::find($id);
             $this->updateDelivery($request, $delivery);
             DB::commit();
             session()->flash('success', 'Delivery updated');

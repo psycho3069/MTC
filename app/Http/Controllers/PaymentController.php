@@ -59,7 +59,7 @@ class PaymentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $billing = Billing::findOrFail($bill_id);
+            $billing = Billing::find($bill_id);
             $checkoutStatus = $request->checkout_status ? $request->checkout_status : 0;
 
             if ( !$checkoutStatus || !$billing->checkout_status ){
@@ -254,7 +254,7 @@ class PaymentController extends Controller
         try {
             $payment = Payment::where('id', $id)
                 ->where('billing_id', $bill_id)
-                ->firstOrfail();
+                ->first();
             if ($payment->amount != $request->amount){
                 $this->updatePayment($payment, $request->amount);
                 session()->flash('update', '<b>Payment Updated Successfully.</b>');

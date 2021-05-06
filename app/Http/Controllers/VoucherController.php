@@ -108,7 +108,7 @@ class VoucherController extends Controller
         try {
             $voucherData = $request->input;
             $softwareDate = $this->getSoftwareDate();
-            $voucherType = VoucherType::findOrFail($request->type_id);
+            $voucherType = VoucherType::find($request->type_id);
 
             $voucherGroup = $this->createAISVoucherGroup($softwareDate, $voucherType, $request->global_note);
 
@@ -145,7 +145,7 @@ class VoucherController extends Controller
      */
     public function show($id)
     {
-        $voucherGroup = VoucherGroup::findOrFail($id);
+        $voucherGroup = VoucherGroup::find($id);
         $vouchers = $voucherGroup->vouchers;
         $data = [];
         foreach ( $vouchers as $item) {
@@ -212,7 +212,7 @@ class VoucherController extends Controller
             $voucherData = $request->voucher;
 
             foreach ($voucherData as $voucher_id => $newVoucher) {
-                $voucher = Voucher::findOrFail($voucher_id);
+                $voucher = Voucher::find($voucher_id);
 
                 if ($newVoucher['amount'] != $voucher->amount){
                     $this->updateVoucherAmount($voucher, $newVoucher['amount'], $voucher->amount, $newVoucher['note']);
@@ -249,7 +249,7 @@ class VoucherController extends Controller
 
         DB::beginTransaction();
         try {
-            $voucherGroup = VoucherGroup::findOrFail($id);
+            $voucherGroup = VoucherGroup::find($id);
 
             foreach ( $voucherGroup->vouchers as $voucher ) {
                 $deleteNote = 'Deleted Voucher - [id: '.$voucher->id. ']';

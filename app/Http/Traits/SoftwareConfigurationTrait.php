@@ -15,22 +15,22 @@ trait SoftwareConfigurationTrait
 
     public function getSoftwareStartDate()
     {
-        $configuration = Configuration::findOrFail(1);
-        $date = Date::where('date', $configuration->software_start_date)->firstOrFail();
+        $configuration = Configuration::find(1);
+        $date = Date::where('date', $configuration->software_start_date)->first();
         return $date;
     }
 
 
     public function getSoftwareConfigurationDate()
     {
-        return Configuration::findOrFail(1);
+        return Configuration::find(1);
     }
 
 
     public function getSoftwareDate()
     {
         $configuration = Configuration::find(1);
-        $date = Date::where('date', $configuration->date)->firstOrFail();
+        $date = Date::where('date', $configuration->date)->first();
         return $date;
     }
 
@@ -38,14 +38,14 @@ trait SoftwareConfigurationTrait
     public function getVatFood()
     {
         return Configuration::where('name', Configuration::$property['vat_food'])
-            ->firstOrFail();
+            ->first();
     }
 
 
     public function getVatService()
     {
         return Configuration::where('name', Configuration::$property['vat_service'])
-            ->firstOrFail();
+            ->first();
 
     }
 
@@ -53,34 +53,34 @@ trait SoftwareConfigurationTrait
     public function getVatOthers()
     {
         return Configuration::where('name', Configuration::$property['vat_others'])
-            ->firstOrFail();
+            ->first();
     }
 
 
     public function getRoomBookingAccount()
     {
-        $misHead = MISHead::where('account_type', MISHead::$accountType['room_booking'])->firstOrFail();
+        $misHead = MISHead::where('account_type', MISHead::$accountType['room_booking'])->first();
         return $misHead->firstAccount;
     }
 
 
     public function getVenueBookingAccount()
     {
-        $misHead = MISHead::where('account_type', MISHead::$accountType['venue_booking'])->firstOrFail();
+        $misHead = MISHead::where('account_type', MISHead::$accountType['venue_booking'])->first();
         return $misHead->firstAccount;
     }
 
 
     public function getHotelFoodSaleAccount()
     {
-        $misHead = MISHead::where('account_type', MISHead::$accountType['food_sale'])->firstOrFail();
+        $misHead = MISHead::where('account_type', MISHead::$accountType['food_sale'])->first();
         return $misHead->foodSaleHotel;
     }
 
 
     public function getPersonalFoodSaleAccount()
     {
-        $misHead = MISHead::where('account_type', MISHead::$accountType['food_sale'])->firstOrFail();
+        $misHead = MISHead::where('account_type', MISHead::$accountType['food_sale'])->first();
         return $misHead->foodSalePersonal;
     }
 
@@ -88,7 +88,7 @@ trait SoftwareConfigurationTrait
     public function getDiscountAccount()
     {
         $misHead = MISHead::where('account_type', MISHead::$accountType['discount'])
-            ->firstOrFail();
+            ->first();
         return $misHead->firstAccount;
     }
 
@@ -100,7 +100,7 @@ trait SoftwareConfigurationTrait
         $query->when($unitTypeId, function ($query, $unitTypeId){
             $query->where('unit_type_id', $unitTypeId);
         });
-        return $query->firstOrFail();
+        return $query->first();
     }
 
 

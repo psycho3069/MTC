@@ -18,7 +18,7 @@ trait StockTrait
     {
         $input = $request->all();
         $softwareStartDate = $this->getSoftwareStartDate();
-        $headI = MISHeadChild_I::findOrFail($request->cat_id);
+        $headI = MISHeadChild_I::find($request->cat_id);
         $code = MISLedgerHead::withTrashed()
             ->orderBy('id', 'desc')
             ->value('code');
@@ -35,7 +35,7 @@ trait StockTrait
 
     public function createLedgerHeadCategory($request)
     {
-        $misHead = MISHead::findOrFail($request->mis_head_id);
+        $misHead = MISHead::find($request->mis_head_id);
 
         $categoryI = new MISHeadChild_I();
         $categoryI->name = $request->name;
@@ -168,7 +168,7 @@ trait StockTrait
     public function deliverGroceries($request, $softwareDate)
     {
         foreach ($request->input as $item) {
-            $ledgerHead = MISLedgerHead::findOrFail($item['stock_id']);
+            $ledgerHead = MISLedgerHead::find($item['stock_id']);
             $unit = $this->getUnit($item['unit_id']);
             $deliveryQuantity = $this->checkDeliveryQuantity($item['quantity'], $unit, $ledgerHead);
 

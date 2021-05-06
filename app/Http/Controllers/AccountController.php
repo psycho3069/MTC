@@ -38,16 +38,16 @@ class AccountController extends Controller
     {
         $type = $request->type;
 
-        $data['parent'] = AccountHead::findOrfail($request->head);
+        $data['parent'] = AccountHead::find($request->head);
 
         if ( $request->child_i )
-            $data['child_i'] = AccountHeadChild_I::findOrfail( $request->child_i);
+            $data['child_i'] = AccountHeadChild_I::find( $request->child_i);
 
         if ( $request->child_ii )
-            $data['child_ii'] = AccountHeadChild_II::findOrfail( $request->child_ii);
+            $data['child_ii'] = AccountHeadChild_II::find( $request->child_ii);
 
         if ( $request->child_iii )
-            $data['child_iii'] = AccountHeadChild_III::findOrfail( $request->child_iii);
+            $data['child_iii'] = AccountHeadChild_III::find( $request->child_iii);
 
 //        return $data;
 

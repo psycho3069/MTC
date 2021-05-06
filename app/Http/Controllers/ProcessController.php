@@ -50,7 +50,7 @@ class ProcessController extends Controller
 
         $query = Date::query();
         $query->with(['groupVouchers', 'groupVouchers.vouchers', 'groupVouchers.type']);
-        $date = $query->findOrFail($request->date_id);
+        $date = $query->find($request->date_id);
         $dates = Date::get();
 
         return $this->getDate($dates, $date);
@@ -182,7 +182,7 @@ class ProcessController extends Controller
     {
         DB::beginTransaction();
         try {
-            $date = Date::findOrFail($request->date_id);
+            $date = Date::find($request->date_id);
             $date->status = 1;
             $date->save();
 

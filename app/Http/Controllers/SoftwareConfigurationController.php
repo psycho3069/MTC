@@ -57,10 +57,10 @@ class SoftwareConfigurationController extends Controller
 
     public function updateHotelConfiguration(Request $request)
     {
-        $cashInHand = TransactionHead::where('id', TransactionHead::$accounts['cash_in_hand'])->firstOrFail();
+        $cashInHand = TransactionHead::where('id', TransactionHead::$accounts['cash_in_hand'])->first();
 
         foreach ($request->settings as $key => $value) {
-            $setting = Configuration::where('name', $key)->firstOrFail();
+            $setting = Configuration::where('name', $key)->first();
             $setting->value = $value;
             $setting->save();
         }

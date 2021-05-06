@@ -111,7 +111,7 @@ class StockController extends Controller
             $softwareStartDate = $this->getSoftwareStartDate();
 
             foreach ($request->input as $id => $input){
-                $ledgerHead = MISLedgerHead::findOrFail($id);
+                $ledgerHead = MISLedgerHead::find($id);
                 $currentStock = MisCurrentStock::firstOrNew([
                     'stock_id' => $ledgerHead->id,
                     'date_id' => $softwareStartDate->id

@@ -206,7 +206,7 @@ class BillingController extends Controller
         DB::beginTransaction();
         try {
             $softwareDate = $this->getSoftwareDate();
-            $billing = Billing::with('booking')->findOrFail($id);
+            $billing = Billing::with('booking')->find($id);
             $bookedRoom = $this->validateBooking($softwareDate, (array) $request->new_booking);
 
             if ($bookedRoom > 0){
@@ -244,7 +244,7 @@ class BillingController extends Controller
         foreach ((array)$request->booking as $bookingId => $input) {
             $booking = Booking::where('billing_id', $billing->id)
                 ->where('room_id', $input['room_id'])
-                ->firstOrFail();
+                ->first();
 
             $discount = $billing->checkout_status ? $booking->discount : $input['discount'];
             $booking = $this->saveBooking($billing, $booking, $input, $discount, $vatOthers);
@@ -306,7 +306,7 @@ class BillingController extends Controller
         $input = $request->all();
         $softwareDate = $this->getSoftwareDate();
 
-        $bill = Billing::with('booking')->findOrFail($id);
+        $bill = Billing::with('booking')->find($id);
 
         $oldBill = 0;
         $newBill = 0;
@@ -315,7 +315,7 @@ class BillingController extends Controller
         $vatOthers = $bill->checkout_status ? $oldVat : $vatOthers;
 
         foreach ($input['booking'] as $id => $room) {
-            $booking = $bill->booking()->findOrFail($id);
+            $booking = $bill->booking()->find($id);
             $discount = $bill->checkout_status ? $booking->discount : $room['discount'];
             $billInfo = $this->getBookingCharge($room['start_date'], $room['end_date'], $booking->room_id, $discount);
 
@@ -386,7 +386,7 @@ class BillingController extends Controller
     {
         DB::beginTransaction();
         try {
-            $billing = Billing::findOrFail($id);
+            $billing = Billing::find($id);
 
             foreach ($billing->payments as $payment) {
                 $deleteNote = 'Deleted billings form MIS  - [payment_id: '.$payment->id. ']';

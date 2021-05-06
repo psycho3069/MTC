@@ -138,7 +138,7 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        $p_group = PurchaseGroup::findOrFail($id);
+        $p_group = PurchaseGroup::find($id);
         return view('admin.mis.purchase.show', compact('p_group'));
     }
 
@@ -150,7 +150,7 @@ class PurchaseController extends Controller
      */
     public function edit($id)
     {
-        $p_group = PurchaseGroup::findOrFail($id);
+        $p_group = PurchaseGroup::find($id);
         $data['supplier'] = Supplier::all();
         $data['receiver'] = Employee::all();
         $data['units'] = Unit::all();
@@ -171,7 +171,7 @@ class PurchaseController extends Controller
     {
         DB::beginTransaction();
         try {
-            $purchaseGroup = PurchaseGroup::findOrFail($id);
+            $purchaseGroup = PurchaseGroup::find($id);
             $this->updateMISPurchase($request, $purchaseGroup);
             DB::commit();
             session()->flash('update', '<b>Purchase has been updated successfully</b>');
@@ -204,7 +204,7 @@ class PurchaseController extends Controller
     {
         DB::beginTransaction();
         try {
-            $purchaseGroup = PurchaseGroup::findOrFail( $id);
+            $purchaseGroup = PurchaseGroup::find( $id);
             $this->deleteMISPurchase($purchaseGroup);
             session()->flash('success', '<b>Purchase Has Been Deleted Successfully.</b>');
             DB::commit();

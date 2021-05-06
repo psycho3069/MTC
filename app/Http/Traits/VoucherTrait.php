@@ -152,14 +152,14 @@ trait VoucherTrait
     {
         $creditAccount = Process::where('thead_id', $voucher->credit_head_id)
             ->where('date_id', $voucher->date_id)
-            ->firstOrFail();
+            ->first();
         $creditAccount->credit += $newAmount - $oldAmount;
         $creditAccount->save();
 
 
         $debitAccount = Process::where('thead_id', $voucher->debit_head_id)
             ->where('date_id', $voucher->date_id)
-            ->firstOrFail();
+            ->first();
         $debitAccount->debit += $newAmount - $oldAmount;
         $debitAccount->save();
     }

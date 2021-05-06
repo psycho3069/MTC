@@ -169,12 +169,12 @@ trait BillingTrait
         $roomType = $this->getRoomType($roomId);
 
         if ($roomType == Booking::$roomType['room']){
-            return Room::findOrFail($roomId);
+            return Room::find($roomId);
         }
 
 
         if ($roomType == Booking::$roomType['venue']){
-            return Venue::findOrFail($roomId);
+            return Venue::find($roomId);
         }
 
     }
