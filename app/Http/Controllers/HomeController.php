@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Booking;
 use App\Configuration;
 use App\Date;
+use App\Http\Traits\SoftwareConfigurationTrait;
 use App\MisAccountHead;
 use App\MISLedgerHead;
 use App\Process;
@@ -27,7 +28,7 @@ use function GuzzleHttp\Promise\all;
 
 class HomeController extends Controller
 {
-    use CustomTrait;
+    use SoftwareConfigurationTrait;
     /**
      * Create a new controller instance.
      *
@@ -66,7 +67,7 @@ class HomeController extends Controller
 
     public function countBooking()
     {
-        $date = $this->getDate();
+        $date = $this->getSoftwareDate();
 
         $room_booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date->date)))->where('room_id', '<', 50)->orWhere('room_id', '>', 499)->get();
         $venue_booked = Booking::where('end_date','>=', date('Y-m-d', strtotime( $date->date)))->whereBetween('room_id', [50, 499])->get();
